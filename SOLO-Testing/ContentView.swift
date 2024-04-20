@@ -31,15 +31,24 @@ class UserSettings: ObservableObject {
 
 struct StartView: View {
     @EnvironmentObject var settings: UserSettings
-    
+
     var body: some View {
-        if settings.loggedIn {
-            return AnyView(TabBarView())
-        }else {
-            return AnyView(ContentView())
+        Group {
+            if settings.loggedIn {
+                if settings.isAthlete {
+                    TabBarView(navigateTo: "Athlete")
+                } else if settings.isCoach {
+                    TabBarView(navigateTo: "Coach")
+                } else {
+                    ContentView()
+                }
+            } else {
+                ContentView()
+            }
         }
     }
 }
+
 
 struct ContentView: View {
     @EnvironmentObject var settings: UserSettings

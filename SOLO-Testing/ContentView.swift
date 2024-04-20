@@ -13,11 +13,14 @@ class UserSettings: ObservableObject {
     @Published var navigateNowToSignup: Bool = false
     @Published var navigateNowToCompletion: Bool = false
     @Published var navigateNowToAddAthlete: Bool = false
+
     
     @Published var username: String = ""
     @Published var password: String = ""
     @Published var phone_number:String = ""
     @Published var profile_image:String = ""
+    @Published var navigateNowToAthleteView: Bool = false
+    @Published var navigateNowToCoachView: Bool = false
     
     // other variables to track
     @Published var isAthlete:Bool = false

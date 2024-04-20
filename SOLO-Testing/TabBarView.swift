@@ -8,27 +8,31 @@
 import SwiftUI
 
 struct TabBarView: View {
+    let navigateTo: String
+    let defaultAthlete = AthleteInfo(name: "Lucy", image: "WomenAth1", location: "Los Angeles, CA")
+
     var body: some View {
         TabView {
             NavigationView {
-                HomeView()
+                // Conditional navigation based on the string parameter
+                if navigateTo == "Athlete" {
+                    CurrentAthleteView(currentAthlete: defaultAthlete)
+                } else {
+                    HomeView() // Assuming HomeView is the default view
+                }
             }
-            .tag(0)
             .tabItem {
                 Image(systemName: "house.fill")
                 Text("Home")
             }
-            
+
             NavigationView {
                 ProfileView()
             }
-            .tag(1)
             .tabItem {
                 Image(systemName: "person.fill")
                 Text("Profile")
             }
-            
         }
     }
 }
-

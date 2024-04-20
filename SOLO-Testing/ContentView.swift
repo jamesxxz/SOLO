@@ -13,6 +13,8 @@ class UserSettings: ObservableObject {
     @Published var navigateNowToSignup: Bool = false
     @Published var navigateNowToCompletion: Bool = false
     @Published var navigateNowToAddAthlete: Bool = false
+    @Published var imageFilePath: String = ""
+
 
     
     @Published var username: String = ""

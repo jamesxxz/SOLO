@@ -15,6 +15,8 @@ struct SignUpView: View {
     @State private var answers: [String] = Array(repeating: "", count: 5)
     @State private var didTapCoach: Bool = false
     @State private var didTapAthlete: Bool = false
+    @State private var profileImage: UIImage? = nil
+  
     
     static let color0 = Color(red: 52/255, green: 153/255, blue: 205/255);
     static let color1 = Color(red: 52/255, green: 133/255, blue: 205/255);
@@ -26,13 +28,13 @@ struct SignUpView: View {
         NavigationView {
             VStack {
                 NavigationLink(destination: AthleteView(currentPage: $currentPage), isActive: $settings.navigateNowToAthleteView) {
-                                    EmptyView()
-                                }
-
+                    EmptyView()
+                }
+                
                 NavigationLink(destination: CoachView(), isActive: $settings.navigateNowToCoachView) {
                     EmptyView()
                 }
-
+                
                 HStack(spacing:120) {
                     Text("CREATE ACCOUNT")
                         .font(Font.custom("Poppins-SemiBold", size:24))
@@ -53,24 +55,16 @@ struct SignUpView: View {
                 ))
                 
                 if currentPage == 1 {
-                    // Page 1
-                    QuestionView(question: "What is your name?", step_num: currentPage, answer: $answers[0], didTapCoach: $didTapCoach, didTapAthlete: $didTapAthlete)
+                    QuestionView(question: "What is your name?", step_num: currentPage, answer: $answers[0], didTapCoach: $didTapCoach, didTapAthlete: $didTapAthlete, image: .constant(nil))
                 } else if currentPage == 2 {
-                    // Page 2
-                    QuestionView(question: "What is your email address?", step_num: currentPage, answer: $answers[1], didTapCoach: $didTapCoach, didTapAthlete: $didTapAthlete)
+                    QuestionView(question: "What is your email address?", step_num: currentPage, answer: $answers[1], didTapCoach: $didTapCoach, didTapAthlete: $didTapAthlete, image: .constant(nil))
                 } else if currentPage == 3 {
-                    // Page 3
-                    QuestionView(question: "What is your phone number?", step_num: currentPage, answer: $answers[2], didTapCoach: $didTapCoach, didTapAthlete: $didTapAthlete)
+                    QuestionView(question: "What is your phone number?", step_num: currentPage, answer: $answers[2], didTapCoach: $didTapCoach, didTapAthlete: $didTapAthlete, image: .constant(nil))
+                } else if currentPage == 4 {
+                    QuestionView(question: "Upload a profile picture", step_num: currentPage, answer: $answers[3], didTapCoach: $didTapCoach, didTapAthlete: $didTapAthlete, image: $profileImage)
+                } else if currentPage == 5 {
+                    QuestionView(question: "Which role best describes you?", step_num: currentPage, answer: $answers[4], didTapCoach: $didTapCoach, didTapAthlete: $didTapAthlete, image: .constant(nil))
                 }
-                else if currentPage == 4 {
-                    // Page 4
-                    QuestionView(question: "Upload a profile picture", step_num: currentPage, answer: $answers[3], didTapCoach: $didTapCoach, didTapAthlete: $didTapAthlete)
-                }
-                
-                else if currentPage == 5 {
-                    QuestionView(question: "Which role best describes you?", step_num: currentPage, answer: $answers[4], didTapCoach: $didTapCoach, didTapAthlete: $didTapAthlete)
-                }
-
                 
                 Spacer()
                 
@@ -86,17 +80,17 @@ struct SignUpView: View {
                     }
                     
                     Spacer()
-                    
-                    if currentPage != 5 { // Adjust the value based on the number of pages
+                    let isButtonDisabled1 = answers[currentPage - 1].isEmpty
+                    let isButtonDisabled2 = answers.contains { $0.isEmpty } || (!didTapAthlete && !didTapCoach)
+                    if currentPage != 5 {
                         Button("NEXT") {
                             currentPage += 1
                         }
-                        .foregroundColor(Color(red: 0.208, green: 0.298, blue: 0.804))
+                        .foregroundColor(isButtonDisabled1 ? Color.gray : Color(red: 0.208, green: 0.298, blue: 0.804))
                         .padding()
                         .font(Font.custom("Poppins-Medium", size: 20))
+                        .disabled(isButtonDisabled1)
                     } else {
-                        // You can add a submit button or perform any other action here
-                        
                         Button("NEXT") {
                             self.settings.isAthlete = didTapAthlete
                             self.settings.isCoach = didTapCoach
@@ -107,11 +101,11 @@ struct SignUpView: View {
                                 self.settings.navigateNowToCoachView = true
                             }
                         }
-                        .foregroundColor(Color(red: 0.208, green: 0.298, blue: 0.804))
+                        .foregroundColor(isButtonDisabled2 ? Color.gray : Color(red: 0.208, green: 0.298, blue: 0.804))
                         .font(Font.custom("Poppins-Medium", size: 20))
                         .padding(.trailing, 10)
-                        
-                        
+                        .disabled(isButtonDisabled2)
+
                         .padding()
                     }
                 }
@@ -143,7 +137,7 @@ struct SignUpView: View {
                 .background(LinearGradient(gradient: Gradient(colors: [Color(red: 52/255, green: 153/255, blue: 205/255), Color(red: 52/255, green: 133/255, blue: 205/255), Color(red: 53/255, green: 77/255, blue: 205/255), Color(red: 38/255, green: 37/255, blue: 108/255)]), startPoint: .init(x: -0.1, y: 0.15), endPoint: .init(x: 0.85, y: 0.85)))
                 
                 ScrollView {
-                    VStack(spacing: 15) { // Adjusted spacing
+                    VStack(spacing: 15) {
                         ForEach(Array(zip(questions.indices, questions)), id: \.0) { index, question in
                             ViewSpecificQuestions(question: question, answer: $answers[index])
                         }
@@ -151,9 +145,8 @@ struct SignUpView: View {
                     .padding()
                 }
                 HStack {
-                    
                     Button(action: {
-                        dismiss()  // Manage currentPage or use dismiss() based on your flow
+                        dismiss()
                     }) {
                         Text("BACK")
                             .foregroundColor(Color(red: 0.208, green: 0.298, blue: 0.804))
@@ -161,13 +154,15 @@ struct SignUpView: View {
                             .font(Font.custom("Poppins-Medium", size: 20))
                     }
                     Spacer()
+                    let isButtonDisabled = answers.contains { $0.isEmpty }
                     Button("FINISH") {
                         settings.navigateNowToCompletion = true
                         settings.navigateNowToSignup = false
                     }
-                    .foregroundColor(Color(red: 0.208, green: 0.298, blue: 0.804))
+                    .foregroundColor(isButtonDisabled ? Color.gray : Color(red: 0.208, green: 0.298, blue: 0.804))
                     .font(Font.custom("Poppins-Medium", size: 20))
                     .padding(.trailing, 10)
+                    .disabled(isButtonDisabled)
                 }
             }
         }
@@ -210,19 +205,57 @@ struct SignUpView: View {
                             .font(Font.custom("Poppins-Medium", size: 20))
                     }
                     Spacer()
+                    let isButtonDisabledC = answers.contains { $0.isEmpty }
+
                     Button("FINISH") {
                         settings.navigateNowToCompletion = true
                         settings.navigateNowToSignup = false
                     }
-                    .foregroundColor(Color(red: 0.208, green: 0.298, blue: 0.804))
+                    .foregroundColor(isButtonDisabledC ? Color.gray : Color(red: 0.208, green: 0.298, blue: 0.804))
                     .font(Font.custom("Poppins-Medium", size: 20))
                     .padding(.trailing, 10)
+                    .disabled(isButtonDisabledC)
                 }
             }
         }
     }
     
-    
+    struct ImagePicker: UIViewControllerRepresentable {
+        @Binding var image: UIImage?
+        @Environment(\.dismiss) var dismiss
+
+        func makeUIViewController(context: Context) -> UIImagePickerController {
+            let picker = UIImagePickerController()
+            picker.delegate = context.coordinator
+            return picker
+        }
+
+        func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {
+        }
+
+        func makeCoordinator() -> Coordinator {
+            Coordinator(self)
+        }
+
+        class Coordinator: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
+            var parent: ImagePicker
+
+            init(_ parent: ImagePicker) {
+                self.parent = parent
+            }
+
+            func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+                if let image = info[.originalImage] as? UIImage {
+                    parent.image = image
+                }
+                parent.dismiss()
+            }
+
+            func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+                parent.dismiss()
+            }
+        }
+    }
 
     struct ViewSpecificQuestions: View {
         var question: String
@@ -249,6 +282,22 @@ struct SignUpView: View {
             .padding()
         }
     }
+    
+    func saveImageLocally(imageData: Data) -> String? {
+        guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return nil }
+        let fileName = UUID().uuidString + ".jpeg"  // Unique name for the file
+        let fileURL = documentsDirectory.appendingPathComponent(fileName)
+
+        do {
+            try imageData.write(to: fileURL)
+            return fileName  // Return the file name or path according to your need
+        } catch {
+            print("Unable to save image: \(error)")
+            return nil
+        }
+    }
+
+
 
     struct QuestionView: View {
         var question: String
@@ -256,6 +305,9 @@ struct SignUpView: View {
         @Binding var answer: String
         @Binding var didTapCoach: Bool
         @Binding var didTapAthlete: Bool
+        @Binding var image: UIImage?
+        @State private var showingImagePicker = false
+
         
         var body: some View {
             VStack (alignment: .leading) {
@@ -268,24 +320,33 @@ struct SignUpView: View {
                 Text(question)
                     .font(Font.custom("Poppins-SemiBold", size: 24))
                 
-                if (step_num == 4) {
-                    Button(action: {}) {
+                if step_num == 4 {
+                    Button(action: {
+                        showingImagePicker = true
+                    }) {
                         VStack {
-                            Image(systemName: "plus")
-                                .font(Font.custom("Poppins-Medium", size: 18))
-                                .foregroundColor(.gray)
-                            Text("Upload")
-                                .font(Font.custom("Poppins-Regular", size: 14))
-                                .foregroundColor(.gray)
+                            if let image = image {
+                                Image(uiImage: image)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 100, height: 100)
+                            } else {
+                                Image(systemName: "plus")
+                                    .font(Font.custom("Poppins-Medium", size: 18))
+                                    .foregroundColor(.gray)
+                                Text("Upload")
+                                    .font(Font.custom("Poppins-Regular", size: 14))
+                                    .foregroundColor(.gray)
+                            }
                         }
-                        
+                        .frame(width: 100, height: 100)
+                        .overlay(Rectangle()
+                            .strokeBorder(.gray, style: StrokeStyle(lineWidth: 2, dash: [5]))
+                        )
                     }
-                    .frame(width: 100, height: 100)
-                    .overlay(Rectangle()
-                        .strokeBorder(.gray, style: StrokeStyle(lineWidth: 2, dash: [5]))
-                    )
-                    
-                    
+                    .sheet(isPresented: $showingImagePicker) {
+                        ImagePicker(image: $image)
+                    }
                 }
                 else if (step_num == 5) {
                     

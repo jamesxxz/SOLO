@@ -80,33 +80,32 @@ struct SignUpView: View {
                     }
                     
                     Spacer()
-                    let isButtonDisabled1 = answers[currentPage - 1].isEmpty
-                    let isButtonDisabled2 = answers.contains { $0.isEmpty } || (!didTapAthlete && !didTapCoach)
+//                    let isButtonDisabled1 = answers[currentPage - 1].isEmpty
+//                    let isButtonDisabled2 = answers.contains { $0.isEmpty } || (!didTapAthlete && !didTapCoach)
                     if currentPage != 5 {
                         Button("NEXT") {
                             currentPage += 1
                         }
-                        .foregroundColor(isButtonDisabled1 ? Color.gray : Color(red: 0.208, green: 0.298, blue: 0.804))
+                        .foregroundColor(currentPage == 4 ? (profileImage == nil ? Color.gray : Color(red: 0.208, green: 0.298, blue: 0.804)) : (answers[currentPage - 1].isEmpty ? Color.gray : Color(red: 0.208, green: 0.298, blue: 0.804)))
                         .padding()
                         .font(Font.custom("Poppins-Medium", size: 20))
-                        .disabled(isButtonDisabled1)
+                        .disabled(currentPage == 4 ? profileImage == nil : answers[currentPage - 1].isEmpty)
                     } else {
+                        // Simplified "NEXT" button logic for page 5
                         Button("NEXT") {
                             self.settings.isAthlete = didTapAthlete
                             self.settings.isCoach = didTapCoach
 
                             if self.settings.isAthlete {
                                 self.settings.navigateNowToAthleteView = true
-                            } else if settings.isCoach {
+                            } else if self.settings.isCoach {
                                 self.settings.navigateNowToCoachView = true
                             }
                         }
-                        .foregroundColor(isButtonDisabled2 ? Color.gray : Color(red: 0.208, green: 0.298, blue: 0.804))
+                        .foregroundColor((!didTapAthlete && !didTapCoach) ? Color.gray : Color(red: 0.208, green: 0.298, blue: 0.804))
                         .font(Font.custom("Poppins-Medium", size: 20))
                         .padding(.trailing, 10)
-                        .disabled(isButtonDisabled2)
-
-                        .padding()
+                        .disabled(!didTapAthlete && !didTapCoach)
                     }
                 }
             }

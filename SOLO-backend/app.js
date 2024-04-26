@@ -3,8 +3,6 @@ const mysql = require('mysql2/promise');
 const bcrypt = require('bcryptjs');
 require('dotenv').config();
 
-require('dotenv').config();
-
 const affiliationRouter = require('./routes/affiliation');
 const athleteRouter = require('./routes/athlete')
 const coachRouter = require('./routes/coach');
@@ -12,8 +10,8 @@ const mediaRouter = require('./routes/media');
 const performanceRouter = require('./routes/performance');
 const workoutTypeRouter = require('./routes/workout_type');
 const workoutRouter = require('./routes/workout');
+const cors = require('cors');
 
-require('dotenv').config();
 
 const pool = require('./server/db'); // Import the pool object for database connection
 
@@ -21,12 +19,7 @@ const app = express();
 
 const PORT = 3000;
 
-app.use(
-  cors({
-    origin: `${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}`,
-    credentials: true,
-  }),
-);
+
 
 // EXAMPLE
 app.get('/test', async (req, res) => {

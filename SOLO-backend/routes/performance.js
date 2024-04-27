@@ -1,57 +1,30 @@
 const express = require('express');
-const mysql = require('mysql2/promise');
-const bcrypt = require('bcryptjs');
-require('dotenv').config();
+const router = express.Router();
+const pool = require('../server/db'); // Importing the connection pool
 
-
-const app = express();
-app.use(express.json());
-
-//databaseinformation
-const dbConfig = {
-    host: "solotestdb.cxqsaw0a4eyq.us-west-1.rds.amazonaws.com",
-    user: "admin",
-    password: "SoloTestDB",
-    database: "SoloTestDB"
-};
-
-// Establish a connection to the database
-async function getDBConnection() {
-    return await mysql.createConnection(dbConfig);
-
-}
-
-
-app.post('/upload-perfomance', async (req, res) => {
+// POST route to register a new performance
+router.post('/upload-performance', async (req, res) => {
     const { athlete_id, workout_id, results, date } = req.body;
     try {
-        const connection = await getDBConnection();
-        //sql call to put insert information into database
         const sql = `INSERT INTO performance (athlete_id, workout_id, results, date) VALUES (?, ?, ?, ?)`;
         const values = [athlete_id, workout_id, results, date];
-        console.log("Inserting:", { athlete_id, workout_id, results, date });
-        await connection.execute(sql, values);
-        connection.end();
+        await pool.query(sql, values);
         res.status(200).json({ message: 'Performance registered successfully!' });
     } catch (err) {
         console.error(err);
-        res.status(500).send('Server error ok registration');
+        res.status(500).send('Server error on performance registration');
     }
 });
 
-app.put('/update-performance/:id', async (req, res) => {
+// PUT route to update performance details
+router.put('/update-performance/:id', async (req, res) => {
     const { id } = req.params;
     const { athlete_id, workout_id, results, date } = req.body;
     try {
-        const connection = await getDBConnection();
-        // SQL call to update information in the database
         const sql = `UPDATE performance SET athlete_id = ?, workout_id = ?, results = ?, date = ? WHERE performance_id = ?`;
         const values = [athlete_id, workout_id, results, date, id];
-        console.log("Updating:", { athlete_id, workout_id, results, date });
-        const [result] = await connection.execute(sql, values);
-        connection.end();
+        const [result] = await pool.query(sql, values);
 
-        // Check if the update was successful
         if (result.affectedRows > 0) {
             res.status(200).json({ message: 'Performance updated successfully!' });
         } else {
@@ -63,12 +36,11 @@ app.put('/update-performance/:id', async (req, res) => {
     }
 });
 
-app.get('/performance/:id', async (req, res) => {
+// GET route to retrieve performance by ID
+router.get('/performance/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const connection = await getDBConnection();
-        const [rows] = await connection.execute('SELECT * FROM performance WHERE performance_id = ?', [id]);
-        connection.end();
+        const [rows] = await pool.query('SELECT * FROM performance WHERE performance_id = ?', [id]);
 
         if (rows.length > 0) {
             res.status(200).json(rows[0]);
@@ -77,31 +49,25 @@ app.get('/performance/:id', async (req, res) => {
         }
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Server error retrieving performance data' });
+        res.status(500).send('Server error retrieving performance data');
     }
 });
 
-app.delete('/performance/:id', async (req, res) => {
+// DELETE route to remove a performance
+router.delete('/performance/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const connection = await getDBConnection();
-        // Execute the DELETE query
-        const [result] = await connection.execute('DELETE FROM performance WHERE performance_id = ?', [id]);
-        connection.end();
+        const [result] = await pool.query('DELETE FROM performance WHERE performance_id = ?', [id]);
 
-        // Check how many rows were affected
         if (result.affectedRows > 0) {
             res.status(200).json({ message: 'Performance deleted successfully' });
         } else {
             res.status(404).send('Performance not found or already deleted');
         }
     } catch (error) {
-        console.error('Error deleting perfromance:', error);
-        res.status(500).json({ error: 'Server error deleting performance' });
+        console.error('Error deleting performance:', error);
+        res.status(500).send('Server error deleting performance');
     }
 });
 
-const PORT = 3000;
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+module.exports = router;

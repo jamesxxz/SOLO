@@ -1,73 +1,30 @@
 const express = require('express');
-const mysql = require('mysql2/promise');
-const bcrypt = require('bcryptjs');
-require('dotenv').config();
+const router = express.Router();
+const pool = require('../server/db'); // Importing the connection pool
 
-
-const app = express();
-app.use(express.json());
-
-//databaseinformation
-const dbConfig = {
-    host: "solotestdb.cxqsaw0a4eyq.us-west-1.rds.amazonaws.com",
-    user: "admin",
-    password: "SoloTestDB",
-    database: "SoloTestDB"
-};
-
-// Establish a connection to the database
-async function getDBConnection() {
-    return await mysql.createConnection(dbConfig);
-
-}
-
-/**
- * 
- * 
-Columns:
-workout_id
-int PK
-coach_id
-int
-athlete_id
-int
-type_id
-int
-
-
- */
-
-app.post('/upload-workout', async (req, res) => {
+// POST route to upload a new workout
+router.post('/upload-workout', async (req, res) => {
     const { coach_id, athlete_id, type_id } = req.body;
     try {
-        const connection = await getDBConnection();
-        //sql call to put insert information into database
         const sql = `INSERT INTO workout (coach_id, athlete_id, type_id) VALUES (?, ?, ?)`;
         const values = [coach_id, athlete_id, type_id];
-        console.log("Inserting:", { coach_id, athlete_id, type_id });
-        await connection.execute(sql, values);
-        connection.end();
-        res.status(200).json({ message: 'Workout Type registered successfully!' });
+        await pool.query(sql, values);
+        res.status(200).json({ message: 'Workout registered successfully!' });
     } catch (err) {
         console.error(err);
-        res.status(500).send('Server error ok registration');
+        res.status(500).send('Server error on registration');
     }
 });
-const PORT = 3000;
 
-app.put('/update-workout/:id', async (req, res) => {
+// PUT route to update workout details
+router.put('/update-workout/:id', async (req, res) => {
     const { id } = req.params;
     const { coach_id, athlete_id, type_id } = req.body;
     try {
-        const connection = await getDBConnection();
-        // SQL call to update information in the database
         const sql = `UPDATE workout SET coach_id = ?, athlete_id = ?, type_id = ? WHERE workout_id = ?`;
         const values = [coach_id, athlete_id, type_id, id];
-        console.log("Updating:", { coach_id, athlete_id, type_id });
-        const [result] = await connection.execute(sql, values);
-        connection.end();
+        const [result] = await pool.query(sql, values);
 
-        // Check if the update was successful
         if (result.affectedRows > 0) {
             res.status(200).json({ message: 'Workout updated successfully!' });
         } else {
@@ -79,34 +36,29 @@ app.put('/update-workout/:id', async (req, res) => {
     }
 });
 
-
-app.get('/workout/:id', async (req, res) => {
+// GET route to retrieve a workout by ID
+router.get('/workout/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const connection = await getDBConnection();
-        const [rows] = await connection.execute('SELECT * FROM workout WHERE workout_id = ?', [id]);
-        connection.end();
+        const [rows] = await pool.query('SELECT * FROM workout WHERE workout_id = ?', [id]);
 
         if (rows.length > 0) {
             res.status(200).json(rows[0]);
         } else {
-            res.status(404).send('Workout  not found');
+            res.status(404).send('Workout not found');
         }
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Server error retrieving workout  data' });
+        res.status(500).send('Server error retrieving workout data');
     }
 });
 
-app.delete('/workout_type/:id', async (req, res) => {
+// DELETE route to remove a workout
+router.delete('/workout/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const connection = await getDBConnection();
-        // Execute the DELETE query
-        const [result] = await connection.execute('DELETE FROM workout WHERE workout_id = ?', [id]);
-        connection.end();
+        const [result] = await pool.query('DELETE FROM workout WHERE workout_id = ?', [id]);
 
-        // Check how many rows were affected
         if (result.affectedRows > 0) {
             res.status(200).json({ message: 'Workout deleted successfully' });
         } else {
@@ -114,11 +66,8 @@ app.delete('/workout_type/:id', async (req, res) => {
         }
     } catch (error) {
         console.error('Error deleting workout:', error);
-        res.status(500).json({ error: 'Server error deleting Workout' });
+        res.status(500).send('Server error deleting Workout');
     }
 });
 
-//listening function
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+module.exports = router;

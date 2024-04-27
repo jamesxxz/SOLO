@@ -1,44 +1,33 @@
+// server.js or app.js
 const express = require('express');
-const mysql = require('mysql2/promise');
-const bcrypt = require('bcryptjs');
+const app = express();
 require('dotenv').config();
+const cors = require('cors');
 
+// Import routes
 const affiliationRouter = require('./routes/affiliation');
-const athleteRouter = require('./routes/athlete')
+const athleteRouter = require('./routes/athlete');
 const coachRouter = require('./routes/coach');
 const mediaRouter = require('./routes/media');
 const performanceRouter = require('./routes/performance');
 const workoutTypeRouter = require('./routes/workout_type');
 const workoutRouter = require('./routes/workout');
-const cors = require('cors');
 
+// Middlewares
+app.use(cors());  // if you need to handle CORS
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-const pool = require('./server/db'); // Import the pool object for database connection
-
-const app = express();
-
-const PORT = 3000;
-
-
-
-// EXAMPLE
-app.get('/test', async (req, res) => {
-  try {
-    const lbData = await pool.query('SELECT * FROM athlete');
-    res.json(lbData.rows);
-  } catch (error) {
-    console.error(error.message);
-  }
-});
-
+// Use routers
 app.use('/affiliation', affiliationRouter);
 app.use('/athlete', athleteRouter);
 app.use('/coach', coachRouter);
 app.use('/media', mediaRouter);
 app.use('/performance', performanceRouter);
-app.use('/workou-type', workoutTypeRouter);
+app.use('/workout-type', workoutTypeRouter);
 app.use('/workout', workoutRouter);
 
-app.listen(PORT, () => {
-  console.log(`Server listening on ${PORT}`);
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, 'localhost', () => {
+  console.log(`Server running on http://localhost:${PORT}`);
 });

@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2FB6C6722BE07C0100128093 /* Athlete.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FB6C6712BE07C0100128093 /* Athlete.swift */; };
+		2FB6C6752BE07CD900128093 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FB6C6742BE07CD900128093 /* NetworkService.swift */; };
+		2FB6C6772BE07D0700128093 /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FB6C6762BE07D0700128093 /* APIError.swift */; };
 		DCA329712B7B5ED1006AA611 /* SOLO_TestingApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA329702B7B5ED1006AA611 /* SOLO_TestingApp.swift */; };
 		DCA329732B7B5ED1006AA611 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA329722B7B5ED1006AA611 /* ContentView.swift */; };
 		DCA329752B7B5ED5006AA611 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DCA329742B7B5ED5006AA611 /* Assets.xcassets */; };
@@ -59,6 +62,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2FB6C6712BE07C0100128093 /* Athlete.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Athlete.swift; sourceTree = "<group>"; };
+		2FB6C6742BE07CD900128093 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
+		2FB6C6762BE07D0700128093 /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
 		DCA3296D2B7B5ED1006AA611 /* SOLO-Testing.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SOLO-Testing.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCA329702B7B5ED1006AA611 /* SOLO_TestingApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SOLO_TestingApp.swift; sourceTree = "<group>"; };
 		DCA329722B7B5ED1006AA611 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -122,6 +128,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2FB6C6702BE07BD900128093 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				2FB6C6712BE07C0100128093 /* Athlete.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		2FB6C6732BE07CA800128093 /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				2FB6C6742BE07CD900128093 /* NetworkService.swift */,
+				2FB6C6762BE07D0700128093 /* APIError.swift */,
+			);
+			path = Service;
+			sourceTree = "<group>";
+		};
 		DCA329642B7B5ED1006AA611 = {
 			isa = PBXGroup;
 			children = (
@@ -145,6 +168,8 @@
 		DCA3296F2B7B5ED1006AA611 /* SOLO-Testing */ = {
 			isa = PBXGroup;
 			children = (
+				2FB6C6732BE07CA800128093 /* Service */,
+				2FB6C6702BE07BD900128093 /* Model */,
 				DCD2526E2B7D82000045D5E2 /* Info.plist */,
 				DCA329702B7B5ED1006AA611 /* SOLO_TestingApp.swift */,
 				DCA329722B7B5ED1006AA611 /* ContentView.swift */,
@@ -368,11 +393,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2FB6C6752BE07CD900128093 /* NetworkService.swift in Sources */,
 				DCD252712B7D9C6C0045D5E2 /* SignUpCompletionView.swift in Sources */,
 				DCAA487E2B95B682002DE8AE /* AddAthleteView.swift in Sources */,
 				DCA3299D2B7B70FC006AA611 /* SignUpView.swift in Sources */,
 				DCA3299B2B7B70DB006AA611 /* LogInView.swift in Sources */,
+				2FB6C6772BE07D0700128093 /* APIError.swift in Sources */,
 				DCA329732B7B5ED1006AA611 /* ContentView.swift in Sources */,
+				2FB6C6722BE07C0100128093 /* Athlete.swift in Sources */,
 				DCA329A12B7B78B5006AA611 /* HomeView.swift in Sources */,
 				DCA3299F2B7B7846006AA611 /* TabBarView.swift in Sources */,
 				DCA329A32B7B7917006AA611 /* ProfileView.swift in Sources */,

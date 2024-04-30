@@ -16,6 +16,8 @@ struct SignUpView: View {
     @State private var didTapCoach: Bool = false
     @State private var didTapAthlete: Bool = false
     @State private var profileImage: UIImage? = nil
+    private var networkService = NetworkService()
+
   
     
     static let color0 = Color(red: 52/255, green: 153/255, blue: 205/255);
@@ -25,12 +27,12 @@ struct SignUpView: View {
     let gradient = Gradient(colors: [color0, color1, color2, color3]);
     
     var body: some View {
+
         NavigationView {
             VStack {
-                NavigationLink(destination: AthleteView(currentPage: $currentPage), isActive: $settings.navigateNowToAthleteView) {
-                    EmptyView()
-                }
-                
+                NavigationLink(destination: AthleteView(globalAnswers: $answers, sendSignupData: sendSignupData), isActive: $settings.navigateNowToAthleteView) {
+                                    EmptyView()
+                                }
                 NavigationLink(destination: CoachView(), isActive: $settings.navigateNowToCoachView) {
                     EmptyView()
                 }
@@ -113,11 +115,44 @@ struct SignUpView: View {
             
         }
     }
+    func sendSignupData() {
+
+        // Assuming the rest of the answers are validated and ready to send
+        let defaultImageData = UIImage(named: "default_profile_pic")?.jpegData(compressionQuality: 1.0) // A default image
+        let profileImageData = profileImage?.jpegData(compressionQuality: 1.0) ?? defaultImageData ?? Data() // Use default image data if nil
+
+        
+        let athlete = Athlete(
+     
+            id: 7871,
+            name: answers[0],
+            email: answers[1],
+            phone_number: answers[2],
+            profile_pic: saveImageLocally(imageData: profileImageData),
+            age: Int(answers[3]) ?? 0, // Default age to 0 if conversion fails
+            gender: answers[4],
+            height: Double(answers[5]) ?? 0.0, // Default height to 0.0 if conversion fails
+            weight: Double(answers[6]) ?? 0.0, // Default weight to 0.0 if conversion fails
+            affiliation_id: 1// Example affiliation ID, replace as necessary
+        )
+
+        networkService.signUpAthlete(athlete) { result in
+            switch result {
+            case .success(let response):
+                print("Signup successful: \(response)")
+            case .failure(let error):
+                print("Signup failed: \(error.localizedDescription)")
+            }
+        }
+    }
+
     struct AthleteView: View {
         @EnvironmentObject var settings: UserSettings
         @Environment(\.dismiss) var dismiss
-        @Binding var currentPage: Int
+        @Binding var globalAnswers: [String]  // Ensure this is passed correctly
+            var sendSignupData: () -> Void  // Function passed from parent
 
+            @State private var specificAnswers: [String] = Array(repeating: "", count: 5)
 
         @State private var answers: [String] = Array(repeating: "", count: 5)
         let questions = ["What is your age?", "What is your gender?", "What is your height?", "What is your weight?", "What is your Educational Institute/Athletic Program and/or Youth Athletic Club (i.e., Middle School, High School, College, University)"]
@@ -155,6 +190,12 @@ struct SignUpView: View {
                     Spacer()
                     let isButtonDisabled = answers.contains { $0.isEmpty }
                     Button("FINISH") {
+                        func processAnswers() {
+                                // Combine global and specific answers and process them
+                                let combinedAnswers = globalAnswers + specificAnswers
+                                print("Combined Answers: \(combinedAnswers)")
+                                sendSignupData()  // Call the function passed from parent
+                            }
                         settings.navigateNowToCompletion = true
                         settings.navigateNowToSignup = false
                     }
@@ -166,7 +207,7 @@ struct SignUpView: View {
             }
         }
     }
-
+    
     struct CoachView: View {
         @EnvironmentObject var settings: UserSettings
         @Environment(\.dismiss) var dismiss
@@ -425,5 +466,6 @@ struct SignUpView: View {
             .padding()
         }
     }
-    
+
+
 }

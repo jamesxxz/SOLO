@@ -17,8 +17,9 @@ struct SignUpView: View {
     @State private var didTapAthlete: Bool = false
     @State private var profileImage: UIImage? = nil
     private var networkService = NetworkService()
-
-  
+    @State private var specificAnswers: [String] = Array(repeating: "", count: 10)
+    
+    
     
     static let color0 = Color(red: 52/255, green: 153/255, blue: 205/255);
     static let color1 = Color(red: 52/255, green: 133/255, blue: 205/255);
@@ -27,12 +28,12 @@ struct SignUpView: View {
     let gradient = Gradient(colors: [color0, color1, color2, color3]);
     
     var body: some View {
-
+        
         NavigationView {
             VStack {
-                NavigationLink(destination: AthleteView(globalAnswers: $answers, sendSignupData: sendSignupData), isActive: $settings.navigateNowToAthleteView) {
-                                    EmptyView()
-                                }
+                NavigationLink(destination: AthleteView(globalAnswers: $answers, specificAnswers: $specificAnswers, sendSignupData: sendSignupData), isActive: $settings.navigateNowToAthleteView) {
+                    EmptyView()
+                }
                 NavigationLink(destination: CoachView(), isActive: $settings.navigateNowToCoachView) {
                     EmptyView()
                 }
@@ -82,8 +83,8 @@ struct SignUpView: View {
                     }
                     
                     Spacer()
-//                    let isButtonDisabled1 = answers[currentPage - 1].isEmpty
-//                    let isButtonDisabled2 = answers.contains { $0.isEmpty } || (!didTapAthlete && !didTapCoach)
+                    //                    let isButtonDisabled1 = answers[currentPage - 1].isEmpty
+                    //                    let isButtonDisabled2 = answers.contains { $0.isEmpty } || (!didTapAthlete && !didTapCoach)
                     if currentPage != 5 {
                         Button("NEXT") {
                             currentPage += 1
@@ -97,12 +98,14 @@ struct SignUpView: View {
                         Button("NEXT") {
                             self.settings.isAthlete = didTapAthlete
                             self.settings.isCoach = didTapCoach
-
+                            
                             if self.settings.isAthlete {
                                 self.settings.navigateNowToAthleteView = true
                             } else if self.settings.isCoach {
                                 self.settings.navigateNowToCoachView = true
                             }
+                            sendSignupData()
+                            
                         }
                         .foregroundColor((!didTapAthlete && !didTapCoach) ? Color.gray : Color(red: 0.208, green: 0.298, blue: 0.804))
                         .font(Font.custom("Poppins-Medium", size: 20))
@@ -115,45 +118,15 @@ struct SignUpView: View {
             
         }
     }
-    func sendSignupData() {
-
-        // Assuming the rest of the answers are validated and ready to send
-        let defaultImageData = UIImage(named: "default_profile_pic")?.jpegData(compressionQuality: 1.0) // A default image
-        let profileImageData = profileImage?.jpegData(compressionQuality: 1.0) ?? defaultImageData ?? Data() // Use default image data if nil
-
-        
-        let athlete = Athlete(
-     
-            id: 7871,
-            name: answers[0],
-            email: answers[1],
-            phone_number: answers[2],
-            profile_pic: saveImageLocally(imageData: profileImageData),
-            age: Int(answers[3]) ?? 0, // Default age to 0 if conversion fails
-            gender: answers[4],
-            height: Double(answers[5]) ?? 0.0, // Default height to 0.0 if conversion fails
-            weight: Double(answers[6]) ?? 0.0, // Default weight to 0.0 if conversion fails
-            affiliation_id: 1// Example affiliation ID, replace as necessary
-        )
-
-        networkService.signUpAthlete(athlete) { result in
-            switch result {
-            case .success(let response):
-                print("Signup successful: \(response)")
-            case .failure(let error):
-                print("Signup failed: \(error.localizedDescription)")
-            }
-        }
-    }
-
+    
+    
     struct AthleteView: View {
         @EnvironmentObject var settings: UserSettings
         @Environment(\.dismiss) var dismiss
-        @Binding var globalAnswers: [String]  // Ensure this is passed correctly
-            var sendSignupData: () -> Void  // Function passed from parent
-
-            @State private var specificAnswers: [String] = Array(repeating: "", count: 5)
-
+        @Binding var globalAnswers: [String]
+        @Binding var specificAnswers: [String]
+        var sendSignupData: () -> Void
+        
         @State private var answers: [String] = Array(repeating: "", count: 5)
         let questions = ["What is your age?", "What is your gender?", "What is your height?", "What is your weight?", "What is your Educational Institute/Athletic Program and/or Youth Athletic Club (i.e., Middle School, High School, College, University)"]
         var body: some View {
@@ -173,7 +146,7 @@ struct SignUpView: View {
                 ScrollView {
                     VStack(spacing: 15) {
                         ForEach(Array(zip(questions.indices, questions)), id: \.0) { index, question in
-                            ViewSpecificQuestions(question: question, answer: $answers[index])
+                            ViewSpecificQuestions(question: question, answer: $specificAnswers[index])
                         }
                     }
                     .padding()
@@ -191,11 +164,11 @@ struct SignUpView: View {
                     let isButtonDisabled = answers.contains { $0.isEmpty }
                     Button("FINISH") {
                         func processAnswers() {
-                                // Combine global and specific answers and process them
-                                let combinedAnswers = globalAnswers + specificAnswers
-                                print("Combined Answers: \(combinedAnswers)")
-                                sendSignupData()  // Call the function passed from parent
-                            }
+                            
+                            let combinedAnswers = globalAnswers + specificAnswers
+                            print("Combined Answers: \(combinedAnswers)")
+                            sendSignupData()
+                        }
                         settings.navigateNowToCompletion = true
                         settings.navigateNowToSignup = false
                     }
@@ -211,7 +184,7 @@ struct SignUpView: View {
     struct CoachView: View {
         @EnvironmentObject var settings: UserSettings
         @Environment(\.dismiss) var dismiss
-
+        
         @State private var answers: [String] = Array(repeating: "", count: 2)
         let questions = ["What is your Title (i.e., Head Coach, Assistant Head Coach, Distance Coach)", "What is your Educational Institute/Athletic Program and/or Youth Athletic Club (i.e., Middle School, High School, College, University)"]
         var body: some View {
@@ -246,7 +219,7 @@ struct SignUpView: View {
                     }
                     Spacer()
                     let isButtonDisabledC = answers.contains { $0.isEmpty }
-
+                    
                     Button("FINISH") {
                         settings.navigateNowToCompletion = true
                         settings.navigateNowToSignup = false
@@ -263,50 +236,50 @@ struct SignUpView: View {
     struct ImagePicker: UIViewControllerRepresentable {
         @Binding var image: UIImage?
         @Environment(\.dismiss) var dismiss
-
+        
         func makeUIViewController(context: Context) -> UIImagePickerController {
             let picker = UIImagePickerController()
             picker.delegate = context.coordinator
             return picker
         }
-
+        
         func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {
         }
-
+        
         func makeCoordinator() -> Coordinator {
             Coordinator(self)
         }
-
+        
         class Coordinator: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
             var parent: ImagePicker
-
+            
             init(_ parent: ImagePicker) {
                 self.parent = parent
             }
-
+            
             func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
                 if let image = info[.originalImage] as? UIImage {
                     parent.image = image
                 }
                 parent.dismiss()
             }
-
+            
             func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
                 parent.dismiss()
             }
         }
     }
-
+    
     struct ViewSpecificQuestions: View {
         var question: String
         @Binding var answer: String
-
+        
         var body: some View {
             VStack(alignment: .leading) {
                 Text(question)
                     .font(Font.custom("Poppins-SemiBold", size: 20))
                     .foregroundColor(Color(red: 0.208, green: 0.298, blue: 0.804))
-
+                
                 TextField("Enter your answer", text: $answer)
                     .font(Font.custom("Poppins-Regular", size: 16))
                     .autocapitalization(.none)
@@ -327,7 +300,7 @@ struct SignUpView: View {
         guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return nil }
         let fileName = UUID().uuidString + ".jpeg"  // Unique name for the file
         let fileURL = documentsDirectory.appendingPathComponent(fileName)
-
+        
         do {
             try imageData.write(to: fileURL)
             return fileName  // Return the file name or path according to your need
@@ -336,9 +309,9 @@ struct SignUpView: View {
             return nil
         }
     }
-
-
-
+    
+    
+    
     struct QuestionView: View {
         var question: String
         var step_num: Int
@@ -347,7 +320,7 @@ struct SignUpView: View {
         @Binding var didTapAthlete: Bool
         @Binding var image: UIImage?
         @State private var showingImagePicker = false
-
+        
         
         var body: some View {
             VStack (alignment: .leading) {
@@ -466,6 +439,53 @@ struct SignUpView: View {
             .padding()
         }
     }
+    
+    
+    func sendSignupData() {
+        let defaultImageData = UIImage(named: "default_profile_pic")?.jpegData(compressionQuality: 1.0)
+        let profileImageData = profileImage?.jpegData(compressionQuality: 1.0) ?? defaultImageData ?? Data()
+
+        var combinedAnswers = answers
+        
+        if settings.isAthlete {
+            combinedAnswers += specificAnswers // Append specific answers for athlete
+        }
+
+        // Create an Athlete entity
+        let athlete = Athlete(
+            id: 7871,
+            name: combinedAnswers[0],
+            email: combinedAnswers[1],
+            phone_number: combinedAnswers[2],
+            profile_pic: saveImageLocally(imageData: profileImageData),
+            age: Int(combinedAnswers[3]) ?? 0,
+            gender: combinedAnswers[4],
+            height: Double(combinedAnswers[5]) ?? 0.0,
+            weight: Double(combinedAnswers[6]) ?? 0.0,
+            affiliation_id: 1
+        )
+        
+        // Use the created Athlete object to make a network request
+        networkService.signUpAthlete(athlete) { result in
+            switch result {
+            case .success(let response):
+                print("Signup successful: \(response)")
+            case .failure(let error):
+                print("Signup failed: \(error.localizedDescription)")
+            }
+        }
+    }
 
 
+        
+        func handleResult(_ result: Result<String, Error>) {
+            switch result {
+            case .success(let response):
+                print("Signup successful: \(response)")
+            case .failure(let error):
+                print("Signup failed: \(error.localizedDescription)")
+            }
+        }
+        
+    
 }

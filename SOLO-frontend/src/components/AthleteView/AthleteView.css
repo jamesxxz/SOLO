@@ -1,0 +1,177 @@
+
+ion-content::part(background) {
+    background: white;
+  }
+
+.gradient-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    color: white;
+    background-image: linear-gradient(to right, 
+      #3499CD 0%, 
+      #3485CD 29%, 
+      #354DCD 59%, 
+      #26256C 100%);
+    height: 80px;
+  }
+
+  ion-header {
+    --background: transparent; /* You can set background styling as needed */
+    --ion-color-base: auto;  /* Ensures text and other content colors are adjusted properly */
+  }
+  
+  .logo {
+    font-size: 24px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 900;
+  }
+  
+  .nav-links {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .nav-links li {
+    margin-left: 20px;
+  }
+  
+  .nav-links li a {
+    color: white;
+    text-decoration: none;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+  }
+  
+  .nav-links li a:hover {
+    text-decoration: underline;
+  }
+  
+
+.question-view {
+    width: 350px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .step-info, .question {
+    font-family: 'Poppins', sans-serif;
+    color: #35469c;
+  }
+  
+  .step-info {
+    margin-top: 40px;
+    font-weight: 600;
+    font-size: 16px;
+    text-transform: uppercase;
+  }
+  
+  .question {
+    font-weight: 900;
+    color: black;
+    font-size: 24px;
+    margin-top: 8px;
+    margin-bottom: 40px;
+  }
+  
+  .answer-input {
+    width: 100%;
+    color: black;
+    height: 40px;
+    margin-top: 8px;
+    padding: 0 10px;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.128);
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    background-color: white;
+  }
+  
+  .navigation-buttons {
+    background-color: white;
+    padding-top: 50px;
+    padding-bottom: 49px;
+    padding-left: 30px;
+    padding-right: 30px;
+
+    align-self: stretch;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .back-button, .next-button {
+    border: none;
+    background: none;
+    color: #35469c;
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  
+  .back-button:hover, .next-button:hover {
+    text-decoration: underline;
+  }
+  
+  .back-button:disabled, .next-button:disabled {
+    color: #ccc; /* Change the color to grey when disabled */
+    cursor: not-allowed;
+  }
+  
+  .back-button:disabled:hover, .next-button:disabled:hover {
+    text-decoration: none; /* Remove underline on hover for disabled buttons */
+  }
+
+  /* MEDIA SECTION */
+  .media-item {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #494949;
+    border-radius: 5px;
+    background-color: #fff;
+  }
+  
+  .media-image {
+    width: 50px;
+    height: 50px;
+    margin-right: 20px;
+  }
+  
+  .media-details {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-grow: 1;
+  }
+  
+  .delete-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .view-more-button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    text-align: right;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    color: blue; /* Blue link color */
+  }
+
+  .section-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: black; /* Adjust color as needed */
+  }
+  

@@ -6,6 +6,7 @@ import AccountQuestion1 from './pages/CreateAccountQuestions/AccountQuestion1';
 import AccountQuestion2 from './pages/CreateAccountQuestions/AccountQuestion2';
 import AccountQuestion3 from './pages/CreateAccountQuestions/AccountQuestion3';
 import AccountQuestion4 from './pages/CreateAccountQuestions/AccountQuestion4';
+<<<<<<< HEAD
 import AddAthleteView from '../src/pages/CoachView/AddAthleteView'
 import CoachHome from './pages/CoachView/CoachHome';
 import AAQuestion1 from './pages/AthleteAccount/AAQuestion1';
@@ -14,6 +15,15 @@ import SECoach from './pages/Start Exploring/SECoach';
 import SEAthlete from './pages/Start Exploring/SEAthlete';
 import TabBar from './pages/CoachView/TabBar';
 
+=======
+
+import AthleteViewAccount from './pages/AthleteView/AthleteViewAccount';
+import AthleteViewMedia from './pages/AthleteView/AthleteViewMedia';
+import AthleteCurrentMedia from './pages/AthleteView/AthleteCurrentMedia';
+import AthletePastMedia from './pages/AthleteView/AthletePastMedia';
+import AthleteEditProfile from './pages/AthleteView/AthleteEditProfile';
+import AthleteProfile from './pages/AthleteView/AthleteProfile';
+>>>>>>> e5cb97cb320a6d0700a36a061cf545358d1b6dee
 /* Core CSS required for Ionic components to work properly */
 
 import '@ionic/react/css/core.css';
@@ -67,6 +77,7 @@ const App: React.FC = () => (
         <Route exact path="/account-question-4">
           <AccountQuestion4 />
         </Route>
+<<<<<<< HEAD
         <Route exact path="/coach-account-question-1">
           <CAQuestion1 />
         </Route>
@@ -87,6 +98,25 @@ const App: React.FC = () => (
         </Route>
         <Route exact path="/tab-bar">
           <TabBar />
+=======
+        <Route exact path="/athlete-view-account">
+          <AthleteViewAccount />
+        </Route>
+        <Route exact path="/athlete-view-media">
+          <AthleteViewMedia />
+        </Route>
+        <Route exact path="/athlete-current-media">
+          <AthleteCurrentMedia />
+        </Route>
+        <Route exact path="/athlete-past-media">
+          <AthletePastMedia />
+        </Route>
+        <Route exact path="/athlete-edit-profile">
+          <AthleteEditProfile />
+        </Route>
+        <Route exact path="/athlete-profile">
+          <AthleteProfile />
+>>>>>>> e5cb97cb320a6d0700a36a061cf545358d1b6dee
         </Route>
         <Route exact path="/">
           <Home />

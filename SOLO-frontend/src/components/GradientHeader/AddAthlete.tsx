@@ -16,5 +16,5 @@ const AddAthlete: React.FC = () => {
     </header>
   );
 };
-
+                      
 export default AddAthlete;

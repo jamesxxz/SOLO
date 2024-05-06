@@ -66,7 +66,7 @@ const ProfileView: React.FC = () => {
                         className="answer-input"
                     />
                 </div>
-                <IonButton  onClick={onSaveClick} className="edit-profile-btn">Confirm Changes</IonButton>
+                <IonButton  onClick={onSaveClick} className="edit-profile">Confirm Changes</IonButton>
             </div>
         </div>
     );

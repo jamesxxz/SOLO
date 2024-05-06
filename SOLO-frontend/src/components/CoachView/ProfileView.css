@@ -44,7 +44,7 @@
   max-width: 300px; /* Limit input box width */
 }
 
-.profile-container .edit-profile-btn {
+.profile-container .edit-profile {
   color: white;
   padding: 10px 20px;
   border: none;

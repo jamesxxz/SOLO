@@ -25,6 +25,13 @@ const CoachView: React.FC = () => {
     }
   };
 
+  const onAddAthleteClick = () => {
+    // Handle add athlete functionality
+    // This function should navigate to the page where you add an athlete
+    // You can replace the alert with the navigation code
+    alert('Add Athlete clicked!');
+  };
+
   return (
     <IonPage>
       <header className="gradient-header">
@@ -67,6 +74,11 @@ const CoachView: React.FC = () => {
           disabled={!username || !emailAddress || !phone} // Disable button if any field is empty
         >
           NEXT
+        </button>
+      </div>
+      <div className="add-athlete-button-container">
+        <button onClick={onAddAthleteClick} className="add-athlete-button">
+          Add Athlete
         </button>
       </div>
     </IonPage>

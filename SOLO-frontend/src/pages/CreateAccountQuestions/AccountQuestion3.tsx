@@ -4,20 +4,20 @@ import GradientHeader from '../../components/GradientHeader/GradientHeader';
 import { useHistory } from 'react-router-dom';
 import '../../components/AccountQuestion.css';
 
-interface AccountQuestion2Props {
+interface AccountQuestion3Props {
     onNextClick: () => void;
   }
   
-  const AccountQuestion2: React.FC<AccountQuestion2Props> = ({
+  const AccountQuestion3: React.FC<AccountQuestion3Props> = ({
   }) => {
     const history = useHistory(); // Use useHistory inside the component
     const [answer, setAnswer] = useState('');
   
     const onBackClick = () => {
-      history.push('/home'); // change this based on the route of the previous page
+      history.push('/account-question-2'); // change this based on the route of the previous page
     }
     const onNextClick = () => {
-      history.push('/account-question-2'); // change this based on the route of the next page
+      history.push('/account-question-4'); // change this based on the route of the next page
     };
 
   return (
@@ -25,9 +25,9 @@ interface AccountQuestion2Props {
       <GradientHeader />
       <IonContent>
         <div className="question-view">
-          <div className="step-info">Step 2 of 4</div>   {/* Change this for the step count */}
+          <div className="step-info">Step 3 of 4</div>   {/* Change this for the step count */}
 
-          <div className="question">What is your email address?</div> {/* Change this based on current question */}
+          <div className="question">Upload profile photo</div> {/* Change this based on current question */}
 
           <input
             type="text"
@@ -53,4 +53,4 @@ interface AccountQuestion2Props {
   );
 }
 
-export default AccountQuestion2;
+export default AccountQuestion3;

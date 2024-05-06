@@ -6,7 +6,7 @@ import AccountQuestion1 from './pages/CreateAccountQuestions/AccountQuestion1';
 import AccountQuestion2 from './pages/CreateAccountQuestions/AccountQuestion2';
 import AccountQuestion3 from './pages/CreateAccountQuestions/AccountQuestion3';
 import AccountQuestion4 from './pages/CreateAccountQuestions/AccountQuestion4';
-
+import CoachView from './pages/CoachView/CoachView';
 /* Core CSS required for Ionic components to work properly */
 
 import '@ionic/react/css/core.css';
@@ -65,6 +65,7 @@ const App: React.FC = () => (
         <Route exact path="/">
           <Home />
         </Route>
+        
       </IonRouterOutlet>
     </IonReactRouter>
   </IonApp>

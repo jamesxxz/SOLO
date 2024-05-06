@@ -7,12 +7,9 @@ import AccountQuestion2 from './pages/CreateAccountQuestions/AccountQuestion2';
 import AccountQuestion3 from './pages/CreateAccountQuestions/AccountQuestion3';
 import AccountQuestion4 from './pages/CreateAccountQuestions/AccountQuestion4';
 import CoachView from './pages/CoachView/CoachView';
-<<<<<<< HEAD
 import AAQuestion1 from './pages/AthleteAccount/AAQuestion1'; 
 import CAQuestion1 from './pages/CoachAccount/CAQuestion1';
-=======
 import CoachHome from './pages/CoachView/CoachHome';
->>>>>>> a1ca8b3cd3e95c08f7c2ff3cf3050524f7eeea43
 /* Core CSS required for Ionic components to work properly */
 
 import '@ionic/react/css/core.css';
@@ -68,16 +65,13 @@ const App: React.FC = () => (
         <Route exact path="/coach-view">
           <CoachView />
         </Route>
-<<<<<<< HEAD
         <Route exact path="/athlete-account-question-1">
           <AAQuestion1 />
         </Route>
         <Route exact path="/coach-account-question-1">
           <CAQuestion1 />
-=======
         <Route exact path="/coach-home">
           <CoachHome />
->>>>>>> a1ca8b3cd3e95c08f7c2ff3cf3050524f7eeea43
         </Route>
         <Route exact path="/">
           <Home />

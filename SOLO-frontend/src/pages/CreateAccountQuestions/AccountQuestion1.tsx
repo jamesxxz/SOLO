@@ -3,6 +3,7 @@ import { IonContent, IonPage } from '@ionic/react';
 import CreateAccountHeader from '../../components/GradientHeader/CreateAccountHeader'; 
 import { useHistory } from 'react-router-dom';
 import '../../components/AccountQuestion.css';
+import '../../components/UploadProfilePic.css'
 
 interface AccountQuestion1Props {
   onNextClick: () => void; // Define only the method type here
@@ -14,8 +15,9 @@ const AccountQuestion1: React.FC<AccountQuestion1Props> = ({
   const [answer, setAnswer] = useState('');
 
   const onBackClick = () => {
-    history.push('/home'); // Navigation function
-  }
+    setAnswer(''); // Reset answer when going back
+    history.push('/home');
+  };
   const onNextClick = () => {
     history.push('/account-question-2');
   };

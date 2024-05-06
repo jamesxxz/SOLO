@@ -1,0 +1,52 @@
+.custom-file-upload {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 150px; /* Adjust this value based on your design needs */
+    height: 150px; /* Adjust this value based on your design needs */
+    padding: 20px;
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+    cursor: pointer;
+    background-color: #f9f9f9; /* Temporary background color to check the alignment */
+  }
+  
+  .upload-icon {
+    font-size: 36px; /* Large size for visibility */
+    color: #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%; /* Forces the icon to center align vertically */
+    margin: 0; /* Resets any default margin */
+  }
+  
+  .upload-text {
+    text-align: center;
+    width: 100%;
+    font-size: 16px; /* Adjust as needed */
+    color: #ccc;
+    margin-top: 10px; /* Provides spacing between the icon and text */
+  }
+  
+  .image-preview {
+    width: 100%; /* Ensures the image takes the full width of the box */
+    height: auto; /* Maintains aspect ratio */
+    border-radius: 10px;
+  }
+  
+  /* Reset styles for specific elements to avoid external CSS influence */
+  .custom-file-upload, .upload-icon, .upload-text {
+    padding: 0;
+    box-sizing: border-box; /* Ensures padding and border are included in the width/height */
+  }
+
+  
+  
+  
+  
+  
+  
+  
+  

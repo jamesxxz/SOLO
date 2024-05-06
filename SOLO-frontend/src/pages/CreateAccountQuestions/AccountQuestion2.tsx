@@ -14,6 +14,7 @@ interface AccountQuestion2Props {
     const [answer, setAnswer] = useState('');
   
     const onBackClick = () => {
+      setAnswer('');
       history.push('/account-question-1');
     }
     const onNextClick = () => {

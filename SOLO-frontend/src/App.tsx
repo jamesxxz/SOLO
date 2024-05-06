@@ -6,10 +6,15 @@ import AccountQuestion1 from './pages/CreateAccountQuestions/AccountQuestion1';
 import AccountQuestion2 from './pages/CreateAccountQuestions/AccountQuestion2';
 import AccountQuestion3 from './pages/CreateAccountQuestions/AccountQuestion3';
 import AccountQuestion4 from './pages/CreateAccountQuestions/AccountQuestion4';
+<<<<<<< HEAD
 import AAQuestion1 from './pages/AthleteAccount/AAQuestion1';
 import CAQuestion1 from './pages/CoachAccount/CAQuestion1';
 
+=======
+import CoachView from './pages/CoachView/CoachView';
+>>>>>>> 916adea (Added first page for Add Athlete)
 /* Core CSS required for Ionic components to work properly */
+
 import '@ionic/react/css/core.css';
 
 /* Basic CSS for apps built with Ionic */
@@ -59,6 +64,9 @@ const App: React.FC = () => (
         </Route>
         <Route exact path="/account-question-4">
           <AccountQuestion4 />
+        </Route>
+        <Route exact path="/coach-view">
+          <CoachView />
         </Route>
         <Route exact path="/">
           <Home />

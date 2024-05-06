@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+ion-content::part(background) {
+    background: white;
+  }
+.center-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+  font-family: 'Poppins', sans-serif;
+}
+
+.logo-image {
+  width: 100px;
+  height: 100px;
+  margin-bottom: 16px; /* Adjusted margin to separate logo from title */
+}
+
+.main-title {
+  font-size: 48px;
+  font-weight: 600;
+  margin-bottom: 10px; /* Increased margin to create a medium gap */
+  color: black;
+}
+p {
+    color: black;
+}
+.button-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.custom-button {
+    width: 300px;
+    height: 40px;
+    border-radius: 10px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 30px;
+    outline: none;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  .login-button {
+    margin-top: 70px;
+    background-color: #354ccd;
+    color: white;
+  }
+  
+  .login-button:hover {
+    background-color: darken(#354ccd, 10%);
+  }
+  
+  .signup-button {
+    background-color: white;
+    color: #354ccd;
+    border: 2px solid #354ccd;
+  }
+  
+  .signup-button:hover {
+    background-color: #354ccd;
+    color: white;
+  }

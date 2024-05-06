@@ -65,6 +65,7 @@ const App: React.FC = () => (
         <Route exact path="/">
           <Home />
         </Route>
+        
       </IonRouterOutlet>
     </IonReactRouter>
   </IonApp>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { IonContent, IonPage } from '@ionic/react';
-import GradientHeader from '../../components/GradientHeader/GradientHeader'; 
+import CreateAccountHeader from '../../components/GradientHeader/CreateAccountHeader'; 
 import { useHistory } from 'react-router-dom';
 import '../../components/AccountQuestion.css';
 
@@ -14,15 +14,15 @@ interface AccountQuestion2Props {
     const [answer, setAnswer] = useState('');
   
     const onBackClick = () => {
-      history.push('/home'); // change this based on the route of the previous page
+      history.push('/account-question-1');
     }
     const onNextClick = () => {
-      history.push('/account-question-2'); // change this based on the route of the next page
+      history.push('/account-question-3'); // change this based on the route of the next page
     };
 
   return (
     <IonPage>
-      <GradientHeader />
+      <CreateAccountHeader />
       <IonContent>
         <div className="question-view">
           <div className="step-info">Step 2 of 4</div>   {/* Change this for the step count */}

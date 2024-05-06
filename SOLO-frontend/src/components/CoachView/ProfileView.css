@@ -1,38 +1,62 @@
-/* ProfileView.css */
-.profile-container .gradient-header {
-    background-color: white; /* Set header background to white */
-  }
-  
-  .profile-container .gradient-header .logo {
-    color: black; /* Set text color to black */
-  }
-  
-  .profile-container .question-view {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start; /* Align items to the start of the container */
-    padding: 20px; /* Add padding for better spacing */
-  }
-  
-  .profile-container .question-view .question {
-    font-weight: bold; /* Make labels bold */
-    margin-bottom: 5px; /* Add margin below labels */
-  }
-  
-  .profile-container .question-view .answer-input {
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    width: 100%; /* Make input boxes fill the width */
-    max-width: 300px; /* Limit input box width */
-  }
-  
-  .profile-container .add-athlete-button {
-    background-color: #354ccd;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 20px; /* Adjust the margin as needed */
-  }
+.profile-container {
+  display: flex;
+  flex-direction: column;
+  align-items: left; /* Center items horizontally */
+  justify-content: center; /* Center items vertically */
+  width: 100%; /* Set width to fill the container */
+  overflow: auto; /* Enables scrolling if content overflows */
+
+}
+
+
+.profile-container .logo {
+  padding-top: 20px;
+  align-items: center;
+  justify-content: center; /* Center items vertically */
+  font-size: 24px;
+  padding-left: 130px;
+}
+
+
+.profile-container .question-view {
+  display: flex;
+  flex-direction: column;
+  align-items: left; /* Center align items to the center */
+  padding: 20px; /* Add padding for better spacing */
+  width: 100%; /* Set width to fill the container */
+}
+
+.profile-container .question-view .question {
+  font-weight: bold; /* Make labels bold */
+  margin-bottom: 5px; /* Add margin below labels */
+
+}
+
+.profile-container .input-group {
+  margin-left: 20px;
+}
+
+.profile-container .question-view .answer-input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%; /* Make input boxes fill the width */
+  max-width: 300px; /* Limit input box width */
+}
+
+.profile-container .edit-profile-btn {
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px; /* Adjust the margin as needed */
+  margin-left: 10px;
+}
+
+.profile-container img.banner-image {
+  width: 100%; /* Ensure the image fills the width */
+  height: auto; /* Maintain aspect ratio */
+  object-fit: cover; /* Cover the area without stretching */
+  margin-bottom: 20px; /* Space below the image */
+}

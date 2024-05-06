@@ -4,7 +4,7 @@ import { IonReactRouter } from '@ionic/react-router';
 import { home, person } from 'ionicons/icons';
 import { Redirect, Route } from 'react-router-dom';
 import CoachHomeView from './CoachHome';
-import CoachProfile from './AddAthleteView';
+import CoachProfile from './ProfileView';
 import AddAthleteView from './AddAthleteView'; 
 const TabBar: React.FC = () => {
   return (

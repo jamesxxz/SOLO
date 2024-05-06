@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import '../../components/CoachView/ProfileView.css';
+import { IonButton } from '@ionic/react';
 
 const ProfileView: React.FC = () => {
     const history = useHistory();
@@ -25,18 +26,18 @@ const ProfileView: React.FC = () => {
     };
 
     return (
+    
+
         <div className="profile-container">
-            <header className="gradient-header">
-                <div className="logo">MY PROFILE</div>
+                <div className="logo">PROFILE</div>
                 <button onClick={onBackClick} className="close-button">X</button> {/* Close button */}
-            </header>
             <div className="profile-content">
-                <img src="WomanAthBanner1.jpg" alt="Banner" className="banner-image" />
-                <button className="camera-btn">
+                <img src="../../../Images/Assets.xcassets/Baby Diaper Promotion Banner Background, Simple, Childlike Background, Maternal And Child Supplies Background Image And Wallpaper for Free Download.jpeg" alt="Banner" className="banner-image" />
+            <button className="camera-btn">
                     <i className="ri-camera-rotate-line"></i>
                 </button>
                 <div className="input-group">
-                    <h3>Username</h3>
+                    <h3>Name</h3>
                     <input
                         type="text"
                         placeholder="User Name"
@@ -65,9 +66,7 @@ const ProfileView: React.FC = () => {
                         className="answer-input"
                     />
                 </div>
-                <button onClick={onSaveClick} className="edit-profile-btn">
-                    <i className="ri-pencil-line"></i> Edit Profile
-                </button>
+                <IonButton  onClick={onSaveClick} className="edit-profile-btn">Confirm Changes</IonButton>
             </div>
         </div>
     );

@@ -19,7 +19,7 @@ const AccountQuestion4: React.FC<AccountQuestion4Props> = ({
 
     const onNextClick = () => {
         // Define where to navigate based on the selected role
-        const nextPage = role === 'Coach' ? '../CoachAccount/CAQuestion1.tsx' : '../AthleteAccount/AAQuestion1.tsx';
+        const nextPage = role === 'Coach' ? '/coach-account-question-1' : '/athlete-account-question-1';
         history.push(nextPage);
     };
 

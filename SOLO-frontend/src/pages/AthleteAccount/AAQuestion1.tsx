@@ -32,7 +32,7 @@ const AAQuestion1: React.FC = () => {
 
   const onFinish = () => {
     console.log(answers);
-    history.push('/summary'); // Adjust to your actual next route
+    history.push('/start-exploring-athlete'); // Adjust to your actual next route
   };
 
   const allAnswersFilled = Object.values(answers).every(x => x !== '');

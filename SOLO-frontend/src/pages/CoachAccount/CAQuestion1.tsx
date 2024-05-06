@@ -6,10 +6,7 @@ import { useHistory } from 'react-router-dom';
 const CAQuestion1: React.FC = () => {
   const history = useHistory();
   const initialAnswers = {
-    age: '',
-    gender: '',
-    height: '',
-    weight: '',
+    title: '',  // Assuming 'title' and 'institute' are the only required fields from your questions array
     institute: ''
   };
   const [answers, setAnswers] = useState(initialAnswers);
@@ -29,10 +26,11 @@ const CAQuestion1: React.FC = () => {
 
   const onFinish = () => {
     console.log(answers);
-    history.push('/summary'); // Adjust to your actual next route
+    history.push('/start-exploring-coach'); // Adjust to your actual next route
   };
 
-  const allAnswersFilled = Object.values(answers).every(x => x !== '');
+  // Ensure that all required answers are filled
+  const allAnswersFilled = questions.every(question => answers[question.name] !== '');
 
   return (
     <IonPage>
@@ -59,7 +57,7 @@ const CAQuestion1: React.FC = () => {
             <button 
               onClick={onFinish} 
               className="next-button"
-              disabled={!allAnswersFilled} // Disable Finish button if not all answers are filled
+              disabled={!allAnswersFilled}
             >
               FINISH
             </button>

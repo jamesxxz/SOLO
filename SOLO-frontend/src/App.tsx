@@ -10,6 +10,8 @@ import CoachView from './pages/CoachView/CoachView';
 import AAQuestion1 from './pages/AthleteAccount/AAQuestion1'; 
 import CAQuestion1 from './pages/CoachAccount/CAQuestion1';
 import CoachHome from './pages/CoachView/CoachHome';
+import SEAthlete from './pages/Start Exploring/SEAthlete';
+import SECoach from './pages/Start Exploring/SECoach';
 /* Core CSS required for Ionic components to work properly */
 
 import '@ionic/react/css/core.css';
@@ -70,6 +72,12 @@ const App: React.FC = () => (
         </Route>
         <Route exact path="/coach-account-question-1">
           <CAQuestion1 />
+        </Route>
+        <Route exact path="/start-exploring-athlete">
+          <SEAthlete />
+        </Route>
+        <Route exact path="/start-exploring-coach">
+          <SECoach />
         </Route>
         <Route exact path="/coach-home">
           <CoachHome />

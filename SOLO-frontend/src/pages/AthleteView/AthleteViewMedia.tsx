@@ -13,7 +13,7 @@ const AthleteViewMedia: React.FC = (AthleteViewProps) => {
     const [name, setName] = useState(''); // Renamed state variable
   
     const onBackClick = () => {
-      history.push('/home'); // Navigation function
+      history.push('/athlete-view-account'); // Navigation function
     };
     const onNextClick = () => {
       history.push('/account-question-2'); // Assuming route needs update

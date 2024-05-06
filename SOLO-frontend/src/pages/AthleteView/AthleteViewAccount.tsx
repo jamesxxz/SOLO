@@ -8,7 +8,7 @@ const AthleteHome: React.FC = () => {
   const [name, setName] = useState(''); // Renamed state variable
 
   const onBackClick = () => {
-    history.push('/home'); // TODO: CHange
+    history.push('/athlete-view-account'); // TODO: CHange
   };
   const onNextClick = () => {
     history.push('/account-question-2'); // TODO: CHANGE

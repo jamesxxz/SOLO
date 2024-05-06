@@ -121,3 +121,33 @@ ion-content::part(background) {
   .back-button:disabled:hover, .next-button:disabled:hover {
     text-decoration: none; /* Remove underline on hover for disabled buttons */
   }
+
+
+  .role-button {
+    display: block;
+    width: 100%;
+    padding: 16px 20px; /* Increased padding for larger box */
+    margin: 10px 0; /* Slightly larger margin for more space between buttons */
+    background-color: #FFFFFF; /* White background */
+    border: 1px solid #D8D8D8; /* Light gray border */
+    border-radius: 6px; /* Slightly rounded corners */
+    text-align: left;
+    font-size: 18px; /* Larger font size for title */
+    color: black;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow for depth */
+}
+
+.role-button.selected {
+    border-color: #007BFF; /* Blue border for selected */
+    background-color: #E7F0FE;
+}
+
+.role-description {
+    font-size: 15px; /* Adjusted font size for description */
+    color: #666666; /* Gray text for description */
+    margin-top: 8px; /* Added space between title and description */
+}
+
+.button-container {
+    padding: 10px; /* Increased padding around the button container */
+}

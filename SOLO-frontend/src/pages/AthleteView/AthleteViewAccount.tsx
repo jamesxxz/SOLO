@@ -1,52 +1,60 @@
 import React, { useState } from 'react';
-import { IonContent, IonPage } from '@ionic/react';
-import ProfileHeader from '../../components/AthleteView/ProfileHeader'; 
 import { useHistory } from 'react-router-dom';
-import '../../components/AthleteView/AthleteView.css';
+import { IonContent, IonHeader, IonPage, IonCard, IonCardTitle, IonCardSubtitle } from '@ionic/react';
+import { athletes } from '../../data/athletes';
 
-interface AthleteViewProps {
-  onNextClick: () => void; // Define only the method type here
-}
-
-const AthleteView: React.FC<AthleteViewProps> = ({
-}) => {
+const AthleteHome: React.FC = () => {
   const history = useHistory(); // Use useHistory inside the component
   const [name, setName] = useState(''); // Renamed state variable
 
   const onBackClick = () => {
-    history.push('/home'); // Navigation function
+    history.push('/home'); // TODO: CHange
   };
   const onNextClick = () => {
-    history.push('/account-question-2'); // Assuming route needs update
+    history.push('/account-question-2'); // TODO: CHANGE
   };
+
+  const handleCardClick = () => {
+    history.push('/athlete-view-media'); // for the card
+  };
+
+  const navigateToAddAthleteView = () => {
+    console.log('Attempting to navigate to /add-athlete-view');
+    history.push('/add-athlete-view');
+};
+
 
   return (
     <IonPage>
-      <ProfileHeader />
-      <IonContent>
-      <div className="question-view">
-          <div className="user-card">
-            <img src="path_to_image.jpg" alt="User" className="user-image"/>
-            <div className="user-info">
-              <div className="user-name">Samantha</div>
-              <div className="user-location">Los Angeles, CA</div>
+      <IonHeader className="gradient-header">
+        <div className="logo">MY ACCOUNT</div>
+      </IonHeader>
+
+      <IonContent fullscreen>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', padding: '20px' }}>
+          <IonCard key={0} onClick={handleCardClick} style={{ position: 'relative', cursor: 'pointer' }}>
+            <img src={athletes[0].imagePath} alt={athletes[0].name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', padding: '10px' }}>
+              <IonCardTitle style={{ color: 'white' }}>{athletes[0].name}</IonCardTitle>
+              <IonCardSubtitle style={{ color: 'white' }}>{athletes[0].location}</IonCardSubtitle>
             </div>
-          </div>
+          </IonCard>
+        </div>
+
+        <div className="navigation-buttons">
+          <button onClick={onBackClick} className="back-button">HOME</button> 
+          <button 
+              onClick={onNextClick} 
+              className="next-button"
+              disabled={!name} // Disable button if name is empty; REPLACE WITH ICONS
+              >
+              PROFILE
+          </button>
         </div>
       </IonContent>
-    
-      <div className="navigation-buttons">
-        <button onClick={onBackClick} className="back-button">HOME</button> 
-        <button 
-          onClick={onNextClick} 
-          className="next-button"
-          disabled={!name} // Disable button if name is empty; REPLACE WITH ICONS
-        >
-          PROFILE
-        </button>
-      </div>
+
     </IonPage>
   );
-}
+};
 
-export default AthleteView;
+export default AthleteHome;

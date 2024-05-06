@@ -19,6 +19,13 @@ const AthleteViewMedia: React.FC = (AthleteViewProps) => {
       history.push('/account-question-2'); // Assuming route needs update
     };
   
+    const CurrentViewMoreClick = () => {
+      history.push('/athlete-current-media'); 
+    };
+
+    const PastViewMoreClick = () => {
+      history.push('/athlete-past-media'); 
+    };
 
     const currentMedia = [
       { id: '1', name: 'xxx.png', imageUrl: 'path_to_image_xxx.png' },
@@ -31,24 +38,24 @@ const AthleteViewMedia: React.FC = (AthleteViewProps) => {
     ];
   
     return (
-        <IonPage>
-            <DynamicHeader title="My Media" />
-            <IonContent>
-            <MediaSection title="Current Media" mediaItems={currentMedia} onViewMore={() => console.log('View more current media')} />
-            <MediaSection title="Past Media" mediaItems={pastMedia} onViewMore={() => console.log('View more past media')} />
-            </IonContent>
+      <IonPage>
+        <DynamicHeader title="My Media" />
+        <IonContent>
+          <MediaSection title="Current Media" mediaItems={currentMedia} onViewMore={CurrentViewMoreClick} />
+          <MediaSection title="Past Media" mediaItems={pastMedia} onViewMore={PastViewMoreClick} />
+        </IonContent>
 
-            <div className="navigation-buttons">
-                <button onClick={onBackClick} className="back-button">HOME</button> 
-                <button 
-                    onClick={onNextClick} 
-                    className="next-button"
-                    disabled={!name} // Disable button if name is empty; REPLACE WITH ICONS
-                    >
-                    PROFILE
-                </button>
-            </div>
-        </IonPage>
+          <div className="navigation-buttons">
+              <button onClick={onBackClick} className="back-button">HOME</button> 
+              <button 
+                  onClick={onNextClick} 
+                  className="next-button"
+                  disabled={!name} // Disable button if name is empty; REPLACE WITH ICONS
+                  >
+                  PROFILE
+              </button>
+          </div>
+      </IonPage>
     );
   };
   

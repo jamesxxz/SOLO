@@ -17,3 +17,14 @@
   width: 100%; /* Make input boxes fill the width */
   max-width: 300px; /* Limit input box width */
 }
+
+.add-athlete-button {
+  background-color: #354ccd;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px; /* Adjust the margin as needed */
+}
+

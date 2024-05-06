@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { IonContent, IonPage } from '@ionic/react';
-import CreateAccountHeader from '../../components/GradientHeader/CreateAccountHeader'; // Assuming you have a similar header component
 import { useHistory } from 'react-router-dom';
 import '../../components/CoachView/CoachView.css';
 
@@ -26,9 +25,19 @@ const CoachView: React.FC = () => {
     }
   };
 
+  const onAddAthleteClick = () => {
+    // Handle add athlete functionality
+    // This function should navigate to the page where you add an athlete
+    // You can replace the alert with the navigation code
+    alert('Add Athlete clicked!');
+  };
+
   return (
     <IonPage>
-      <CreateAccountHeader />
+      <header className="gradient-header">
+        <div className="logo">ADD ATHLETE</div>
+        <button onClick={onBackClick} className="close-button">X</button> {/* Close button */}
+      </header>
       <IonContent>
         <div className="question-view">
           <div className="question">Name</div>
@@ -65,6 +74,11 @@ const CoachView: React.FC = () => {
           disabled={!username || !emailAddress || !phone} // Disable button if any field is empty
         >
           NEXT
+        </button>
+      </div>
+      <div className="add-athlete-button-container">
+        <button onClick={onAddAthleteClick} className="add-athlete-button">
+          Add Athlete
         </button>
       </div>
     </IonPage>

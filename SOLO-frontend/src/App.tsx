@@ -8,6 +8,7 @@ import AccountQuestion3 from './pages/CreateAccountQuestions/AccountQuestion3';
 import AccountQuestion4 from './pages/CreateAccountQuestions/AccountQuestion4';
 import CoachView from './pages/CoachView/CoachView';
 import CoachHome from './pages/CoachView/CoachHome';
+import AthleteProfile from './pages/CoachView/AthleteProfile';
 /* Core CSS required for Ionic components to work properly */
 
 import '@ionic/react/css/core.css';
@@ -65,6 +66,13 @@ const App: React.FC = () => (
         </Route>
         <Route exact path="/coach-home">
           <CoachHome />
+        </Route>
+        <Route exact path="/current-athlete">
+          <AthleteProfile currentAthlete={{
+            name: "LUCY",
+            image: "path/to/image.jpg",
+            location: "Los Angeles, CA"
+        }} />
         </Route>
         <Route exact path="/">
           <Home />

@@ -1,25 +1,37 @@
+/*
 import React, { useState } from 'react';
-import { IonContent, IonPage } from '@ionic/react';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
+import DynamicImageGrid from './components/DynamicImageGrid';
+*/
 
+
+import React from 'react';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import DynamicImageGrid from '../../components/DynamicImageGrid';
+import { athletes } from '../../data/athletes';
+
+/*
 interface AthleteInfo {
     name: string;
     image: string;
     location: string;
 }
+*/
 
+/*
 const CoachHome: React.FC = () => {
     const history = useHistory();
     const [data] = useState<AthleteInfo[]>([
-        { name: "Lucy", image: "WomenAth1", location: "Los Angeles, CA" },
-        { name: "Michelle", image: "WomenAth2", location: "Costa Mesa, CA" },
-        { name: "Tommy", image: "ManAth1", location: "Newport Beach, CA" },
-        { name: "Anthony", image: "ManAth1", location: "Irvine, CA" },
-        { name: "Samantha", image: "WomenAth1", location: "Anaheim, CA" },
-        { name: "Tammy", image: "WomenAth2", location: "Torrance, CA" },
-        { name: "Bob", image: "ManAth1", location: "Torrance, CA" },
-        { name: "Alexis", image: "WomenAth2", location: "Torrance, CA" },
-        { name: "Patrick", image: "ManAth1", location: "Torrance, CA" }
+        { name: "Lucy", image: "Images/Assets.xcassets/WomenAth1.imageset/WomenAth1.png", location: "Los Angeles, CA" },
+        { name: "Michelle", image: "Images/Assets.xcassets/WomenAth1.imageset/WomenAth1.png", location: "Costa Mesa, CA" },
+        { name: "Tommy", image: "Images/Assets.xcassets/ManAth1.imageset/ManAth1.png", location: "Newport Beach, CA" },
+        { name: "Anthony", image: "Images/Assets.xcassets/ManAth1.imageset/ManAth1.png", location: "Irvine, CA" },
+        { name: "Samantha", image: "Images/Assets.xcassets/WomenAth1.imageset/WomenAth1.png", location: "Anaheim, CA" },
+        { name: "Tammy", image: "Images/Assets.xcassets/WomenAth1.imageset/WomenAth1.png", location: "Torrance, CA" },
+        { name: "Bob", image: "Images/Assets.xcassets/ManAth1.imageset/ManAth1.png", location: "Torrance, CA" },
+        { name: "Alexis", image: "Images/Assets.xcassets/WomenAth1.imageset/WomenAth1.png", location: "Torrance, CA" },
+        { name: "Patrick", image: "Images/Assets.xcassets/ManAth1.imageset/ManAth1.png", location: "Torrance, CA" }
     ]);
 
     const onAddAthleteClick = () => {
@@ -52,6 +64,25 @@ const CoachHome: React.FC = () => {
             </div>
         </IonPage>
     );
+};
+*/
+
+
+const CoachHome: React.FC = () => {
+  const handleBackButtonClick = () => {
+      // Implement logic for back button click
+  };
+
+  return (
+    <IonPage>
+      <IonHeader className="gradient-header">
+        <div className="logo">MY CURRENT ATHLETES</div>
+      </IonHeader>
+      <IonContent fullscreen>
+        <DynamicImageGrid athletes={athletes} />
+      </IonContent>
+    </IonPage>
+  );
 };
 
 export default CoachHome;

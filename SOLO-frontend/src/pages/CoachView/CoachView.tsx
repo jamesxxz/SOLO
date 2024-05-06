@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { IonContent, IonPage } from '@ionic/react';
-import CreateAccountHeader from '../../components/GradientHeader/CreateAccountHeader'; // Assuming you have a similar header component
 import { useHistory } from 'react-router-dom';
 import '../../components/CoachView/CoachView.css';
 
@@ -28,7 +27,10 @@ const CoachView: React.FC = () => {
 
   return (
     <IonPage>
-      <CreateAccountHeader />
+      <header className="gradient-header">
+        <div className="logo">ADD ATHLETE</div>
+        <button onClick={onBackClick} className="close-button">X</button> {/* Close button */}
+      </header>
       <IonContent>
         <div className="question-view">
           <div className="question">Name</div>

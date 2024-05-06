@@ -70,6 +70,7 @@ const App: React.FC = () => (
         </Route>
         <Route exact path="/coach-account-question-1">
           <CAQuestion1 />
+        </Route>
         <Route exact path="/coach-home">
           <CoachHome />
         </Route>

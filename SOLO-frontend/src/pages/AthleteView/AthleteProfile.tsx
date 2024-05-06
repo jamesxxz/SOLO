@@ -1,52 +1,76 @@
 import React, { useState } from 'react';
-import { IonContent, IonPage } from '@ionic/react';
-import CreateAccountHeader from '../../components/AthleteView/ProfileHeader'; 
 import { useHistory } from 'react-router-dom';
-import '../../components/AthleteView/AthleteView.css';
+import '../../components/CoachView/ProfileView.css';
 
-interface AthleteViewProps {
-  onNextClick: () => void; // Define only the method type here
-}
+const ProfileView: React.FC = () => {
+    const history = useHistory();
+    const [username, setUsername] = useState('');
+    const [emailAddress, setEmailAddress] = useState('');
+    const [phone, setPhone] = useState('');
 
-const AthleteView: React.FC<AthleteViewProps> = ({
-}) => {
-  const history = useHistory(); // Use useHistory inside the component
-  const [name, setName] = useState(''); // Renamed state variable
+    const onBackClick = () => {
+        history.push('/home'); // Navigation function
+    };
 
-  const onBackClick = () => {
-    history.push('/home'); // Navigation function
-  };
-  const onNextClick = () => {
-    history.push('/account-question-2'); // Assuming route needs update
-  };
+    const onSaveClick = () => {
+        // Validation logic can be added here
+        // For example, checking if username, emailAddress, and phone are not empty
+        if (username && emailAddress && phone) {
+            // Save profile logic goes here
+            alert('Profile saved successfully!');
+        } else {
+            // Show an error message or handle validation error
+            alert('Please fill in all fields.');
+        }
+    };
 
-  return (
-    <IonPage>
-      <CreateAccountHeader />
-      <IonContent>
-      <div className="question-view">
-          <div className="user-card">
-            <img src="path_to_image.jpg" alt="User" className="user-image"/>
-            <div className="user-info">
-              <div className="user-name">Samantha</div>
-              <div className="user-location">Los Angeles, CA</div>
+    return (
+        <div className="profile-container">
+            <header className="gradient-header">
+                <div className="logo">MY PROFILE</div>
+                <button onClick={onBackClick} className="close-button">X</button> {/* Close button */}
+            </header>
+            <div className="profile-content">
+                <img src="WomanAthBanner1.jpg" alt="Banner" className="banner-image" />
+                <button className="camera-btn">
+                    <i className="ri-camera-rotate-line"></i>
+                </button>
+                <div className="input-group">
+                    <h3>Username</h3>
+                    <input
+                        type="text"
+                        placeholder="User Name"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        className="answer-input"
+                    />
+                </div>
+                <div className="input-group">
+                    <h3>Email Address</h3>
+                    <input
+                        type="email"
+                        placeholder="User Email Address"
+                        value={emailAddress}
+                        onChange={(e) => setEmailAddress(e.target.value)}
+                        className="answer-input"
+                    />
+                </div>
+                <div className="input-group">
+                    <h3>Phone Number</h3>
+                    <input
+                        type="tel"
+                        placeholder="User Phone Number"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        className="answer-input"
+                    />
+                </div>
+                <button onClick={onSaveClick} className="edit-profile-btn">
+                    <i className="ri-pencil-line"></i> Edit Profile
+                </button>
             </div>
-          </div>
         </div>
-      </IonContent>
-    
-      <div className="navigation-buttons">
-        <button onClick={onBackClick} className="back-button">HOME</button> 
-        <button 
-          onClick={onNextClick} 
-          className="next-button"
-          disabled={!name} // Disable button if name is empty; REPLACE WITH ICONS
-        >
-          PROFILE
-        </button>
-      </div>
-    </IonPage>
-  );
+    );
 }
 
-export default AthleteView;
+export default ProfileView;

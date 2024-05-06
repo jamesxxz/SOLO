@@ -12,21 +12,40 @@
 }
 
 .question-view {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* creates two columns */
+  grid-gap: 20px; /* space between the cards */
   padding: 20px;
 }
 
 .athlete-card {
-  border: 1px solid #ccc;
+  position: relative;
+  width: 20%; /* take full width of the column */
+  height: 0; /* adjusted height calculation */
+  padding-bottom: 100%; /* aspect ratio to 1:1 */
+  overflow: hidden;
   border-radius: 10px;
-  padding: 10px;
-  margin-bottom: 10px;
 }
 
 .athlete-card img {
-  width: 100%;
-  border-radius: 10px;
-  margin-bottom: 10px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 20%;
+  height: 20%;
 }
+
+ion-card {
+  --ion-text-color: white; /* This sets the default text color for content within the card */
+}
+
+ion-card-title, ion-card-subtitle {
+  --color: white; /* Ensuring the variable is set for titles and subtitles specifically */
+}
+
+
+
+
 
 .navigation-buttons {
   display: flex;

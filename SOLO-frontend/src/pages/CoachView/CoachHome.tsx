@@ -1,77 +1,16 @@
-/*
-import React, { useState } from 'react';
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import { useHistory } from 'react-router-dom';
-import DynamicImageGrid from './components/DynamicImageGrid';
-*/
-
-
 import React from 'react';
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import DynamicImageGrid from '../../components/DynamicImageGrid';
+import { IonContent, IonHeader, IonPage, IonCard, IonCardTitle, IonCardSubtitle } from '@ionic/react';
+import { useHistory } from 'react-router-dom';  // Import useHistory from react-router-dom
 import { athletes } from '../../data/athletes';
 
-/*
-interface AthleteInfo {
-    name: string;
-    image: string;
-    location: string;
-}
-*/
-
-/*
 const CoachHome: React.FC = () => {
-    const history = useHistory();
-    const [data] = useState<AthleteInfo[]>([
-        { name: "Lucy", image: "Images/Assets.xcassets/WomenAth1.imageset/WomenAth1.png", location: "Los Angeles, CA" },
-        { name: "Michelle", image: "Images/Assets.xcassets/WomenAth1.imageset/WomenAth1.png", location: "Costa Mesa, CA" },
-        { name: "Tommy", image: "Images/Assets.xcassets/ManAth1.imageset/ManAth1.png", location: "Newport Beach, CA" },
-        { name: "Anthony", image: "Images/Assets.xcassets/ManAth1.imageset/ManAth1.png", location: "Irvine, CA" },
-        { name: "Samantha", image: "Images/Assets.xcassets/WomenAth1.imageset/WomenAth1.png", location: "Anaheim, CA" },
-        { name: "Tammy", image: "Images/Assets.xcassets/WomenAth1.imageset/WomenAth1.png", location: "Torrance, CA" },
-        { name: "Bob", image: "Images/Assets.xcassets/ManAth1.imageset/ManAth1.png", location: "Torrance, CA" },
-        { name: "Alexis", image: "Images/Assets.xcassets/WomenAth1.imageset/WomenAth1.png", location: "Torrance, CA" },
-        { name: "Patrick", image: "Images/Assets.xcassets/ManAth1.imageset/ManAth1.png", location: "Torrance, CA" }
-    ]);
+  const history = useHistory();  // Initialize useHistory hook for navigation
 
-    const onAddAthleteClick = () => {
-        history.push('/add-athlete'); // Navigate to the page where you add an athlete
-    };
-
-    return (
-        <IonPage>
-            <header className="gradient-header">
-                <div className="logo">MY CURRENT ATHLETES</div>
-            </header>
-            <IonContent>
-                <div className="question-view">
-                    {data.map((athlete, index) => (
-                        <div key={index} className="athlete-card">
-                            <img src={athlete.image} alt={athlete.name} />
-                            <div>{athlete.name}</div>
-                            <div>{athlete.location}</div>
-                        </div>
-                    ))}
-                </div>
-            </IonContent>
-            <div className="navigation-buttons">
-                <button onClick={() => history.push('/home')} className="back-button">BACK</button>
-            </div>
-            <div className="add-athlete-button-container">
-                <button onClick={onAddAthleteClick} className="add-athlete-button">
-                    Add Athlete
-                </button>
-            </div>
-        </IonPage>
-    );
+  const navigateToAddAthleteView = () => {
+    console.log('Attempting to navigate to /add-athlete-view');
+    history.push('/add-athlete-view');
 };
-*/
 
-
-const CoachHome: React.FC = () => {
-  const handleBackButtonClick = () => {
-      // Implement logic for back button click
-  };
 
   return (
     <IonPage>
@@ -79,7 +18,31 @@ const CoachHome: React.FC = () => {
         <div className="logo">MY CURRENT ATHLETES</div>
       </IonHeader>
       <IonContent fullscreen>
-        <DynamicImageGrid athletes={athletes} />
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', padding: '20px' }}>
+          {athletes.map((athlete, index) => (
+            <IonCard key={index} style={{ position: 'relative' }}>
+              <img src={athlete.imagePath} alt={athlete.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', padding: '10px'}}>
+                <IonCardTitle style={{ color: 'white' }}>{athlete.name}</IonCardTitle>
+                <IonCardSubtitle style={{ color: 'white' }}>{athlete.location}</IonCardSubtitle>
+              </div>
+            </IonCard>
+          ))}
+        </div>
+        <button onClick={navigateToAddAthleteView} style={{
+          position: 'fixed',
+          right: '0.75rem',
+          bottom: '0.75rem',
+          backgroundImage: 'linear-gradient(to right, #3499CD 0%, #3485CD 29%, #354DCD 59%, #26256C 100%)',  // Use backgroundImage and correct the property name
+          color: 'white',
+          border: 'none',
+          borderRadius: '4px',
+          padding: '10px 20px',
+          fontSize: '16px',
+          cursor: 'pointer'
+        }}>
+          + Add Athlete
+        </button>
       </IonContent>
     </IonPage>
   );

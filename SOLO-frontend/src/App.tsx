@@ -6,12 +6,13 @@ import AccountQuestion1 from './pages/CreateAccountQuestions/AccountQuestion1';
 import AccountQuestion2 from './pages/CreateAccountQuestions/AccountQuestion2';
 import AccountQuestion3 from './pages/CreateAccountQuestions/AccountQuestion3';
 import AccountQuestion4 from './pages/CreateAccountQuestions/AccountQuestion4';
-import CoachView from './pages/CoachView/CoachView';
+import AddAthleteView from '../src/pages/CoachView/AddAthleteView'
 import CoachHome from './pages/CoachView/CoachHome';
 import AAQuestion1 from './pages/AthleteAccount/AAQuestion1';
 import CAQuestion1 from './pages/CoachAccount/CAQuestion1';
 import SECoach from './pages/Start Exploring/SECoach';
 import SEAthlete from './pages/Start Exploring/SEAthlete';
+import TabBar from './pages/CoachView/TabBar';
 
 /* Core CSS required for Ionic components to work properly */
 
@@ -43,6 +44,7 @@ import '@ionic/react/css/palettes/dark.system.css';
 
 /* Theme variables */
 import './theme/variables.css';
+import AddAthlete from './components/GradientHeader/AddAthlete';
 
 setupIonicReact();
 
@@ -77,11 +79,14 @@ const App: React.FC = () => (
         <Route exact path="/start-exploring-athlete">
           <SEAthlete />
         </Route>
-        <Route exact path="/coach-view">
-          <CoachView />
+        <Route exact path="/add-athlete-view">
+          <AddAthleteView />
         </Route>
         <Route exact path="/coach-home">
           <CoachHome />
+        </Route>
+        <Route exact path="/tab-bar">
+          <TabBar />
         </Route>
         <Route exact path="/">
           <Home />

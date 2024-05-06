@@ -14,7 +14,7 @@ const SECoach: React.FC = () => {
           <h1 className="main-title">Account Created</h1>
 
           <div className="button-container">
-            <button className="custom-button exploring-button" onClick={() => { history.push('/coach-home'); }}>
+            <button className="custom-button exploring-button" onClick={() => { history.push('/tab-bar'); }}>
               Start Exploring
             </button>
           </div>

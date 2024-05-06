@@ -3,7 +3,7 @@ import { IonContent, IonPage } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
 import '../../components/CoachView/CoachView.css';
 
-const CoachView: React.FC = () => {
+const AddAthleteView: React.FC = () => {
   const history = useHistory();
   const [username, setUsername] = useState('');
   const [emailAddress, setEmailAddress] = useState('');
@@ -85,4 +85,4 @@ const CoachView: React.FC = () => {
   );
 };
 
-export default CoachView;
+export default AddAthleteView;

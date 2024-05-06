@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { IonContent, IonPage } from '@ionic/react';
-import CreateAccountHeader from '../../components/AthleteView/ProfileHeader'; 
+import ProfileHeader from '../../components/AthleteView/ProfileHeader'; 
 import { useHistory } from 'react-router-dom';
 import '../../components/AthleteView/AthleteView.css';
 
@@ -22,7 +22,7 @@ const AthleteView: React.FC<AthleteViewProps> = ({
 
   return (
     <IonPage>
-      <CreateAccountHeader />
+      <ProfileHeader />
       <IonContent>
       <div className="question-view">
           <div className="user-card">

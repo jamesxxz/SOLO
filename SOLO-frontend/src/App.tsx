@@ -6,6 +6,8 @@ import AccountQuestion1 from './pages/CreateAccountQuestions/AccountQuestion1';
 import AccountQuestion2 from './pages/CreateAccountQuestions/AccountQuestion2';
 import AccountQuestion3 from './pages/CreateAccountQuestions/AccountQuestion3';
 import AccountQuestion4 from './pages/CreateAccountQuestions/AccountQuestion4';
+import AccountQuestion5 from './pages/CreateAccountQuestions/AccountQuestion5';
+
 import AddAthleteView from '../src/pages/CoachView/AddAthleteView'
 import CoachHome from './pages/CoachView/CoachHome';
 import AAQuestion1 from './pages/AthleteAccount/AAQuestion1';
@@ -50,6 +52,7 @@ import '@ionic/react/css/palettes/dark.system.css';
 /* Theme variables */
 import './theme/variables.css';
 import AddAthlete from './components/GradientHeader/AddAthlete';
+import Login from './pages/LogIn/Login';
 
 setupIonicReact();
 
@@ -59,6 +62,9 @@ const App: React.FC = () => (
       <IonRouterOutlet>
         <Route exact path="/home">
           <Home />
+        </Route>
+        <Route exact path="/login">
+          <Login />
         </Route>
         <Route exact path="/account-question-1">
           <AccountQuestion1 />
@@ -71,6 +77,9 @@ const App: React.FC = () => (
         </Route>
         <Route exact path="/account-question-4">
           <AccountQuestion4 />
+        </Route>
+        <Route exact path="/account-question-5">
+          <AccountQuestion5 />
         </Route>
         <Route exact path="/coach-account-question-1">
           <CAQuestion1 />
@@ -92,6 +101,9 @@ const App: React.FC = () => (
         </Route>
         <Route exact path="/tab-bar">
           <TabBar />
+        </Route>
+        <Route exact path="/add-athlete">
+          <AddAthlete />
         </Route>
         <Route exact path="/athlete-view-account">
           <AthleteViewAccount />

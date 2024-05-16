@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { IonContent, IonPage } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
-import '../../components/CoachView/CoachView.css';
+import '../../components/CoachView/AddAthleteView.css'; // Ensure the path is correct
 
 const AddAthleteView: React.FC = () => {
   const history = useHistory();
@@ -10,33 +10,38 @@ const AddAthleteView: React.FC = () => {
   const [phone, setPhone] = useState('');
 
   const onBackClick = () => {
-    history.push('/home'); // Navigation function
-  };
-
-  const onNextClick = () => {
-    // Validation logic can be added here
-    // For example, checking if username, emailAddress, and phone are not empty
-    if (username && emailAddress && phone) {
-      // Navigate to the next question or page
-      history.push('/account-question-2');
-    } else {
-      // Show an error message or handle validation error
-      alert('Please fill in all fields.');
-    }
+    history.push('/coach-home'); // Navigation function
   };
 
   const onAddAthleteClick = () => {
-    // Handle add athlete functionality
-    // This function should navigate to the page where you add an athlete
-    // You can replace the alert with the navigation code
-    alert('Add Athlete clicked!');
+    if (isFormValid) {
+      alert('Athlete added successfully!');
+      // Clear input fields
+      setUsername('');
+      setEmailAddress('');
+      setPhone('');
+      // Navigate to coach-home
+      history.push('/coach-home');
+    } else {
+      alert('Please fill in all fields with valid data.');
+    }
   };
+
+
+
+
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const isFormValid = username && validateEmail(emailAddress);
 
   return (
     <IonPage>
       <header className="gradient-header">
         <div className="logo">ADD ATHLETE</div>
-        <button onClick={onBackClick} className="close-button">X</button> {/* Close button */}
+        <button onClick={onBackClick} className="close-button">X</button>
       </header>
       <IonContent>
         <div className="question-view">
@@ -65,22 +70,17 @@ const AddAthleteView: React.FC = () => {
             className="answer-input"
           />
         </div>
-      </IonContent>
-      <div className="navigation-buttons">
-        <button onClick={onBackClick} className="back-button">BACK</button>
-        <button
-          onClick={onNextClick}
-          className="next-button"
-          disabled={!username || !emailAddress || !phone} // Disable button if any field is empty
-        >
-          NEXT
-        </button>
-      </div>
       <div className="add-athlete-button-container">
-        <button onClick={onAddAthleteClick} className="add-athlete-button">
+        <button
+          onClick={onAddAthleteClick}
+          className="add-athlete-button"
+          disabled={!isFormValid} // Disable the button if form is not valid
+        >
           Add Athlete
         </button>
       </div>
+      </IonContent>
+
     </IonPage>
   );
 };

@@ -151,3 +151,12 @@ ion-content::part(background) {
 .button-container {
     padding: 10px; /* Increased padding around the button container */
 }
+
+.answer-input.invalid {
+  border-color: red;
+}
+
+.error-message {
+  color: red;
+  margin-top: 5px;
+}

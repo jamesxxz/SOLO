@@ -27,7 +27,7 @@ const AccountQuestion1: React.FC<AccountQuestion1Props> = ({
       <CreateAccountHeader />
       <IonContent>
         <div className="question-view">
-          <div className="step-info">Step 1 of 4</div>
+          <div className="step-info">Step 1 of 5</div>
           <div className="question">What is your name?</div>
           <input
             type="text"

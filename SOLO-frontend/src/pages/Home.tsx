@@ -15,7 +15,7 @@ const Home: React.FC = () => {
           <p className="subtitle">Connect, Train, Workout</p>
 
           <div className="button-container">
-            <button className="custom-button login-button" onClick={() => { console.log('navigate to login'); }}>
+            <button className="custom-button login-button" onClick={() => { console.log('/login'); }}>
               Login
             </button>
             <button className="custom-button signup-button" onClick={() => { history.push('/account-question-1'); }}>

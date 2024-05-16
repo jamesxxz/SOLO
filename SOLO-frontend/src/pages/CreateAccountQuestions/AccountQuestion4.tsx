@@ -1,65 +1,68 @@
 import React, { useState } from 'react';
 import { IonContent, IonPage } from '@ionic/react';
-import CreateAccountHeader from '../../components/GradientHeader/CreateAccountHeader';
+import CreateAccountHeader from '../../components/GradientHeader/CreateAccountHeader'; 
 import { useHistory } from 'react-router-dom';
 import '../../components/AccountQuestion.css';
 
 interface AccountQuestion4Props {
-    onNextClick: () => void;
+  onNextClick: () => void;
 }
 
-const AccountQuestion4: React.FC<AccountQuestion4Props> = ({
-}) => {
-    const history = useHistory();
-    const [role, setRole] = useState('');
+const AccountQuestion4: React.FC<AccountQuestion4Props> = () => {
+  const history = useHistory();
+  const [file, setFile] = useState<File | null>(null);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string>("");
 
-    const onBackClick = () => {
-        history.push('/account-question-3');
+  const onBackClick = () => {
+    history.push('/account-question-3');
+  };
+  const onNextClick = () => {
+    history.push('/account-question-5');
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const fileList = event.target.files;
+    if (fileList) {
+      setFile(fileList[0]);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreviewUrl(reader.result as string);
+      };
+      reader.readAsDataURL(fileList[0]);
     }
+  };
 
-    const onNextClick = () => {
-        // Define where to navigate based on the selected role
-        const nextPage = role === 'Coach' ? '/coach-account-question-1' : '/athlete-account-question-1';
-        history.push(nextPage);
-    };
-
-    return (
-        <IonPage>
-            <CreateAccountHeader />
-            <IonContent>
-                <div className="question-view">
-                    <div className="step-info">Step 4 of 4</div>
-                    <div className="question">Which role best describes you?</div>
-                    <div className="button-container">
-                        <button 
-                            className={`role-button ${role === 'Coach' ? 'selected' : ''}`}
-                            onClick={() => setRole('Coach')}
-                        >
-                            <div>Coach</div>
-                            <div className="role-description">I'd like to train athletes to reach their goals in speed, form, endurance.</div>
-                        </button>
-                        <button 
-                            className={`role-button ${role === 'Athlete' ? 'selected' : ''}`}
-                            onClick={() => setRole('Athlete')}
-                        >
-                            <div>Athlete</div>
-                            <div className="role-description">I'd like to have a personal coach to train me to reach my athletic goals.</div>
-                        </button>
-                    </div>
-                </div>
-            </IonContent>
-            <div className="navigation-buttons">
-                <button onClick={onBackClick} className="back-button">BACK</button>
-                <button 
-                    onClick={onNextClick} 
-                    className="next-button"
-                    disabled={!role}
-                >
-                    NEXT
-                </button>
-            </div>
-        </IonPage>
-    );
+  return (
+    <IonPage>
+      <CreateAccountHeader />
+      <IonContent>
+        <div className="question-view">
+          <div className="step-info">Step 4 of 5</div>
+          <div className="question">Upload profile photo</div>
+          <label htmlFor="file-upload" className="custom-file-upload">
+            {imagePreviewUrl ? (
+              <img src={imagePreviewUrl} alt="Profile Preview" className="image-preview" />
+            ) : (
+              <div className="upload-content">
+                <div className="upload-icon">+</div>
+                <div className="upload-text">Upload</div>
+              </div>
+            )}
+          </label>
+          <input
+            id="file-upload"
+            type="file"
+            style={{ display: 'none' }}
+            onChange={handleFileChange}
+          />
+        </div>
+      </IonContent>
+      <div className="navigation-buttons">
+        <button onClick={onBackClick} className="back-button">BACK</button>
+        <button onClick={onNextClick} className="next-button" disabled={!file}>NEXT</button>
+      </div>
+    </IonPage>
+  );
 }
 
 export default AccountQuestion4;

@@ -15,6 +15,8 @@ const TabBar: React.FC = () => {
       <IonTabs>
         <IonRouterOutlet>
           <Route exact path="/coach-home" component={CoachHomeView} />
+          <Route exact path="/tab-bar" component={CoachHomeView} />
+
           <Route exact path="/profile-view" component={ProfileView} />
           <Route exact path="/add-athlete-view" component={AddAthleteView} />
           <Redirect exact from="/" to="/coach-home" />

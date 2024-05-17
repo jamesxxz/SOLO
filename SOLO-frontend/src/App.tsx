@@ -7,7 +7,7 @@ import AccountQuestion2 from './pages/CreateAccountQuestions/AccountQuestion2';
 import AccountQuestion3 from './pages/CreateAccountQuestions/AccountQuestion3';
 import AccountQuestion4 from './pages/CreateAccountQuestions/AccountQuestion4';
 import AccountQuestion5 from './pages/CreateAccountQuestions/AccountQuestion5';
-
+import Login from './pages/LogIn/Login';
 import AddAthleteView from '../src/pages/CoachView/AddAthleteView'
 import CoachHome from './pages/CoachView/CoachHome';
 import AAQuestion1 from './pages/AthleteAccount/AAQuestion1';
@@ -22,6 +22,7 @@ import AthletePastMedia from './pages/AthleteView/AthletePastMedia';
 import AthleteEditProfile from './pages/AthleteView/AthleteEditProfile';
 import AthleteProfile from './pages/AthleteView/AthleteProfile';
 import ProfileView from './pages/CoachView/ProfileView';
+import AddAthlete from './components/GradientHeader/AddAthlete';
 
 import '@ionic/react/css/core.css';
 
@@ -51,8 +52,6 @@ import '@ionic/react/css/palettes/dark.system.css';
 
 /* Theme variables */
 import './theme/variables.css';
-import AddAthlete from './components/GradientHeader/AddAthlete';
-import Login from './pages/LogIn/Login';
 
 setupIonicReact();
 

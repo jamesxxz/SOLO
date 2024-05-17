@@ -13,8 +13,7 @@ const Login: React.FC = () => {
     const onLoginClick = () => {
         if (isValidEmail && isValidPassword && email && password) {
             // Implement login logic here
-            alert('Logged in successfully!');
-
+f
             // Redirect to a different page after login if needed
              history.push('/tab-bar');
         } else {

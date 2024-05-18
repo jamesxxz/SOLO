@@ -34,17 +34,6 @@ const AthleteView: React.FC<AthleteViewProps> = ({
           </div>
         </div>
       </IonContent>
-    
-      <div className="navigation-buttons">
-        <button onClick={onBackClick} className="back-button">HOME</button> 
-        <button 
-          onClick={onNextClick} 
-          className="next-button"
-          disabled={!name} // Disable button if name is empty; REPLACE WITH ICONS
-        >
-          PROFILE
-        </button>
-      </div>
     </IonPage>
   );
 }

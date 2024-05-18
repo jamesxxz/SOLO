@@ -10,14 +10,14 @@ interface DynamicHeaderProps {
 
 const DynamicHeader: React.FC<DynamicHeaderProps> = ({ title }) => {
   return (
-    <header className="dynamic-header">
-      <IonToolbar>
+    <IonHeader className="custom-header">
+      <IonToolbar className="custom-toolbar">
         <IonButtons slot="start">
-          <IonBackButton defaultHref="/" />  
+          <IonBackButton defaultHref="/" text="" className="custom-back-button" />
         </IonButtons>
-        <IonTitle>{title}</IonTitle>
+        <IonTitle className="custom-title">{title}</IonTitle>
       </IonToolbar>
-    </header>
+    </IonHeader>
   );
 };
 

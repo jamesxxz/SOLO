@@ -7,13 +7,6 @@ const AthleteHome: React.FC = () => {
   const history = useHistory(); // Use useHistory inside the component
   const [name, setName] = useState(''); // Renamed state variable
 
-  const onBackClick = () => {
-    history.push('/athlete-view-account'); // TODO: CHange
-  };
-  const onNextClick = () => {
-    history.push('/account-question-2'); // TODO: CHANGE
-  };
-
   const handleCardClick = () => {
     history.push('/athlete-view-media'); // for the card
   };
@@ -21,8 +14,7 @@ const AthleteHome: React.FC = () => {
   const navigateToAddAthleteView = () => {
     console.log('Attempting to navigate to /add-athlete-view');
     history.push('/add-athlete-view');
-};
-
+  };
 
   return (
     <IonPage>
@@ -39,17 +31,6 @@ const AthleteHome: React.FC = () => {
               <IonCardSubtitle style={{ color: 'white' }}>{athletes[0].location}</IonCardSubtitle>
             </div>
           </IonCard>
-        </div>
-
-        <div className="navigation-buttons">
-          <button onClick={onBackClick} className="back-button">HOME</button> 
-          <button 
-              onClick={onNextClick} 
-              className="next-button"
-              disabled={!name} // Disable button if name is empty; REPLACE WITH ICONS
-              >
-              PROFILE
-          </button>
         </div>
       </IonContent>
 

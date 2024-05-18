@@ -15,6 +15,7 @@ import CAQuestion1 from './pages/CoachAccount/CAQuestion1';
 import SECoach from './pages/Start Exploring/SECoach';
 import SEAthlete from './pages/Start Exploring/SEAthlete';
 import TabBar from './pages/CoachView/TabBar';
+import TabBar2 from './pages/AthleteView/TabBar2';
 import AthleteViewAccount from './pages/AthleteView/AthleteViewAccount';
 import AthleteViewMedia from './pages/AthleteView/AthleteViewMedia';
 import AthleteCurrentMedia from './pages/AthleteView/AthleteCurrentMedia';
@@ -100,6 +101,9 @@ const App: React.FC = () => (
         </Route>
         <Route exact path="/tab-bar">
           <TabBar />
+        </Route>
+        <Route exact path="/tab-bar2">
+          <TabBar2 />
         </Route>
         <Route exact path="/add-athlete">
           <AddAthlete />

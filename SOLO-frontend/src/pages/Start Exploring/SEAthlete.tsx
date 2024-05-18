@@ -14,7 +14,7 @@ const SEAthlete: React.FC = () => {
           <h1 className="main-title">Account Created</h1>
 
           <div className="button-container">
-            <button className="custom-button exploring-button" onClick={() => { history.push('/athlete-view-account'); }}>
+            <button className="custom-button exploring-button" onClick={() => { history.push('/tab-bar2'); }}>
               Start Exploring
             </button>
           </div>

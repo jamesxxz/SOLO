@@ -1,76 +1,81 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import '../../components/CoachView/ProfileView.css';
+import { arrowBackOutline, pencilOutline } from 'ionicons/icons';
+import { IonIcon } from '@ionic/react';
 
 const ProfileView: React.FC = () => {
     const history = useHistory();
-    const [username, setUsername] = useState('');
-    const [emailAddress, setEmailAddress] = useState('');
-    const [phone, setPhone] = useState('');
-
+    const [username, setUsername] = useState('Adam');
+    const [emailAddress, setEmailAddress] = useState('adam@gmail.com');
+    const [phone, setPhone] = useState('(123) 456 7891');
+    const [isEditing, setIsEditing] = useState(false);
+  
     const onBackClick = () => {
-        history.push('/home'); // Navigation function
+      history.push('/athlete-view-account');
     };
-
+  
+    const onEditClick = () => {
+      setIsEditing(!isEditing);
+    };
+  
     const onSaveClick = () => {
-        // Validation logic can be added here
-        // For example, checking if username, emailAddress, and phone are not empty
-        if (username && emailAddress && phone) {
-            // Save profile logic goes here
-            alert('Profile saved successfully!');
-        } else {
-            // Show an error message or handle validation error
-            alert('Please fill in all fields.');
-        }
+      if (username && emailAddress && phone) {
+        alert('Profile saved successfully!');
+        setIsEditing(false);
+      } else {
+        alert('Please fill in all fields.');
+      }
     };
-
+  
     return (
-        <div className="profile-container">
-            <header className="gradient-header">
-                <div className="logo">MY PROFILE</div>
-                <button onClick={onBackClick} className="close-button">X</button> {/* Close button */}
-            </header>
-            <div className="profile-content">
-                <img src="WomanAthBanner1.jpg" alt="Banner" className="banner-image" />
-                <button className="camera-btn">
-                    <i className="ri-camera-rotate-line"></i>
-                </button>
-                <div className="input-group">
-                    <h3>Username</h3>
-                    <input
-                        type="text"
-                        placeholder="User Name"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        className="answer-input"
-                    />
-                </div>
-                <div className="input-group">
-                    <h3>Email Address</h3>
-                    <input
-                        type="email"
-                        placeholder="User Email Address"
-                        value={emailAddress}
-                        onChange={(e) => setEmailAddress(e.target.value)}
-                        className="answer-input"
-                    />
-                </div>
-                <div className="input-group">
-                    <h3>Phone Number</h3>
-                    <input
-                        type="tel"
-                        placeholder="User Phone Number"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        className="answer-input"
-                    />
-                </div>
-                <button onClick={onSaveClick} className="edit-profile-btn">
-                    <i className="ri-pencil-line"></i> Edit Profile
-                </button>
-            </div>
+      <div className="profile-container">
+        <div className="profile-header">
+          <IonIcon icon={arrowBackOutline} onClick={onBackClick} className="back-button" />
+          <div className="profile-logo">PROFILE</div>
         </div>
+        <div className="profile-content">
+          <img src="../../../Images/Assets.xcassets/Baby Diaper Promotion Banner Background, Simple, Childlike Background, Maternal And Child Supplies Background Image And Wallpaper for Free Download.jpeg" alt="Banner" className="banner-image" />
+          <div className="profile-input-group">
+            <h3>Name</h3>
+            <input
+              type="text"
+              placeholder="User Name"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="answer-input"
+              disabled={!isEditing}
+            />
+          </div>
+          <div className="profile-input-group">
+            <h3>Email Address</h3>
+            <input
+              type="email"
+              placeholder="User Email Address"
+              value={emailAddress}
+              onChange={(e) => setEmailAddress(e.target.value)}
+              className="answer-input"
+              disabled={!isEditing}
+            />
+          </div>
+          <div className="profile-input-group">
+            <h3>Phone Number</h3>
+            <input
+              type="tel"
+              placeholder="User Phone Number"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className="answer-input"
+              disabled={!isEditing}
+            />
+          </div>
+          <button onClick={isEditing ? onSaveClick : onEditClick} className="edit-profile">
+            <IonIcon icon={pencilOutline} slot="start" />
+            {isEditing ? 'Save Edits' : 'Edit Profile'}
+          </button>
+        </div>
+      </div>
     );
-}
-
-export default ProfileView;
+  };
+  
+  export default ProfileView;

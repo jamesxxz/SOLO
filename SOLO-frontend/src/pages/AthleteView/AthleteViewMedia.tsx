@@ -1,62 +1,57 @@
-import React, { useState } from 'react';
-import { IonPage, IonContent } from '@ionic/react';
-import DynamicHeader from '../../components/AthleteView/DynamicHeader';  // Import the header component
-import MediaSection from '../../components/AthleteView/MediaSection';
-import { useHistory } from 'react-router-dom';
+import React from 'react';
+import { IonPage, IonHeader, IonToolbar, IonButtons, IonBackButton, IonTitle, IonContent, IonList, IonItem, IonLabel, IonButton } from '@ionic/react';
+import DynamicHeader from '../../components/AthleteView/DynamicHeader'; 
 
-interface AthleteViewProps {
-    onNextClick: () => void; // Define only the method type here
-}
+const AthleteViewMedia: React.FC = () => {
+  const currentMedia = [
+    { id: 1, name: 'xxx.png', url: '/path/to/image1.png' },
+    { id: 2, name: 'yyy.png', url: '/path/to/image2.png' },
+  ];
 
-const AthleteViewMedia: React.FC = (AthleteViewProps) => {
-    const history = useHistory(); // Use useHistory inside the component
-    const [name, setName] = useState(''); // Renamed state variable
-  
-    const onBackClick = () => {
-      history.push('/athlete-view-account'); // Navigation function
-    };
-    const onNextClick = () => {
-      history.push('/account-question-2'); // Assuming route needs update
-    };
-  
-    const CurrentViewMoreClick = () => {
-      history.push('/athlete-current-media'); 
-    };
+  const pastMedia = [
+    { id: 1, name: 'xxx.png', url: '/path/to/image3.png' },
+    { id: 2, name: 'yyy.png', url: '/path/to/image4.png' },
+  ];
 
-    const PastViewMoreClick = () => {
-      history.push('/athlete-past-media'); 
-    };
+  return (
+    <IonPage>
+      <DynamicHeader title="My Media" />
 
-    const currentMedia = [
-      { id: '1', name: 'xxx.png', imageUrl: 'path_to_image_xxx.png' },
-      { id: '2', name: 'yyy.png', imageUrl: 'path_to_image_yyy.png' }
-    ];
-  
-    const pastMedia = [
-      { id: '1', name: 'xxx.png', imageUrl: 'path_to_image_xxx.png' },
-      { id: '2', name: 'yyy.png', imageUrl: 'path_to_image_yyy.png' }
-    ];
-  
-    return (
-      <IonPage>
-        <DynamicHeader title="My Media" />
-        <IonContent>
-          <MediaSection title="Current Media" mediaItems={currentMedia} onViewMore={CurrentViewMoreClick} />
-          <MediaSection title="Past Media" mediaItems={pastMedia} onViewMore={PastViewMoreClick} />
-        </IonContent>
-
-          <div className="navigation-buttons">
-              <button onClick={onBackClick} className="back-button">HOME</button> 
-              <button 
-                  onClick={onNextClick} 
-                  className="next-button"
-                  disabled={!name} // Disable button if name is empty; REPLACE WITH ICONS
-                  >
-                  PROFILE
-              </button>
+      <IonContent fullscreen>
+        <div className="media-section">
+          <h2 className="section-title">Current Media</h2>
+          <IonList>
+            {currentMedia.map((media) => (
+              <IonItem className="media-item" key={media.id}>
+                <img src={media.url} alt={media.name} className="media-image" />
+                <IonLabel>{media.name}</IonLabel>
+                <button className="delete-button">🗑️</button>
+              </IonItem>
+            ))}
+          </IonList>
+          <div className="view-more-container">
+            <IonButton routerLink="/athlete-current-media" fill="clear" color="primary">View More</IonButton>
           </div>
-      </IonPage>
-    );
-  };
-  
-  export default AthleteViewMedia;
+        </div>
+
+        <div className="media-section">
+          <h2 className="section-title">Past Media</h2>
+          <IonList>
+            {pastMedia.map((media) => (  
+              <IonItem className="media-item" key={media.id}>
+                <img src={media.url} alt={media.name} className="media-image" />
+                <IonLabel>{media.name}</IonLabel>
+                <button className="delete-button">🗑️</button>
+              </IonItem>
+            ))}
+          </IonList>
+          <div className="view-more-container">
+            <IonButton routerLink="/athlete-past-media" fill="clear" color="primary">View More</IonButton>
+          </div>
+        </div>
+      </IonContent>
+    </IonPage>
+  );
+};
+
+export default AthleteViewMedia;

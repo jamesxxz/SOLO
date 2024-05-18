@@ -9,7 +9,7 @@ const AthletePastMedia: React.FC = () => {
     const [name, setName] = useState(''); // Renamed state variable
   
     const onBackClick = () => {
-      history.push('/home'); // Navigation function
+      history.push('/athlete-view-account'); // Navigation function
     };
     const onNextClick = () => {
       history.push('/account-question-2'); // Assuming route needs update
@@ -29,17 +29,6 @@ const AthletePastMedia: React.FC = () => {
             <IonContent>
             <MediaSection title="" mediaItems={pastMedia} onViewMore={() => console.log('View more past media')} />
             </IonContent>
-            
-            <div className="navigation-buttons">
-                <button onClick={onBackClick} className="back-button">HOME</button> 
-                <button 
-                    onClick={onNextClick} 
-                    className="next-button"
-                    disabled={!name} // Disable button if name is empty; REPLACE WITH ICONS
-                    >
-                    PROFILE
-                </button>
-            </div>
         </IonPage>
     );
   };

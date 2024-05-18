@@ -21,7 +21,7 @@ import AthleteCurrentMedia from './pages/AthleteView/AthleteCurrentMedia';
 import AthletePastMedia from './pages/AthleteView/AthletePastMedia';
 import AthleteEditProfile from './pages/AthleteView/AthleteEditProfile';
 import AthleteProfile from './pages/AthleteView/AthleteProfile';
-import ProfileView from './pages/CoachView/ProfileView';
+import CoachProfileView from './pages/CoachView/CoachProfileView';
 import AddAthlete from './components/GradientHeader/AddAthlete';
 
 import '@ionic/react/css/core.css';
@@ -104,6 +104,9 @@ const App: React.FC = () => (
         <Route exact path="/add-athlete">
           <AddAthlete />
         </Route>
+        <Route exact path="/coach-profile-view">
+          <CoachProfileView />
+        </Route>
         <Route exact path="/athlete-view-account">
           <AthleteViewAccount />
         </Route>
@@ -122,9 +125,7 @@ const App: React.FC = () => (
         <Route exact path="/athlete-profile">
           <AthleteProfile />
         </Route>
-        <Route exact path="/profile-view">
-          <ProfileView />
-        </Route>
+
         <Route exact path="/">
           <Home />
         </Route>

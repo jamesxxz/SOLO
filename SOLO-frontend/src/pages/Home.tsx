@@ -10,7 +10,7 @@ const Home: React.FC = () => {
     <IonPage>
       <IonContent fullscreen className="centered-content">
         <div className="center-container">
-          <IonImg src="../../public/SOLOLogo.png" className="logo-image" />
+        <IonImg src="/SOLOLogo.png" className="logo-image" />
           <h1 className="main-title">SOLO</h1>
           <p className="subtitle">Connect, Train, Workout</p>
 

@@ -3,8 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { IonIcon } from '@ionic/react';
 import { arrowBackOutline, pencilOutline } from 'ionicons/icons';
 import '../../components/CoachView/ProfileView.css';
-
-const ProfileView: React.FC = () => {
+const CoachProfileView: React.FC = () => {
   const history = useHistory();
   const [username, setUsername] = useState('Adam');
   const [emailAddress, setEmailAddress] = useState('adam@gmail.com');
@@ -35,7 +34,7 @@ const ProfileView: React.FC = () => {
         <div className="profile-logo">PROFILE</div>
       </div>
       <div className="profile-content">
-        <img src="../../../Images/Assets.xcassets/Baby Diaper Promotion Banner Background, Simple, Childlike Background, Maternal And Child Supplies Background Image And Wallpaper for Free Download.jpeg" alt="Banner" className="banner-image" />
+        <img src="/Images/Assets.xcassets/Baby Diaper Promotion Banner Background, Simple, Childlike Background, Maternal And Child Supplies Background Image And Wallpaper for Free Download.jpeg" alt="Banner" className="banner-image" />
         <div className="profile-input-group">
           <h3>Name</h3>
           <input
@@ -78,4 +77,4 @@ const ProfileView: React.FC = () => {
   );
 };
 
-export default ProfileView;
+export default CoachProfileView;

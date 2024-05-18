@@ -10,7 +10,7 @@ const SEAthlete: React.FC = () => {
     <IonPage>
       <IonContent fullscreen className="centered-content">
         <div className="centerSE-container">
-          <IonImg src="../../../public/Group 1418.png" className="logo-image" />
+          <IonImg src="/Group 1418.png" className="logo-image" />
           <h1 className="main-title">Account Created</h1>
 
           <div className="button-container">

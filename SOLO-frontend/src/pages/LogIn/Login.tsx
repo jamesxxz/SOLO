@@ -20,6 +20,10 @@ f
             alert('Please enter a valid email and password.');
         }
     };
+    const onBackClick = () => {
+             history.push('/home');
+     
+    };
 
     const validateEmail = (email: string) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -47,7 +51,7 @@ f
             <IonContent>
                 <div className="login-container">
                     <div className="login-header">
-                        <IonImg src="../../../public/SOLOLogo.png" className="logo-image" />
+                        <IonImg src="/SOLOLogo.png" className="logo-image" />
                         <h1 className="login-title">SOLO Login</h1>
                     </div>
                     <div className="login-form">
@@ -75,6 +79,9 @@ f
                         </div>
                         <button onClick={onLoginClick} className="login-button" disabled={!isValidEmail || !isValidPassword}>
                             Login
+                        </button>
+                        <button onClick={onBackClick} className="login-back-button">
+                            Back
                         </button>
                     </div>
                 </div>

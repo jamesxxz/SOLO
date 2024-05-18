@@ -6,7 +6,7 @@ import { IonReactRouter } from '@ionic/react-router';
 import { home, person, personAdd } from 'ionicons/icons';
 import { Redirect, Route } from 'react-router-dom';
 import CoachHomeView from './CoachHome';
-import ProfileView from './ProfileView';
+import CoachProfileView from './CoachProfileView';
 import AddAthleteView from './AddAthleteView';
 
 const TabBar: React.FC = () => {
@@ -17,7 +17,7 @@ const TabBar: React.FC = () => {
           <Route exact path="/coach-home" component={CoachHomeView} />
           <Route exact path="/tab-bar" component={CoachHomeView} />
 
-          <Route exact path="/profile-view" component={ProfileView} />
+          <Route exact path="/coach-profile-view" component={CoachProfileView} />
           <Route exact path="/add-athlete-view" component={AddAthleteView} />
           <Redirect exact from="/" to="/coach-home" />
         </IonRouterOutlet>
@@ -26,7 +26,7 @@ const TabBar: React.FC = () => {
             <IonIcon icon={home} />
             <IonLabel>Home</IonLabel>
           </IonTabButton>
-          <IonTabButton tab="profile" href="/profile-view">
+          <IonTabButton tab="coach-profile-view" href="/coach-profile-view">
             <IonIcon icon={person} />
             <IonLabel>Profile</IonLabel>
           </IonTabButton>

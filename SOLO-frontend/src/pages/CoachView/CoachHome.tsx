@@ -1,5 +1,5 @@
 import React from 'react';
-import { IonContent, IonHeader, IonPage, IonCard, IonCardTitle, IonCardSubtitle } from '@ionic/react';
+import { IonContent, IonHeader, IonPage, IonCard, IonCardTitle, IonCardSubtitle, IonToolbar } from '@ionic/react';
 import { useHistory } from 'react-router-dom';  // Import useHistory from react-router-dom
 import { athletes } from '../../data/athletes';
 
@@ -14,8 +14,12 @@ const CoachHome: React.FC = () => {
 
   return (
     <IonPage>
-      <IonHeader className="gradient-header">
-        <div className="logo">MY CURRENT ATHLETES</div>
+      <IonHeader>
+        <IonToolbar>
+          <header className="gradient-header">
+          <div className="logo">MY CURRENT ATHLETES</div>
+          </header>
+        </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', padding: '20px' }}>

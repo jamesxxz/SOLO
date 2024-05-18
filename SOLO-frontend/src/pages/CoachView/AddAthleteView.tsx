@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { IonContent, IonPage } from '@ionic/react';
+import { IonContent, IonHeader, IonPage, IonToolbar } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
 import '../../components/CoachView/AddAthleteView.css'; // Ensure the path is correct
 
@@ -39,10 +39,14 @@ const AddAthleteView: React.FC = () => {
 
   return (
     <IonPage>
-      <header className="gradient-header">
-        <div className="logo">ADD ATHLETE</div>
-        <button onClick={onBackClick} className="close-button">X</button>
-      </header>
+      <IonHeader>
+        <IonToolbar>
+          <header className="gradient-header">
+            <div className="logo">ADD ATHLETE</div>
+            <button onClick={onBackClick} className="close-button">X</button>
+          </header>
+        </IonToolbar>
+      </IonHeader>
       <IonContent>
         <div className="question-view">
           <div className="question">Name</div>

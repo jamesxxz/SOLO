@@ -1,11 +1,16 @@
 import React from 'react';
 import './GradientHeader.css'; // Ensure to create this CSS file in the same directory
+import { IonHeader, IonToolbar } from '@ionic/react';
 
 const GradientHeader: React.FC = () => {
   return (
-    <header className="gradient-header">
-      <div className="logo">COACH INFORMATION</div>
-    </header>
+    <IonHeader>
+      <IonToolbar>
+        <header className="gradient-header">
+          <div className="logo">COACH INFORMATION</div>
+        </header>
+      </IonToolbar>
+    </IonHeader>
   );
 };
 

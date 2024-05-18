@@ -1,5 +1,5 @@
 import React from 'react';
-import { IonContent, IonPage } from '@ionic/react';
+import { IonContent, IonHeader, IonPage, IonToolbar } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
 
 interface AthleteInfo {
@@ -29,11 +29,15 @@ const CurrentAthleteView: React.FC<CurrentAthleteViewProps> = ({ currentAthlete 
 
     return (
         <IonPage>
-            <header className="gradient-header">
-                <div className="logo">SOLO</div>
-                <button onClick={handleBackButtonClick}><ion-icon name="arrow-back"></ion-icon></button>
-                <button><ion-icon name="chart-line"></ion-icon></button>
-            </header>
+            <IonHeader>
+                <IonToolbar>
+                    <header className="gradient-header">
+                        <div className="logo">SOLO</div>
+                        <button onClick={handleBackButtonClick}><ion-icon name="arrow-back"></ion-icon></button>
+                        <button><ion-icon name="chart-line"></ion-icon></button>
+                    </header>
+                </IonToolbar>
+            </IonHeader>
             <IonContent>
                 <img src={currentAthlete.image} alt="Banner" />
                 <div className="athlete-info">

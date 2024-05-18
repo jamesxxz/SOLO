@@ -1,8 +1,11 @@
+
+
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { IonIcon } from '@ionic/react';
+import { IonPage, IonHeader, IonToolbar, IonButtons, IonButton, IonContent, IonTitle, IonIcon, IonInput, IonItem, IonLabel } from '@ionic/react';
 import { arrowBackOutline, pencilOutline } from 'ionicons/icons';
-import '../../components/CoachView/ProfileView.css';
+import '../../components/CoachView/ProfileView.css'
+
 const CoachProfileView: React.FC = () => {
   const history = useHistory();
   const [username, setUsername] = useState('Adam');
@@ -28,14 +31,23 @@ const CoachProfileView: React.FC = () => {
   };
 
   return (
-    <div className="profile-container">
-      <div className="profile-header">
+    <IonPage>
+      <IonHeader>
+        <IonToolbar className="gradient-header">
+        <div className="profile-header">
         <IonIcon icon={arrowBackOutline} onClick={onBackClick} className="back-button" />
         <div className="profile-logo">PROFILE</div>
       </div>
-      <div className="profile-content">
-        <img src="/Images/Assets.xcassets/Baby Diaper Promotion Banner Background, Simple, Childlike Background, Maternal And Child Supplies Background Image And Wallpaper for Free Download.jpeg" alt="Banner" className="banner-image" />
-        <div className="profile-input-group">
+      </IonToolbar>
+      </IonHeader>
+      <IonContent>
+        <div className="profile-content">
+          <img
+            src="/Images/Assets.xcassets/Baby Diaper Promotion Banner Background, Simple, Childlike Background, Maternal And Child Supplies Background Image And Wallpaper for Free Download.jpeg"
+            alt="Banner"
+            className="banner-image"
+          />
+          <div className="profile-input-group">
           <h3>Name</h3>
           <input
             type="text"
@@ -68,12 +80,15 @@ const CoachProfileView: React.FC = () => {
             disabled={!isEditing}
           />
         </div>
-        <button onClick={isEditing ? onSaveClick : onEditClick} className="edit-profile">
+          <div className="edit-profile-container">
+          <button onClick={isEditing ? onSaveClick : onEditClick} className="edit-profile">
           <IonIcon icon={pencilOutline} slot="start" />
           {isEditing ? 'Save Edits' : 'Edit Profile'}
         </button>
-      </div>
-    </div>
+          </div>
+        </div>
+      </IonContent>
+    </IonPage>
   );
 };
 

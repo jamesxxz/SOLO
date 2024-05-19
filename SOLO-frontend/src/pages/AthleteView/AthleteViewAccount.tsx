@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { IonContent, IonHeader, IonPage, IonCard, IonCardTitle, IonCardSubtitle } from '@ionic/react';
+import { IonContent, IonHeader, IonToolbar, IonPage, IonCard, IonCardTitle, IonCardSubtitle } from '@ionic/react';
 import { athletes } from '../../data/athletes';
+import TabBar2 from './TabBar2';
 
 const AthleteHome: React.FC = () => {
   const history = useHistory(); // Use useHistory inside the component
@@ -18,10 +19,13 @@ const AthleteHome: React.FC = () => {
 
   return (
     <IonPage>
-      <IonHeader className="gradient-header">
-        <div className="logo">MY ACCOUNT</div>
+      <IonHeader>
+        <IonToolbar>
+          <header className="gradient-header">
+          <div className="logo">MY CURRENT ATHLETES</div>
+          </header>
+        </IonToolbar>
       </IonHeader>
-
       <IonContent fullscreen>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', padding: '20px' }}>
           <IonCard key={0} onClick={handleCardClick} style={{ position: 'relative', cursor: 'pointer' }}>
@@ -33,6 +37,7 @@ const AthleteHome: React.FC = () => {
           </IonCard>
         </div>
       </IonContent>
+      <TabBar2 />
 
     </IonPage>
   );

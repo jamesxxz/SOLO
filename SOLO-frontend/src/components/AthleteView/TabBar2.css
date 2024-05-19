@@ -1,0 +1,17 @@
+/* TabBar2.css */
+.custom-tab-bar {
+    --background: white;
+    --color: black;
+    --color-selected: blue;
+    --border-color: transparent;
+    height: 55px;
+    display: flex;
+    align-items: center; /* Centers children vertically */
+    justify-content: space-around; /* Distributes space evenly between items */
+  }
+  
+  .tab-icon {
+    color: black;
+    font-size: 24px;
+  }
+  

@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { IonPage, IonContent, IonButton, IonModal } from '@ionic/react';
+import { IonPage, IonHeader, IonContent, IonButton, IonModal, IonToolbar } from '@ionic/react';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import DynamicHeader from '../../components/AthleteView/DynamicHeader';  // Import the header component
 import MediaSection from '../../components/AthleteView/MediaSection';
+import TabBar2 from './TabBar2';
 
 const AthleteCurrentMedia: React.FC = () => {
   const history = useHistory();
@@ -51,7 +52,12 @@ const AthleteCurrentMedia: React.FC = () => {
 
   return (
     <IonPage>
-      <DynamicHeader title="Your Media" />
+      <IonHeader>
+        <IonToolbar>
+          <DynamicHeader title="Your Media" />
+
+        </IonToolbar>
+      </IonHeader>
       <IonContent>
         <MediaSection title="" mediaItems={currentMedia} onViewMore={() => console.log('View more current media')} />
         <IonButton className="add-media-button" onClick={() => setShowModal(true)}>+ Add Media</IonButton>
@@ -74,6 +80,7 @@ const AthleteCurrentMedia: React.FC = () => {
             />
         </IonModal>
       </IonContent>
+      <TabBar2 />
     </IonPage>
   );
 };

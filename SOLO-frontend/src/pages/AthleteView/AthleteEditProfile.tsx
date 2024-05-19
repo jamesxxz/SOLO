@@ -3,6 +3,7 @@ import { IonContent, IonPage } from '@ionic/react';
 import CreateAccountHeader from '../../components/AthleteView/ProfileHeader'; 
 import { useHistory } from 'react-router-dom';
 import '../../components/AthleteView/AthleteView.css';
+import TabBar2 from './TabBar2';
 
 interface AthleteViewProps {
   onNextClick: () => void; // Define only the method type here
@@ -34,6 +35,7 @@ const AthleteView: React.FC<AthleteViewProps> = ({
           </div>
         </div>
       </IonContent>
+      <TabBar2 />
     </IonPage>
   );
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import { IonPage, IonHeader, IonToolbar, IonButtons, IonBackButton, IonTitle, IonContent, IonList, IonItem, IonLabel, IonButton } from '@ionic/react';
 import DynamicHeader from '../../components/AthleteView/DynamicHeader'; 
+import TabBar2 from './TabBar2';
 
 const AthleteViewMedia: React.FC = () => {
   const currentMedia = [
@@ -50,6 +51,7 @@ const AthleteViewMedia: React.FC = () => {
           </div>
         </div>
       </IonContent>
+      <TabBar2 />
     </IonPage>
   );
 };

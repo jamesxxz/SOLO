@@ -288,7 +288,7 @@ ion-label {
 
 ion-modal {
   --width: 90%;
-  --height: 20%;
+  --height: 30%;
 }
 
 .modal-title {
@@ -302,9 +302,10 @@ ion-modal {
 .add-media-button {
   color: white;
   position: fixed;        
-  bottom: 62px;           
+  margin-bottom: 2rem;           
   right: 10px;           
-  z-index: 999;          
+  z-index: 999;   
+       
   
   --border-radius: 12px; 
   width: 140px;          

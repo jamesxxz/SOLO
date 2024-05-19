@@ -5,6 +5,7 @@ import { useHistory } from 'react-router-dom';
 import { IonPage, IonHeader, IonToolbar, IonButtons, IonButton, IonContent, IonTitle, IonIcon, IonInput, IonItem, IonLabel } from '@ionic/react';
 import { arrowBackOutline, pencilOutline } from 'ionicons/icons';
 import '../../components/CoachView/ProfileView.css'
+import TabBar from './TabBar';
 
 const CoachProfileView: React.FC = () => {
   const history = useHistory();
@@ -88,6 +89,7 @@ const CoachProfileView: React.FC = () => {
           </div>
         </div>
       </IonContent>
+      <TabBar />
     </IonPage>
   );
 };

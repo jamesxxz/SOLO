@@ -43,10 +43,6 @@ ion-card-title, ion-card-subtitle {
   --color: white; /* Ensuring the variable is set for titles and subtitles specifically */
 }
 
-
-
-
-
 .navigation-buttons {
   display: flex;
   justify-content: space-between;

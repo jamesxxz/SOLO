@@ -1,24 +1,30 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { IonContent, IonPage } from '@ionic/react';
 import CreateAccountHeader from '../../components/GradientHeader/CreateAccountHeader'; 
 import { useHistory } from 'react-router-dom';
 import '../../components/AccountQuestion.css';
-import '../../components/UploadProfilePic.css'
+import { AccountContext } from '../../contexts/AccountContext'; // Correct import path
+import '../../components/UploadProfilePic.css';
 
 interface AccountQuestion1Props {
-  onNextClick: () => void; // Define only the method type here
+  onNextClick: () => void;
 }
 
 const AccountQuestion1: React.FC<AccountQuestion1Props> = ({
 }) => {
-  const history = useHistory(); // Use useHistory inside the component
-  const [answer, setAnswer] = useState('');
+  const history = useHistory();
+  const { name, setName } = useContext(AccountContext); // Use the individual properties
+  const [answer, setAnswer] = useState(name || '');
 
   const onBackClick = () => {
-    setAnswer(''); // Reset answer when going back
+    setAnswer('');
     history.push('/home');
   };
+
   const onNextClick = () => {
+    console.log('Current answer before setting account:', answer); // Log current answer
+    setName(answer); // Directly set the name in the context
+    console.log('Account name after setting:', answer); // Log updated account name
     history.push('/account-question-2');
   };
 
@@ -33,22 +39,24 @@ const AccountQuestion1: React.FC<AccountQuestion1Props> = ({
             type="text"
             placeholder="Enter your answer"
             value={answer}
-            onChange={(e) => setAnswer(e.target.value)}
+            onChange={(e) => {
+              console.log('Answer input changed:', e.target.value); // Log value when input changes
+              setAnswer(e.target.value);
+            }}
             className="answer-input"
           />
-
         </div>
       </IonContent>
       <div className="navigation-buttons">
-            <button onClick={onBackClick} className="back-button">BACK</button>
-            <button 
-              onClick={onNextClick} 
-              className="next-button"
-              disabled={!answer} // Disable button if answer is empty
-            >
-              NEXT
-            </button>
-          </div>
+        <button onClick={onBackClick} className="back-button">BACK</button>
+        <button 
+          onClick={onNextClick} 
+          className="next-button"
+          disabled={!answer}
+        >
+          NEXT
+        </button>
+      </div>
     </IonPage>
   );
 }

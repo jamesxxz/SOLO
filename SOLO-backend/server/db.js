@@ -5,16 +5,16 @@ const multer = require('multer');
 require('dotenv').config();
 
 const app = express();
-const port = 3001;
+const port = process.env.PORT || 3001;
 
 app.use(bodyParser.json());
 
 const pool = mysql.createPool({
-  host: "solotestdb.cxqsaw0a4eyq.us-west-1.rds.amazonaws.com",
-  user: "admin",
-  port: 3306,
-  password: "SoloTestDB",
-  database: "SoloTestDB"
+    host: "solotestdb.cxqsaw0a4eyq.us-west-1.rds.amazonaws.com",
+    user: "admin",
+    port: 3306,
+    password: "SoloTestDB",
+    database: "SoloTestDB"
 });
 
 const upload = multer({ dest: 'uploads/' });
@@ -39,7 +39,7 @@ app.post('/api/users', upload.single('profilePhoto'), async (req, res) => {
         const [result] = await pool.query(query, [name, email, password, profilePhoto]);
         res.send({ id: result.insertId, name, email, password, profilePhoto, role });
     } catch (error) {
-        console.error(error);
+        console.error('Database query error:', error); // More specific error message
         res.status(500).send('Server error');
     }
 });
@@ -47,3 +47,5 @@ app.post('/api/users', upload.single('profilePhoto'), async (req, res) => {
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
+
+module.exports = pool;

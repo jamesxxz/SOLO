@@ -12,79 +12,51 @@ interface AccountQuestion3Props {
 
 const AccountQuestion3: React.FC<AccountQuestion3Props> = ({}) => {
   const history = useHistory();
-  const { password, setPassword } = useContext(AccountContext); // Use the context
-  const [answer, setAnswer] = useState(password || '');
-  const [isValidPassword, setIsValidPassword] = useState(false);
-  const [validationMessages, setValidationMessages] = useState<string[]>([]);
+  const { phoneNumber, setPhoneNumber } = useContext(AccountContext); // Use the context for phone number
+  const [answer, setAnswer] = useState(phoneNumber || '');
+  const [isValidPhoneNumber, setIsValidPhoneNumber] = useState(true);
 
   const onBackClick = () => {
     setAnswer('');
-    history.push('/account-question-2');
-  };
+    history.push('/account-question-1');
+  }
 
   const onNextClick = () => {
-    if (isValidPassword) {
-      console.log('Current password before setting account:', answer); // Log current password
-      setPassword(answer); // Set the password in the context
-      console.log('Account password after setting:', answer); // Log updated account password
+    if (isValidPhoneNumber) {
+      console.log('Current phone number before setting account:', answer); // Log current phone number
+      setPhoneNumber(answer); // Set the phone number in the context
+      console.log('Account phone number after setting:', answer); // Log updated account phone number
       history.push('/account-question-4'); // Change this based on the route of the next page
-    } else {
-      alert('Please ensure your password meets all the criteria.');
     }
   };
 
-  const validatePassword = (password: string) => {
-    const messages = [];
-    if (password.length < 8) {
-      messages.push('Be at least 8 characters long');
-    }
-    if (!/[a-z]/.test(password)) {
-      messages.push('Contain at least one lowercase letter');
-    }
-    if (!/[A-Z]/.test(password)) {
-      messages.push('Contain at least one uppercase letter');
-    }
-    if (!/\d/.test(password)) {
-      messages.push('Contain at least one number');
-    }
-    if (!/[@$!%*?&]/.test(password)) {
-      messages.push('Contain at least one special character');
-    }
-    setValidationMessages(messages);
-    return messages.length === 0;
-  };
+  const validatePhoneNumber = (phoneNumber: string) => {
+    const phoneNumberRegex = /^\+?[1-9]\d{1,14}$/; // Simplified regex for international phone numbers
+    return phoneNumberRegex.test(phoneNumber);
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const password = e.target.value;
-    setAnswer(password);
-    setIsValidPassword(validatePassword(password));
-    console.log('Password input changed:', password); // Log value when input changes
-  };
+    const phoneNumber = e.target.value;
+    setAnswer(phoneNumber);
+    setIsValidPhoneNumber(validatePhoneNumber(phoneNumber));
+    console.log('Phone number input changed:', phoneNumber); // Log value when input changes
+  }
 
   return (
     <IonPage>
       <CreateAccountHeader />
       <IonContent>
         <div className="question-view">
-          <div className="step-info">Step 3 of 5</div>   {/* Change this for the step count */}
-          <div className="question">Please create a password</div> {/* Change this based on current question */}
+          <div className="step-info">Step 3 of 6</div>
+          <div className="question">What is your phone number?</div>
           <input
-            type="password" // Changed input type to password
-            placeholder="Enter your password"
+            type="text"
+            placeholder="Enter your phone number"
             value={answer}
             onChange={handleChange}
-            className={`answer-input ${isValidPassword ? '' : 'invalid'}`} // Add a class if the password is invalid
+            className={`answer-input ${isValidPhoneNumber ? '' : 'invalid'}`} // Add a class if the phone number is invalid
           />
-          {!isValidPassword && (
-            <div className="error-message">
-              Password must:
-              <ul>
-                {validationMessages.map((msg, index) => (
-                  <li key={index}>{msg}</li>
-                ))}
-              </ul>
-            </div>
-          )}
+          {!isValidPhoneNumber && <div className="error-message">Please enter a valid phone number.</div>}
         </div>
       </IonContent>
       <div className="navigation-buttons">
@@ -92,7 +64,7 @@ const AccountQuestion3: React.FC<AccountQuestion3Props> = ({}) => {
         <button 
           onClick={onNextClick} 
           className="next-button"
-          disabled={!answer || !isValidPassword}
+          disabled={!answer || !isValidPhoneNumber}
         >
           NEXT
         </button>

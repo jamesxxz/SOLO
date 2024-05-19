@@ -7,6 +7,7 @@ import AccountQuestion2 from './pages/CreateAccountQuestions/AccountQuestion2';
 import AccountQuestion3 from './pages/CreateAccountQuestions/AccountQuestion3';
 import AccountQuestion4 from './pages/CreateAccountQuestions/AccountQuestion4';
 import AccountQuestion5 from './pages/CreateAccountQuestions/AccountQuestion5';
+import AccountQuestion6 from './pages/CreateAccountQuestions/AccountQuestion6';
 import Login from './pages/LogIn/Login';
 import AddAthleteView from '../src/pages/CoachView/AddAthleteView'
 import CoachHome from './pages/CoachView/CoachHome';
@@ -80,6 +81,9 @@ const App: React.FC = () => (
         </Route>
         <Route exact path="/account-question-5">
           <AccountQuestion5 />
+        </Route>
+        <Route exact path="/account-question-6">
+          <AccountQuestion6 />
         </Route>
         <Route exact path="/coach-account-question-1">
           <CAQuestion1 />

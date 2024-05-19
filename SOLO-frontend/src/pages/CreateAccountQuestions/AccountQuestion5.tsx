@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { IonContent, IonPage } from '@ionic/react';
 import { useAccount } from '../../contexts/AccountContext';
 import CreateAccountHeader from '../../components/GradientHeader/CreateAccountHeader';
@@ -11,52 +11,90 @@ interface AccountQuestion5Props {
 }
 
 const AccountQuestion5: React.FC<AccountQuestion5Props> = ({}) => {
-  const { role, setRole } = useAccount();
   const history = useHistory();
+  const { profilePhoto, setProfilePhoto } = useAccount();
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string>("");
+  const [isValidImage, setIsValidImage] = useState(false);
+  const [validationMessage, setValidationMessage] = useState<string>("");
 
   const onBackClick = () => {
-    history.push('/account-question-4');
+      history.push('/account-question-4');
   };
 
   const onNextClick = () => {
-    console.log('Current role before setting account:', role); // Log current role
-    if (role === 'Coach') {
-      history.push('/coach-account-question-1');
-    } else if (role === 'Athlete') {
-      history.push('/athlete-account-question-1');
-    } else {
-      alert('Please select a role.');
-    }
+      if (isValidImage) {
+          console.log('Profile photo before setting account:', profilePhoto); // Log current profile photo
+          history.push('/account-question-6'); // Change this based on the route of the next page
+      } else {
+          alert('Please ensure your image is the correct type.');
+      }
   };
 
-  const handleRoleClick = (selectedRole: string) => {
-    setRole(selectedRole);
-    console.log('Role set in context:', selectedRole); // Log role set in context
-  };
+  useEffect(() => {
+    if (profilePhoto) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreviewUrl(reader.result as string);
+      };
+      reader.readAsDataURL(profilePhoto);
+    } else {
+      setImagePreviewUrl("");  // Ensure the image preview is cleared if no photo is present
+    }
+  }, [profilePhoto]);  
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const fileList = event.target.files;
+    if (fileList && fileList.length > 0) {
+      const file = fileList[0];
+      console.log('File selected:', file.name); 
+  
+      const validImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
+      if (validImageTypes.includes(file.type)) {
+        console.log('Valid image file selected:', file.type); 
+        setProfilePhoto(file);  
+        setIsValidImage(true);  
+        setValidationMessage("");  
+  
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          console.log('FileReader load end, result length:', reader.result ? reader.result.toString().length : 'No result');
+          setImagePreviewUrl(reader.result as string);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        console.error('Invalid file type:', file.type); // Log that an invalid file type was selected
+        setIsValidImage(false);
+        setValidationMessage("Invalid file type. Please select a valid image file.");
+      }
+    } else {
+      console.log('No file selected');
+    }
+  };  
 
   return (
     <IonPage>
       <CreateAccountHeader />
       <IonContent>
         <div className="question-view">
-          <div className="step-info">Step 5 of 5</div>
-          <div className="question">Which role best describes you?</div>
-          <div className="button-container">
-            <button
-              className={`role-button ${role === 'Coach' ? 'selected' : ''}`}
-              onClick={() => handleRoleClick('Coach')}
-            >
-              <div>Coach</div>
-              <div className="role-description">I'd like to train athletes to reach their goals in speed, form, endurance.</div>
-            </button>
-            <button
-              className={`role-button ${role === 'Athlete' ? 'selected' : ''}`}
-              onClick={() => handleRoleClick('Athlete')}
-            >
-              <div>Athlete</div>
-              <div className="role-description">I'd like to have a personal coach to train me to reach my athletic goals.</div>
-            </button>
-          </div>
+          <div className="step-info">Step 5 of 6</div>
+          <div className="question">Upload profile photo</div>
+          <label htmlFor="file-upload" className="custom-file-upload">
+            {imagePreviewUrl ? (
+              <img src={imagePreviewUrl} alt="Profile Preview" className="image-preview" />
+            ) : (
+              <div className="upload-content">
+                <div className="upload-icon">+</div>
+                <div className="upload-text">Upload</div>
+              </div>
+            )}
+          </label>
+          <input
+            id="file-upload"
+            type="file"
+            style={{ display: 'none' }}
+            onChange={handleFileChange}
+          />
+          {validationMessage && <div className="error-message">{validationMessage}</div>}
         </div>
       </IonContent>
       <div className="navigation-buttons">
@@ -64,7 +102,7 @@ const AccountQuestion5: React.FC<AccountQuestion5Props> = ({}) => {
         <button
           onClick={onNextClick}
           className="next-button"
-          disabled={!role}
+          disabled={!isValidImage}
         >
           NEXT
         </button>

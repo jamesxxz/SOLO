@@ -4,10 +4,10 @@ const pool = require('../server/db'); // Importing the pool
 
 // POST route to register a new athlete
 router.post('/sign-up-athlete', async (req, res) => {
-    const { name, email, phone_number, profile_pic, age, gender, height, weight, affiliation_id, coach_id } = req.body;
+    const { name, email, phone_number, password, profile_pic, age, gender, height, weight, affiliation_id} = req.body;
     try {
-        const sql = `INSERT INTO athlete (name, email, phone_number, profile_pic, age, gender, height, weight, affiliation_id, coach_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-        const values = [name, email, phone_number, profile_pic, age, gender, height, weight, affiliation_id, coach_id];
+        const sql = `INSERT INTO athlete (name, email, phone_number, password, profile_pic, age, gender, height, weight, affiliation_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+        const values = [name, email, phone_number, password, profile_pic, age, gender, height, weight, affiliation_id];
         await pool.query(sql, values);
         res.status(200).json({ message: 'Athlete registered successfully!' });
     } catch (err) {
@@ -19,14 +19,14 @@ router.post('/sign-up-athlete', async (req, res) => {
 // PUT route to update an athlete's details
 router.put('/update-athlete/:id', async (req, res) => {
     const { id } = req.params;
-    const { name, email, phone_number, profile_pic, age, gender, height, weight, affiliation_id, coach_id } = req.body;
+    const { name, email, phone_number } = req.body;
     try {
-        const sql = `UPDATE athlete SET name = ?, email = ?, phone_number = ?, profile_pic = ?, age = ?, gender = ?, height = ?, weight = ?, affiliation_id = ?, coach_id = ? WHERE athlete_id = ?`;
-        const values = [name, email, phone_number, profile_pic, age, gender, height, weight, affiliation_id, coach_id, id];
+        const sql = `UPDATE athlete SET name = ?, email = ?, phone_number = ? WHERE athlete_id = ?`;
+        const values = [name, email, phone_number, id];
         const [result] = await pool.query(sql, values);
 
         if (result.affectedRows > 0) {
-            res.status(200).json({ message: 'Athlete updated successfully!' });
+            res.status(200).json({ message: 'Athlete details updated successfully!' });
         } else {
             res.status(404).send('Athlete not found or no changes made');
         }

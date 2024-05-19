@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext, useState } from 'react';
 import { IonContent, IonPage } from '@ionic/react';
-import { useAccount } from '../../contexts/AccountContext';
-import CreateAccountHeader from '../../components/GradientHeader/CreateAccountHeader';
-import '../../components/AccountQuestion.css';
+import CreateAccountHeader from '../../components/GradientHeader/CreateAccountHeader'; 
 import { useHistory } from 'react-router-dom';
+import { AccountContext } from '../../contexts/AccountContext';
+import '../../components/AccountQuestion.css';
 
 interface AccountQuestion4Props {
   onNextClick: () => void;
@@ -12,54 +12,53 @@ interface AccountQuestion4Props {
 
 const AccountQuestion4: React.FC<AccountQuestion4Props> = ({}) => {
   const history = useHistory();
-  const { profilePhoto, setProfilePhoto } = useAccount();
-  const [imagePreviewUrl, setImagePreviewUrl] = useState<string>("");
-  const [isValidImage, setIsValidImage] = useState(false);
-  const [validationMessage, setValidationMessage] = useState<string>("");
+  const { password, setPassword } = useContext(AccountContext); // Use the context
+  const [answer, setAnswer] = useState(password || '');
+  const [isValidPassword, setIsValidPassword] = useState(false);
+  const [validationMessages, setValidationMessages] = useState<string[]>([]);
 
   const onBackClick = () => {
-      history.push('/account-question-3');
+    setAnswer('');
+    history.push('/account-question-3');
   };
 
   const onNextClick = () => {
-      if (isValidImage) {
-          console.log('Profile photo before setting account:', profilePhoto); // Log current profile photo
-          history.push('/account-question-5'); // Change this based on the route of the next page
-      } else {
-          alert('Please ensure your image is the correct type.');
-      }
+    if (isValidPassword) {
+      console.log('Current password before setting account:', answer); // Log current password
+      setPassword(answer); // Set the password in the context
+      console.log('Account password after setting:', answer); // Log updated account password
+      history.push('/account-question-5'); // Change this based on the route of the next page
+    } else {
+      alert('Please ensure your password meets all the criteria.');
+    }
   };
 
-  useEffect(() => {
-    if (profilePhoto) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreviewUrl(reader.result as string);
-      };
-      reader.readAsDataURL(profilePhoto);
+  const validatePassword = (password: string) => {
+    const messages = [];
+    if (password.length < 8) {
+      messages.push('Be at least 8 characters long');
     }
-  }, [profilePhoto]);
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const fileList = event.target.files;
-    if (fileList) {
-      const file = fileList[0];
-      const validImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
-
-      console.log('Selected file type:', file.type); // Log selected file type
-      if (validImageTypes.includes(file.type)) {
-        console.log('Valid image file selected.'); // Log valid image selection
-        setProfilePhoto(file);
-        console.log('Profile photo set in context:', file); // Log profile photo set in context
-        setIsValidImage(true);
-        setValidationMessage("");
-      } else {
-        console.error('Invalid file type. Please select a valid image file.');
-        alert('Invalid file type. Please select a valid image file.');
-        setIsValidImage(false);
-        setValidationMessage("Invalid file type. Please select a valid image file.");
-      }
+    if (!/[a-z]/.test(password)) {
+      messages.push('Contain at least one lowercase letter');
     }
+    if (!/[A-Z]/.test(password)) {
+      messages.push('Contain at least one uppercase letter');
+    }
+    if (!/\d/.test(password)) {
+      messages.push('Contain at least one number');
+    }
+    if (!/[@$!%*?&]/.test(password)) {
+      messages.push('Contain at least one special character');
+    }
+    setValidationMessages(messages);
+    return messages.length === 0;
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const password = e.target.value;
+    setAnswer(password);
+    setIsValidPassword(validatePassword(password));
+    console.log('Password input changed:', password); // Log value when input changes
   };
 
   return (
@@ -67,39 +66,39 @@ const AccountQuestion4: React.FC<AccountQuestion4Props> = ({}) => {
       <CreateAccountHeader />
       <IonContent>
         <div className="question-view">
-          <div className="step-info">Step 4 of 5</div>
-          <div className="question">Upload profile photo</div>
-          <label htmlFor="file-upload" className="custom-file-upload">
-            {imagePreviewUrl ? (
-              <img src={imagePreviewUrl} alt="Profile Preview" className="image-preview" />
-            ) : (
-              <div className="upload-content">
-                <div className="upload-icon">+</div>
-                <div className="upload-text">Upload</div>
-              </div>
-            )}
-          </label>
+          <div className="step-info">Step 4 of 6</div>   {/* Change this for the step count */}
+          <div className="question">Please create a password</div> {/* Change this based on current question */}
           <input
-            id="file-upload"
-            type="file"
-            style={{ display: 'none' }}
-            onChange={handleFileChange}
+            type="password" // Changed input type to password
+            placeholder="Enter your password"
+            value={answer}
+            onChange={handleChange}
+            className={`answer-input ${isValidPassword ? '' : 'invalid'}`} // Add a class if the password is invalid
           />
-          {validationMessage && <div className="error-message">{validationMessage}</div>}
+          {!isValidPassword && (
+            <div className="error-message">
+              Password must:
+              <ul>
+                {validationMessages.map((msg, index) => (
+                  <li key={index}>{msg}</li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       </IonContent>
       <div className="navigation-buttons">
         <button onClick={onBackClick} className="back-button">BACK</button>
-        <button
-          onClick={onNextClick}
+        <button 
+          onClick={onNextClick} 
           className="next-button"
-          disabled={!isValidImage}
+          disabled={!answer || !isValidPassword}
         >
           NEXT
         </button>
       </div>
     </IonPage>
   );
-};
+}
 
 export default AccountQuestion4;

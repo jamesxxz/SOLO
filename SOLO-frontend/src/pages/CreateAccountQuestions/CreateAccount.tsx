@@ -5,6 +5,7 @@ import AccountQuestion2 from './AccountQuestion2';
 import AccountQuestion3 from './AccountQuestion3';
 import AccountQuestion4 from './AccountQuestion4';
 import AccountQuestion5 from './AccountQuestion5';
+import AccountQuestion6 from './AccountQuestion6';
 import SubmitForm from './SubmitForm';
 import CreateAccountHeader from '../../components/GradientHeader/CreateAccountHeader';
 
@@ -32,7 +33,8 @@ const CreateAccount: React.FC = () => {
         {step === 3 && <AccountQuestion3 onNextClick={nextStep} onBackClick={prevStep} />}
         {step === 4 && <AccountQuestion4 onNextClick={nextStep} onBackClick={prevStep} />}
         {step === 5 && <AccountQuestion5 onNextClick={nextStep} onBackClick={prevStep} />}
-        {step === 6 && <SubmitForm onBackClick={prevStep} />}
+        {step === 6 && <AccountQuestion6 onNextClick={nextStep} onBackClick={prevStep} />}
+        {step === 7 && <SubmitForm onBackClick={prevStep} />}
       </IonContent>
     </IonPage>
   );

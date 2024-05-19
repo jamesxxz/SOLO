@@ -1,4 +1,3 @@
-// routes/affiliation.js
 const express = require('express');
 const router = express.Router();
 const pool = require('../server/db'); // Importing the pool
@@ -7,7 +6,7 @@ const pool = require('../server/db'); // Importing the pool
 router.post('/register-affiliation', async (req, res) => {
     const { name, type, affiliation_id } = req.body;
     try {
-        const sql = `INSERT INTO affiliation (Name, type, affiliation_id) VALUES (?, ?, ?)`;
+        const sql = `INSERT INTO affiliation (name, type, affiliation_id) VALUES (?, ?, ?)`;
         const values = [name, type, affiliation_id];
         const [result] = await pool.query(sql, values); // Use pool.query directly for simpler syntax and automatic connection management
 
@@ -20,7 +19,7 @@ router.post('/register-affiliation', async (req, res) => {
 });
 
 // GET route to retrieve an affiliation by ID
-router.get('/affiliation/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
     try {
         const { id } = req.params;
         const [rows] = await pool.query('SELECT * FROM affiliation WHERE affiliation_id = ?', [id]);
@@ -36,12 +35,26 @@ router.get('/affiliation/:id', async (req, res) => {
     }
 });
 
+// GET route to retrieve all affiliations
+router.get('/', async (req, res) => {
+    try {
+        const [rows] = await pool.query('SELECT * FROM affiliation');
+        if (rows.length > 0) {
+            res.status(200).json(rows);
+        } else {
+            res.status(404).send('No affiliations found');
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server error retrieving affiliations');
+    }
+});
 // PUT route to update an affiliation
-router.put('/affiliation/:id', async (req, res) => {
+router.put('/:id', async (req, res) => {
     const { id } = req.params;
     const { name, type } = req.body;
     try {
-        const sql = `UPDATE affiliation SET Name = ?, type = ? WHERE affiliation_id = ?`;
+        const sql = `UPDATE affiliation SET name = ?, type = ? WHERE affiliation_id = ?`;
         const values = [name, type, id];
         const [result] = await pool.query(sql, values);
 
@@ -57,7 +70,7 @@ router.put('/affiliation/:id', async (req, res) => {
 });
 
 // DELETE route to remove an affiliation
-router.delete('/affiliation/:id', async (req, res) => {
+router.delete('/:id', async (req, res) => {
     try {
         const { id } = req.params;
         const [result] = await pool.query('DELETE FROM affiliation WHERE affiliation_id = ?', [id]);

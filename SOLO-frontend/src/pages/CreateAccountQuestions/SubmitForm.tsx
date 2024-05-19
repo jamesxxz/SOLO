@@ -9,7 +9,7 @@ interface SubmitFormProps {
 
 const SubmitForm: React.FC<SubmitFormProps> = ({ onBackClick }) => {
   const history = useHistory();
-  const { name, email, profilePhoto, role } = useAccount();
+  const { name, email, profilePhoto, role, age, gender, height, weight, institute } = useAccount(); // Retrieve new fields
 
   const handleSubmit = async () => {
     const formData = new FormData();
@@ -19,6 +19,12 @@ const SubmitForm: React.FC<SubmitFormProps> = ({ onBackClick }) => {
       formData.append('profilePhoto', profilePhoto);
     }
     formData.append('role', role);
+    // Append new fields to formData
+    formData.append('age', age);
+    formData.append('gender', gender);
+    formData.append('height', height);
+    formData.append('weight', weight);
+    formData.append('institute', institute);
 
     try {
       await axios.post('http://localhost:3001/api/users', formData);
@@ -34,6 +40,11 @@ const SubmitForm: React.FC<SubmitFormProps> = ({ onBackClick }) => {
       <p>Name: {name}</p>
       <p>Email: {email}</p>
       <p>Role: {role}</p>
+      <p>Age: {age}</p>
+      <p>Gender: {gender}</p>
+      <p>Height: {height}</p>
+      <p>Weight: {weight}</p>
+      <p>Educational Institute/Program: {institute}</p>
       <button onClick={onBackClick} className="back-button">BACK</button>
       <button onClick={handleSubmit} className="next-button">SUBMIT</button>
     </div>

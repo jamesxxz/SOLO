@@ -4,10 +4,10 @@ const pool = require('../server/db'); // Importing the connection pool
 
 // POST route to register a new coach
 router.post('/sign-up-coach', async (req, res) => {
-    const { name, email, phone_number, profile_pic, title, affiliation_id } = req.body;
+    const { name, email, phone_number, password, profile_pic, title, affiliation_id } = req.body;
     try {
-        const sql = `INSERT INTO coach (name, email, phone_number, profile_pic, title, affiliation_id) VALUES (?, ?, ?, ?, ?, ?)`;
-        const values = [name, email, phone_number, profile_pic, title, affiliation_id];
+        const sql = `INSERT INTO coach (name, email, phone_number, password, profile_pic, title, affiliation_id) VALUES (?, ?, ?, ?, ?, ?)`;
+        const values = [name, email, phone_number, password, profile_pic, title, affiliation_id];
         await pool.query(sql, values);
         res.status(200).json({ message: 'Coach registered successfully!' });
     } catch (err) {
@@ -19,14 +19,14 @@ router.post('/sign-up-coach', async (req, res) => {
 // PUT route to update a coach's details
 router.put('/update-coach/:id', async (req, res) => {
     const { id } = req.params;
-    const { name, email, phone_number, profile_pic, title, affiliation_id } = req.body;
+    const { name, email, phone_number } = req.body;
     try {
-        const sql = `UPDATE coach SET name = ?, email = ?, phone_number = ?, profile_pic = ?, title = ?, affiliation_id = ? WHERE coach_id = ?`;
-        const values = [name, email, phone_number, profile_pic, title, affiliation_id, id];
+        const sql = `UPDATE athlete SET name = ?, email = ?, phone_number = ? WHERE coach_id = ?`;
+        const values = [name, email, phone_number, id];
         const [result] = await pool.query(sql, values);
 
         if (result.affectedRows > 0) {
-            res.status(200).json({ message: 'Coach updated successfully!' });
+            res.status(200).json({ message: 'Coach details updated successfully!' });
         } else {
             res.status(404).send('Coach not found or no changes made');
         }
@@ -67,6 +67,19 @@ router.delete('/coach/:id', async (req, res) => {
     } catch (error) {
         console.error('Error deleting coach:', error);
         res.status(500).send('Server error deleting coach');
+    }
+});
+
+router.post('/link-athlete-to-coach', async (req, res) => {
+    const { coach_id, athlete_id } = req.body;
+    try {
+        const linkSql = `INSERT INTO coach_athlete_link (coach_id, athlete_id) VALUES (?, ?)`;
+        const linkValues = [coach_id, athlete_id];
+        await pool.query(linkSql, linkValues);
+        res.status(200).json({ message: 'Athlete linked to coach successfully!' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server error on linking athlete to coach');
     }
 });
 

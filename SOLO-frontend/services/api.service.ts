@@ -13,12 +13,11 @@ export class ApiService {
       "coachID": 1,
       "name": affiliateData.name,
       "email": affiliateData.email,
-      "title": affiliateData.title,
-      "affiliation_id": 1,
-      "profile_pic": "fdsa",
       "phone_number": affiliateData.phoneNumber,
-      "athletes": "asdf",
-      "password": affiliateData.password
+      "password": affiliateData.password,
+      "profile_pic": "fdsa",
+      "title": affiliateData.title,
+      "affiliation_id": "222"
     }
     return axios.post(`${BASE_URL}/coach/sign-up-coach`, sentData)
       .then(response => response.data)

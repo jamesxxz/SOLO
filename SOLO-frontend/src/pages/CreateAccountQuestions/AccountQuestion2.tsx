@@ -7,7 +7,7 @@ import '../../components/AccountQuestion.css';
 
 interface AccountQuestion2Props {
   onNextClick: () => void;
-  onBackClick: () => void;
+  onBackClick: ()  => void;
 }
 interface NestedState {
   state: {
@@ -58,7 +58,7 @@ const AccountQuestion2: React.FC<AccountQuestion2Props> = ({}) => {
       <CreateAccountHeader />
       <IonContent>
         <div className="question-view">
-          <div className="step-info">Step 2 of 5</div> {/* Change this for the step count */}
+          <div className="step-info">Step 2 of 6s</div> {/* Change this for the step count */}
           <div className="question">What is your email address?</div> {/* Change this based on current question */}
           <input
             type="text"

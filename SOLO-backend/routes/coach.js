@@ -6,7 +6,7 @@ const pool = require('../server/db'); // Importing the connection pool
 router.post('/sign-up-coach', async (req, res) => {
     const { name, email, phone_number, password, profile_pic, title, affiliation_id } = req.body;
     try {
-        const sql = `INSERT INTO coach (name, email, phone_number, password, profile_pic, title, affiliation_id) VALUES (?, ?, ?, ?, ?, ?)`;
+        const sql = `INSERT INTO coach (name, email, phone_number, password, profile_pic, title, affiliation_id) VALUES (?, ?, ?, ?, ?, ?, ?)`;
         const values = [name, email, phone_number, password, profile_pic, title, affiliation_id];
         await pool.query(sql, values);
         res.status(200).json({ message: 'Coach registered successfully!' });

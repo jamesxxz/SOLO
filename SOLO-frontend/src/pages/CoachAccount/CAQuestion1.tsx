@@ -54,12 +54,12 @@ const CAQuestion1: React.FC = () => {
     try {
         const combinedData = {
         name: name,
-        phoneNumber: phoneNumber,
         email: email,
+        phoneNumber: phoneNumber,
+        password: password,
         profile:profilePhoto,
         role: role,
         title: answers.title,
-        password: password,
         affiliation: answers.institute
       };
       const response = await ApiService.createCoach(combinedData);

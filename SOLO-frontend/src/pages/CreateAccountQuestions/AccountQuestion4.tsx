@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { IonContent, IonPage } from '@ionic/react';
 import CreateAccountHeader from '../../components/GradientHeader/CreateAccountHeader'; 
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { AccountContext } from '../../contexts/AccountContext';
 import '../../components/AccountQuestion.css';
 
@@ -10,10 +10,26 @@ interface AccountQuestion4Props {
   onBackClick: () => void;
 }
 
+interface NestedState {
+  state: {
+      name: string;
+      email: string;
+      phoneNumber: string;
+  }
+}
+
 const AccountQuestion4: React.FC<AccountQuestion4Props> = ({}) => {
   const history = useHistory();
-  const { password, setPassword } = useContext(AccountContext); // Use the context
-  const [answer, setAnswer] = useState(password || '');
+  //const { password, setPassword } = useContext(AccountContext); // Use the context
+  const location = useLocation<NestedState>();
+  const { state } = location;
+  console.log(state);
+  const name = state.state.name;
+  const email = state.state.email;
+  const phoneNumber = state.state.phoneNumber;
+  console.log(name, email, phoneNumber);
+
+  const [answer, setAnswer] = useState('');
   const [isValidPassword, setIsValidPassword] = useState(false);
   const [validationMessages, setValidationMessages] = useState<string[]>([]);
 
@@ -25,9 +41,9 @@ const AccountQuestion4: React.FC<AccountQuestion4Props> = ({}) => {
   const onNextClick = () => {
     if (isValidPassword) {
       console.log('Current password before setting account:', answer); // Log current password
-      setPassword(answer); // Set the password in the context
+      //setPassword(answer); // Set the password in the context
       console.log('Account password after setting:', answer); // Log updated account password
-      history.push('/account-question-5'); // Change this based on the route of the next page
+      history.push('/account-question-5',{ state: { name: name, email: email, phoneNumber: phoneNumber, password: answer  } }); // Change this based on the route of the next page
     } else {
       alert('Please ensure your password meets all the criteria.');
     }

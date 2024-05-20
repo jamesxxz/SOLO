@@ -13,8 +13,8 @@ interface AccountQuestion1Props {
 const AccountQuestion1: React.FC<AccountQuestion1Props> = ({
 }) => {
   const history = useHistory();
-  const { name, setName } = useContext(AccountContext); // Use the individual properties
-  const [answer, setAnswer] = useState(name || '');
+  //const { name, setName } = useContext(AccountContext); // Use the individual properties
+  const [answer, setAnswer] = useState('');
 
   const onBackClick = () => {
     setAnswer('');
@@ -23,9 +23,9 @@ const AccountQuestion1: React.FC<AccountQuestion1Props> = ({
 
   const onNextClick = () => {
     console.log('Current answer before setting account:', answer); // Log current answer
-    setName(answer); // Directly set the name in the context
+    //setName(answer); // Directly set the name in the context
     console.log('Account name after setting:', answer); // Log updated account name
-    history.push('/account-question-2');
+    history.push('/account-question-2',{ state: { name: answer } });
   };
 
   return (

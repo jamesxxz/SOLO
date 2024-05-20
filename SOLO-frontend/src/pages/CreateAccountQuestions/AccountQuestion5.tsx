@@ -3,15 +3,32 @@ import { IonContent, IonPage } from '@ionic/react';
 import { useAccount } from '../../contexts/AccountContext';
 import CreateAccountHeader from '../../components/GradientHeader/CreateAccountHeader';
 import '../../components/AccountQuestion.css';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 
 interface AccountQuestion5Props {
   onNextClick: () => void;
   onBackClick: () => void;
 }
 
+interface NestedState {
+    state: {
+        name: string;
+        email: string;
+        phoneNumber: string;
+        password: string;
+    }
+  }
+  
+
 const AccountQuestion5: React.FC<AccountQuestion5Props> = ({}) => {
   const history = useHistory();
+  const location = useLocation<NestedState>();
+  const { state } = location;
+  const name = state.state.name;
+  const email = state.state.email;
+  const phoneNumber = state.state.phoneNumber;
+  const password = state.state.password;
+  console.log(name, email, phoneNumber, password);
   const { profilePhoto, setProfilePhoto } = useAccount();
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string>("");
   const [isValidImage, setIsValidImage] = useState(false);
@@ -24,7 +41,7 @@ const AccountQuestion5: React.FC<AccountQuestion5Props> = ({}) => {
   const onNextClick = () => {
       if (isValidImage) {
           console.log('Profile photo before setting account:', profilePhoto); // Log current profile photo
-          history.push('/account-question-6'); // Change this based on the route of the next page
+          history.push('/account-question-6',{ state: { name: name, email: email, phoneNumber: phoneNumber, password: password, profilePhoto:profilePhoto  } }); // Change this based on the route of the next page
       } else {
           alert('Please ensure your image is the correct type.');
       }

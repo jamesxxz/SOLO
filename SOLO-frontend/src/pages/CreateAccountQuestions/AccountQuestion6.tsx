@@ -1,16 +1,34 @@
 import React, { useState } from 'react';
 import { IonContent, IonPage } from '@ionic/react';
 import CreateAccountHeader from '../../components/GradientHeader/CreateAccountHeader';
-import { useHistory } from 'react-router-dom';
+import { useHistory , useLocation} from 'react-router-dom';
 import '../../components/AccountQuestion.css';
 
 interface AccountQuestion6Props {
     onNextClick: () => void;
 }
 
+interface NestedState {
+        
+    state: {
+        name: string;
+        email: string;
+        phoneNumber: string;
+        password: string;
+        profilePhoto: string;
+    }
+  }
 const AccountQuestion6: React.FC<AccountQuestion6Props> = ({}) => {
     const history = useHistory();
+    const location = useLocation<NestedState>();   
     const [role, setRole] = useState('');
+    const { state } = location;
+    const name = state.state.name;
+    const email = state.state.email;
+    const phoneNumber = state.state.phoneNumber;
+    const password = state.state.password;
+    const profilePhoto = state.state.profilePhoto;
+    console.log( name, email, phoneNumber, password, profilePhoto);
 
     const onBackClick = () => {
         history.push('/account-question-5');
@@ -24,7 +42,7 @@ const AccountQuestion6: React.FC<AccountQuestion6Props> = ({}) => {
 
         // Define where to navigate based on the selected role
         const nextPage = role === 'Coach' ? '/coach-account-question-1' : '/athlete-account-question-1';
-        history.push(nextPage);
+        history.push(nextPage,{ state: { name: name, email: email, phoneNumber: phoneNumber, password: password, profilePhoto:profilePhoto, role: role  } });
     };
 
     const handleRoleClick = (selectedRole: string) => {

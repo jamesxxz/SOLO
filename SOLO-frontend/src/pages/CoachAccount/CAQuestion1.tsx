@@ -1,14 +1,39 @@
 import React, { useState } from 'react';
 import { IonContent, IonPage, IonButton } from '@ionic/react';
 import CreateAccountHeader from '../../components/GradientHeader/CoachInformation';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
+import { ApiService } from '../../../services/api.service';
 
+
+interface NestedState {
+        
+  state: {
+      name: string;
+      email: string;
+      phoneNumber: string;
+      password: string;
+      profilePhoto: string;
+      role: string;
+  }
+}
 const CAQuestion1: React.FC = () => {
   const history = useHistory();
+  const location = useLocation<NestedState>(); 
+  const { state } = location;
+  const name = state.state.name;
+  const email = state.state.email;
+  const phoneNumber = state.state.phoneNumber;
+  const password = state.state.password;
+  const profilePhoto = state.state.profilePhoto;
+  const role = state.state.role;  
+  console.log(name, role);
+
   const initialAnswers = {
     title: '',  // Assuming 'title' and 'institute' are the only required fields from your questions array
     institute: ''
   };
+  //const { name, email, password, file, role} = location.state || {};
+
   const [answers, setAnswers] = useState(initialAnswers);
 
   const questions = [
@@ -21,11 +46,28 @@ const CAQuestion1: React.FC = () => {
   };
 
   const onBackClick = () => {
-    history.goBack(); // Adjust according to your routing logic
+    history(-1); // Adjust according to your routing logic
   };
 
-  const onFinish = () => {
+  const onFinish = async () => {
     console.log(answers);
+    try {
+        const combinedData = {
+        name: name,
+        phoneNumber: phoneNumber,
+        email: email,
+        profile:profilePhoto,
+        role: role,
+        title: answers.title,
+        password: password,
+        affiliation: answers.institute
+      };
+      const response = await ApiService.createCoach(combinedData);
+      console.log('Account created:', response);
+      history.push('/account-question-1');
+    } catch (error) {
+      console.error('Failed to create account:', error);
+    }
     history.push('/start-exploring-coach'); // Adjust to your actual next route
   };
 

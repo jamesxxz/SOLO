@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { IonContent, IonPage } from '@ionic/react';
 import CreateAccountHeader from '../../components/GradientHeader/CreateAccountHeader'; 
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { AccountContext } from '../../contexts/AccountContext';
 import '../../components/AccountQuestion.css';
 
@@ -9,11 +9,22 @@ interface AccountQuestion2Props {
   onNextClick: () => void;
   onBackClick: () => void;
 }
+interface NestedState {
+  state: {
+      name: string;
+  }
+}
 
 const AccountQuestion2: React.FC<AccountQuestion2Props> = ({}) => {
   const history = useHistory();
-  const { email, setEmail } = useContext(AccountContext); // Use the context
-  const [answer, setAnswer] = useState(email || '');
+  const location = useLocation<NestedState>();
+
+  //const { email, setEmail } = useContext(AccountContext); // Use the context
+  const [answer, setAnswer] = useState('');
+  const { state } = location;
+  const name = state.state.name;
+
+
   const [isValidEmail, setIsValidEmail] = useState(true);
 
   const onBackClick = () => {
@@ -24,9 +35,9 @@ const AccountQuestion2: React.FC<AccountQuestion2Props> = ({}) => {
   const onNextClick = () => {
     if (isValidEmail) {
       console.log('Current email before setting account:', answer); // Log current email
-      setEmail(answer); // Set the email in the context
+      //setEmail(answer); // Set the email in the context
       console.log('Account email after setting:', answer); // Log updated account email
-      history.push('/account-question-3'); // Change this based on the route of the next page
+      history.push('/account-question-3', { state: { name: name, email: answer } } ); // Change this based on the route of the next page
     }
   };
 

@@ -11,14 +11,13 @@ interface AccountQuestion5Props {
 }
 
 interface NestedState {
-    state: {
-        name: string;
-        email: string;
-        phoneNumber: string;
-        password: string;
-    }
+  state: {
+    name: string;
+    email: string;
+    phoneNumber: string;
+    password: string;
   }
-  
+}
 
 const AccountQuestion5: React.FC<AccountQuestion5Props> = ({}) => {
   const history = useHistory();
@@ -28,49 +27,76 @@ const AccountQuestion5: React.FC<AccountQuestion5Props> = ({}) => {
   const email = state.state.email;
   const phoneNumber = state.state.phoneNumber;
   const password = state.state.password;
-  console.log(name, email, phoneNumber, password);
   const { profilePhoto, setProfilePhoto } = useAccount();
+  const [localProfilePhoto, setLocalProfilePhoto] = useState<File | null>(profilePhoto || new File([""], "default.png"));
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string>("");
   const [isValidImage, setIsValidImage] = useState(false);
   const [validationMessage, setValidationMessage] = useState<string>("");
 
   const onBackClick = () => {
-      history.push('/account-question-4');
+    history.push('/account-question-4');
   };
 
-  const onNextClick = () => {
-      if (isValidImage) {
-          console.log('Profile photo before setting account:', profilePhoto); // Log current profile photo
-          history.push('/account-question-6',{ state: { name: name, email: email, phoneNumber: phoneNumber, password: password, profilePhoto:profilePhoto  } }); // Change this based on the route of the next page
-      } else {
-          alert('Please ensure your image is the correct type.');
+  const onNextClick = async () => {
+    console.log('isValidImage:', isValidImage);
+    console.log('profilePhoto:', profilePhoto);
+
+    if (isValidImage && profilePhoto) {
+      console.log('Profile photo before setting account:', profilePhoto);
+
+      const formData = new FormData();
+      formData.append('file', profilePhoto);
+
+      try {
+        console.log('Frontend POST: attempting post');
+        const response = await fetch('http://localhost:3000/upload', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (response.ok) {
+          console.log('Frontend POST: Image uploaded successfully');
+        } else {
+          console.error('Frontend POST: Image upload failed');
+        }
+      } catch (error) {
+        console.error('Frontend POST catch: Error uploading image:', error);
       }
+
+      history.push('/account-question-6', { state: { name: name, email: email, phoneNumber: phoneNumber, password: password, profilePhoto: profilePhoto } });
+    } else {
+      alert('Please ensure your image is the correct type.');
+    }
   };
 
   useEffect(() => {
-    if (profilePhoto) {
+    if (localProfilePhoto) {
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreviewUrl(reader.result as string);
       };
-      reader.readAsDataURL(profilePhoto);
+      reader.readAsDataURL(localProfilePhoto);
     } else {
-      setImagePreviewUrl("");  // Ensure the image preview is cleared if no photo is present
+      setImagePreviewUrl(""); // Ensure the image preview is cleared if no photo is present
     }
-  }, [profilePhoto]);  
+  }, [localProfilePhoto]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const fileList = event.target.files;
     if (fileList && fileList.length > 0) {
       const file = fileList[0];
-      console.log('File selected:', file.name); 
-  
+      console.log('File selected:', file.name);
+
       if (file.type.startsWith('image/')) {
-        console.log('Valid image file selected:', file.type); 
-        setProfilePhoto(file);  
-        setIsValidImage(true);  
-        setValidationMessage("");  
-  
+        console.log('Valid image file selected:', file.type);
+        setLocalProfilePhoto(file);
+        setIsValidImage(true);
+        setValidationMessage("");
+
+        // Update context state after validation
+        setProfilePhoto(file);
+        console.log('Profile photo set:', file);
+
         const reader = new FileReader();
         reader.onloadend = () => {
           console.log('FileReader load end, result length:', reader.result ? reader.result.toString().length : 'No result');
@@ -85,7 +111,7 @@ const AccountQuestion5: React.FC<AccountQuestion5Props> = ({}) => {
     } else {
       console.log('No file selected');
     }
-  };  
+  };
 
   return (
     <IonPage>

@@ -35,7 +35,7 @@ const defaultValue: AccountContextProps = {
   setPhoneNumber: () => {},  // Initialize setPhoneNumber
   password: '',
   setPassword: () => {},
-  profilePhoto: null,
+  profilePhoto: new File([""], "default.png"),
   setProfilePhoto: () => {},
   role: '',
   setRole: () => {},
@@ -51,6 +51,7 @@ const defaultValue: AccountContextProps = {
   institute: '',
   setInstitute: () => {},
 };
+
 
 export const AccountContext = createContext<AccountContextProps>(defaultValue);
 

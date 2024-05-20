@@ -2,10 +2,14 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const cors = require('cors'); // Import the cors middleware
 const { uploadMedia } = require('./awsS3_upload'); 
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+// Use the cors middleware
+app.use(cors());
 
 // Ensure the uploads directory exists within the services directory
 const uploadsDir = path.join(__dirname, 'uploads');

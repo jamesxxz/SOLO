@@ -65,8 +65,7 @@ const AccountQuestion5: React.FC<AccountQuestion5Props> = ({}) => {
       const file = fileList[0];
       console.log('File selected:', file.name); 
   
-      const validImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
-      if (validImageTypes.includes(file.type)) {
+      if (file.type.startsWith('image/')) {
         console.log('Valid image file selected:', file.type); 
         setProfilePhoto(file);  
         setIsValidImage(true);  
@@ -108,6 +107,7 @@ const AccountQuestion5: React.FC<AccountQuestion5Props> = ({}) => {
           <input
             id="file-upload"
             type="file"
+            accept="image/*"
             style={{ display: 'none' }}
             onChange={handleFileChange}
           />

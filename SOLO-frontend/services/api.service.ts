@@ -38,4 +38,28 @@ export class ApiService {
         throw error;
       });
   }
+  
+
+  static async createAthlete(athleteData: any) {
+    let sentData = {
+      "athleteID": 1,
+      "name": athleteData.name,
+      "email": athleteData.email,
+      "age": athleteData.age,
+      "gender": athleteData.gender,
+      "height": athleteData.height,
+      "weight": athleteData.weight,
+      "phone_number": athleteData.phoneNumber,
+      "password": athleteData.password,
+      "profile_pic": "fdsa",
+      "title": athleteData.title,
+      "affiliation_id": "222",
+      "coach_id": "1"
+    }
+    return axios.post(`${BASE_URL}/coach/sign-up-coach`, sentData)
+      .then(response => response.data)
+      .catch(error => {
+        throw error;
+      });
   }
+}

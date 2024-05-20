@@ -1,13 +1,23 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { IonContent, IonPage } from '@ionic/react';
 import CreateAccountHeader from '../../components/GradientHeader/AthleteInformation';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { Affiliation, Question } from '../../types/Affiliation';
 import { AccountContext } from '../../contexts/AccountContext';
+import { ApiService } from '../../../services/api.service';
+
 
 const AAQuestion1: React.FC = () => {
   const history = useHistory();
+  const location = useLocation<NestedState>(); 
+  const { state } = location;
+  const name = state.state.name;
+  const email = state.state.email;
+  const phoneNumber = state.state.phoneNumber;
+  const password = state.state.password;
+  const profilePhoto = state.state.profilePhoto;
+  const role = state.state.role;  
   const {
     age, setAge,
     gender, setGender,
@@ -15,6 +25,18 @@ const AAQuestion1: React.FC = () => {
     weight, setWeight,
     institute, setInstitute
   } = useContext(AccountContext);
+
+  interface NestedState {
+        
+    state: {
+        name: string;
+        email: string;
+        phoneNumber: string;
+        password: string;
+        profilePhoto: string;
+        role: string;
+    }
+  }
 
   const [affiliations, setAffiliations] = useState<Affiliation[]>([]);
 
@@ -55,8 +77,28 @@ const AAQuestion1: React.FC = () => {
     history.goBack();
   };
 
-  const onFinish = () => {
+  const onFinish = async () => {
     console.log({ age, gender, height, weight, institute });
+  //   try {
+  //     const combinedData = {
+  //     name: name,
+  //     email: email,
+  //     phoneNumber: phoneNumber,
+  //     password: password,
+  //     profile:profilePhoto,
+  //     role: role,
+  //     age: age,
+  //     gender: gender,
+  //     height: height,
+  //     weight: weight,
+  //     affiliation: institute
+  //   };
+  //   const response = await ApiService.createCoach(combinedData);
+  //   console.log('Account created:', response);
+  //   history.push('/account-question-1');
+  // } catch (error) {
+  //   console.error('Failed to create account:', error);
+  // }
     history.push('/start-exploring-athlete');
   };
 
@@ -106,7 +148,7 @@ const AAQuestion1: React.FC = () => {
         </div>
         <div className="navigation-buttons">
           <button onClick={onBackClick} className="back-button">BACK</button>
-          <button onClick={onFinish} className="next-button" disabled={!allAnswersFilled}>
+          <button onClick={onFinish} className="next-button" disabled={allAnswersFilled}>
             FINISH
           </button>
         </div>

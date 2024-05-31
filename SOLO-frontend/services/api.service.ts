@@ -56,10 +56,19 @@ export class ApiService {
       "affiliation_id": "222",
       "coach_id": "1"
     }
-    return axios.post(`${BASE_URL}/coach/sign-up-coach`, sentData)
+    return axios.post(`${BASE_URL}/athlete/sign-up-athlete`, sentData)
       .then(response => response.data)
       .catch(error => {
         throw error;
+      });
+  }
+
+  static getAffiliations() {
+    return axios.get(`${BASE_URL}/affiliation`)
+      .then(response => response.data)
+      .catch(error => {
+        console.error('Failed to fetch affiliations:', error);
+        throw error;  
       });
   }
 }

@@ -46,7 +46,7 @@ const CAQuestion1: React.FC = () => {
   };
 
   const onBackClick = () => {
-    history(-1); // Adjust according to your routing logic
+    history.goBack(); // Adjust according to your routing logic
   };
 
   const onFinish = async () => {

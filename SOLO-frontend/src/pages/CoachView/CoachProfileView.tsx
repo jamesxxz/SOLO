@@ -1,18 +1,34 @@
-
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import { IonPage, IonHeader, IonToolbar, IonButtons, IonButton, IonContent, IonTitle, IonIcon, IonInput, IonItem, IonLabel } from '@ionic/react';
+import { IonPage, IonHeader, IonToolbar, IonIcon, IonContent } from '@ionic/react';
 import { arrowBackOutline, pencilOutline } from 'ionicons/icons';
-import '../../components/CoachView/ProfileView.css'
+import '../../components/CoachView/ProfileView.css';
 import TabBar from './TabBar';
+import { ApiService } from '../../../services/api.service';
 
 const CoachProfileView: React.FC = () => {
   const history = useHistory();
-  const [username, setUsername] = useState('Adam');
-  const [emailAddress, setEmailAddress] = useState('adam@gmail.com');
-  const [phone, setPhone] = useState('(123) 456 7891');
+  const [username, setUsername] = useState('');
+  const [emailAddress, setEmailAddress] = useState('');
+  const [phone, setPhone] = useState('');
+  const [profilePic, setProfilePic] = useState('');
   const [isEditing, setIsEditing] = useState(false);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const profileData = await ApiService.getLoggedInCoachProfile();
+        setUsername(profileData.name);
+        setEmailAddress(profileData.email);
+        setPhone(profileData.phone_number);
+        setProfilePic(profileData.profile_pic);
+      } catch (error) {
+        console.error('Failed to fetch profile data:', error);
+      }
+    };
+
+    fetchProfile();
+  }, []);
 
   const onBackClick = () => {
     history.push('/coach-home');
@@ -22,10 +38,21 @@ const CoachProfileView: React.FC = () => {
     setIsEditing(!isEditing);
   };
 
-  const onSaveClick = () => {
+  const onSaveClick = async () => {
     if (username && emailAddress && phone) {
-      alert('Profile saved successfully!');
-      setIsEditing(false);
+      try {
+        const updatedData = {
+          name: username,
+          email: emailAddress,
+          phone_number: phone
+        };
+        await ApiService.updateCoach(1, updatedData); // Assuming coachId is 1, replace as necessary
+        alert('Profile saved successfully!');
+        setIsEditing(false);
+      } catch (error) {
+        console.error('Failed to update profile:', error);
+        alert('Failed to update profile.');
+      }
     } else {
       alert('Please fill in all fields.');
     }
@@ -35,57 +62,57 @@ const CoachProfileView: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar className="gradient-header">
-        <div className="profile-header">
-        <IonIcon icon={arrowBackOutline} onClick={onBackClick} className="back-button" />
-        <div className="profile-logo">PROFILE</div>
-      </div>
-      </IonToolbar>
+          <div className="profile-header">
+            <IonIcon icon={arrowBackOutline} onClick={onBackClick} className="back-button" />
+            <div className="profile-logo">PROFILE</div>
+          </div>
+        </IonToolbar>
       </IonHeader>
       <IonContent>
         <div className="profile-content">
           <img
-            src="/Images/Assets.xcassets/Baby Diaper Promotion Banner Background, Simple, Childlike Background, Maternal And Child Supplies Background Image And Wallpaper for Free Download.jpeg"
+            src={profilePic || "/default-profile-pic.png"} // Show a default image if profilePic is not available
             alt="Banner"
             className="banner-image"
           />
           <div className="profile-input-group">
-          <h3>Name</h3>
-          <input
-            type="text"
-            placeholder="User Name"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className="answer-input"
-            disabled={!isEditing}
-          />
-        </div>
-        <div className="profile-input-group">
-          <h3>Email Address</h3>
-          <input
-            type="email"
-            placeholder="User Email Address"
-            value={emailAddress}
-            onChange={(e) => setEmailAddress(e.target.value)}
-            className="answer-input"
-            disabled={!isEditing}
-          />
-        </div>
-        <div className="profile-input-group">
-          <h3>Phone Number</h3>
-          <input
-            type="tel"
-            placeholder="User Phone Number"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            className="answer-input"
-            disabled={!isEditing}
-          />
-        </div>
+            <h3>Name</h3>
+            <input
+              type="text"
+              placeholder="User Name"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="answer-input"
+              disabled={!isEditing}
+            />
+          </div>
+          <div className="profile-input-group">
+            <h3>Email Address</h3>
+            <input
+              type="email"
+              placeholder="User Email Address"
+              value={emailAddress}
+              onChange={(e) => setEmailAddress(e.target.value)}
+              className="answer-input"
+              disabled={!isEditing}
+            />
+          </div>
+          <div className="profile-input-group">
+            <h3>Phone Number</h3>
+            <input
+              type="tel"
+              placeholder="User Phone Number"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className="answer-input"
+              disabled={!isEditing}
+            />
+          </div>
           <div className="edit-profile-container">
-          <button onClick={isEditing ? onSaveClick : onEditClick} className="edit-profile">
-          <IonIcon icon={pencilOutline} slot="start" />
-          {isEditing ? 'Save Edits' : 'Edit Profile'}
-        </button>
+            <button onClick={isEditing ? onSaveClick : onEditClick} className="edit-profile">
+              <IonIcon icon={pencilOutline} slot="start" />
+              {isEditing ? 'Save Edits' : 'Edit Profile'}
+            </button>
           </div>
         </div>
       </IonContent>

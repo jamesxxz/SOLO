@@ -8,10 +8,12 @@ router.post('/upload-workout-type', async (req, res) => {
     try {
         const sql = `INSERT INTO workout_type (warmup, core, cooldown) VALUES (?, ?, ?)`;
         const values = [warmup, core, cooldown];
-        await pool.query(sql, values);
-        res.status(200).json({ message: 'Workout Type registered successfully!' });
+        const [result] = await pool.query(sql, values);
+        const workoutTypeId = result.insertId;
+
+        res.status(200).json({ message: 'Workout Type registered successfully!', id: workoutTypeId });
     } catch (err) {
-        console.error(err);
+        console.error('Error on registration:', err);
         res.status(500).send('Server error on registration');
     }
 });
@@ -21,7 +23,7 @@ router.put('/update-workout-type/:id', async (req, res) => {
     const { id } = req.params;
     const { warmup, core, cooldown } = req.body;
     try {
-        const sql = `UPDATE workout_type SET warmup = ?, core = ?, cooldown = ? WHERE workoutType_id = ?`;
+        const sql = `UPDATE workout_type SET warmup = ?, core = ?, cooldown = ? WHERE id = ?`;
         const values = [warmup, core, cooldown, id];
         const [result] = await pool.query(sql, values);
 
@@ -40,15 +42,15 @@ router.put('/update-workout-type/:id', async (req, res) => {
 router.get('/workout_type/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const [rows] = await pool.query('SELECT * FROM workout_type WHERE workoutType_id = ?', [id]);
+        const [result] = await pool.query('SELECT * FROM workout_type WHERE id = ?', [id]);
 
-        if (rows.length > 0) {
-            res.status(200).json(rows[0]);
+        if (result.length > 0) {
+            res.status(200).json(result[0]);
         } else {
             res.status(404).send('Workout Type not found');
         }
     } catch (error) {
-        console.error(error);
+        console.error('Error retrieving workout type data:', error);
         res.status(500).send('Server error retrieving workout type data');
     }
 });
@@ -57,7 +59,7 @@ router.get('/workout_type/:id', async (req, res) => {
 router.delete('/workout_type/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const [result] = await pool.query('DELETE FROM workout_type WHERE workoutType_id = ?', [id]);
+        const [result] = await pool.query('DELETE FROM workout_type WHERE id = ?', [id]);
 
         if (result.affectedRows > 0) {
             res.status(200).json({ message: 'Workout Type deleted successfully' });

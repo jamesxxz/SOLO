@@ -1,17 +1,21 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('../server/db'); // Importing the pool
+const pool = require('../server/db'); // Importing the connection pool
 
 // POST route to register a new athlete
 router.post('/sign-up-athlete', async (req, res) => {
-    const { name, email, phone_number, password, profile_pic, age, gender, height, weight, affiliation_id} = req.body;
+    const { name, email, phone_number, password, profile_pic, age, gender, height, weight, affiliation_id } = req.body;
     try {
-        const sql = `INSERT INTO athlete (name, email, phone_number, password, profile_pic, age, gender, height, weight, affiliation_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+        const sql = `INSERT INTO athlete (name, email, phone_number, password, profile_pic, age, gender, height, weight, affiliation_id) 
+                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
         const values = [name, email, phone_number, password, profile_pic, age, gender, height, weight, affiliation_id];
-        await pool.query(sql, values);
-        res.status(200).json({ message: 'Athlete registered successfully!' });
+        const [result] = await pool.query(sql, values);
+
+        const athleteId = result.insertId;
+
+        res.status(200).json({ message: 'Athlete registered successfully!', id: athleteId });
     } catch (err) {
-        console.error(err);
+        console.error('Error on registration:', err);
         res.status(500).send('Server error on registration');
     }
 });
@@ -48,7 +52,7 @@ router.get('/athlete/:id', async (req, res) => {
             res.status(404).send('Athlete not found');
         }
     } catch (error) {
-        console.error(error);
+        console.error('Error retrieving athlete data:', error);
         res.status(500).send('Server error retrieving athlete data');
     }
 });

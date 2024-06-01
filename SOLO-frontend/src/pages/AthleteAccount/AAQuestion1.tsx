@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { IonContent, IonPage } from '@ionic/react';
 import CreateAccountHeader from '../../components/GradientHeader/AthleteInformation';
 import { useHistory, useLocation } from 'react-router-dom';
-import axios from 'axios';
-import { Affiliation, Question } from '../../types/Affiliation';
+import { Affiliation } from '../../types/Affiliation';
 import { ApiService } from '../../../services/api.service';
 
 interface NestedState {
@@ -13,10 +12,8 @@ interface NestedState {
     phoneNumber: string;
     password: string;
     profilePhoto: string;
-    role: string;
   }
 }
-
 
 const AAQuestion1: React.FC = () => {
   const history = useHistory();
@@ -28,13 +25,12 @@ const AAQuestion1: React.FC = () => {
     email: state.state.email,
     phoneNumber: state.state.phoneNumber,
     password: state.state.password,
-    profilePhoto: state.state.profilePhoto,
-    role: state.state.role,
+    profilePic: state.state.profilePhoto || "default_pic", // Assuming a default profile picture if not provided
     age: '',
     gender: '',
     height: '',
     weight: '',
-    institute: ''
+    affiliationId: '' // This should match the key expected by the ApiService.createAthlete method
   };
 
   const [athleteData, setAthleteData] = useState(initialAthleteData);
@@ -43,10 +39,9 @@ const AAQuestion1: React.FC = () => {
   useEffect(() => {
     const fetchAffiliations = async () => {
       try {
-        //const response = await ApiService.getAffiliations();
-        //console.log(response);
-        //setAffiliations(response.data);
-        //setAffiliations(Affiliation);
+        const response = await ApiService.getAffiliations();
+        console.log('Fetched affiliations:', response);
+        setAffiliations(response);
       } catch (error) {
         console.error('Error fetching affiliations:', error);
       }
@@ -66,52 +61,48 @@ const AAQuestion1: React.FC = () => {
   const onFinish = async () => {
     console.log(athleteData);
     try {
-      const response = await ApiService.createAthlete(athleteData); // Note: Method name may need to be updated.
+      const response = await ApiService.createAthlete(athleteData);
       console.log('Account created:', response);
-      history.push('/account-question-1');
+      history.push('/start-exploring-athlete');
     } catch (error) {
       console.error('Failed to create account:', error);
     }
-    history.push('/start-exploring-athlete');
   };
 
+  const QuestionComponent = ({ questions, athleteData, affiliations, handleChange }) => {
+    return questions.map((question, index) => (
+      <div key={index}>
+        <div className="step-info">Question {index + 1} of {questions.length}</div>
+        <div className="question">{question.label}</div>
+        {question.name === 'affiliationId' ? (
+          <select
+            name={question.name}
+            value={athleteData[question.name]}
+            onChange={handleChange}
+            className="answer-input"
+          >
+            <option value="">Select your institute</option>
+            {affiliations.map((affiliation) => (
+              <option key={affiliation.affiliation_id} value={affiliation.affiliation_id}>
+                {affiliation.name}
+              </option>
+            ))}
+          </select>
+        ) : (
+          <input
+            type="text"
+            name={question.name}
+            placeholder="Enter your answer"
+            value={athleteData[question.name]}
+            onChange={handleChange}
+            className="answer-input"
+          />
+        )}
+      </div>
+    ));
+  };
 
-  
-function QuestionComponent({ questions, athleteData, affiliations, handleChange }) {
-  return questions.map((question, index) => (
-    <div key={index}>
-      <div className="step-info">Question {index + 1} of {questions.length}</div>
-      <div className="question">{question.label}</div>
-      {question.name === 'institute' ? (
-        <select
-          name={question.name}
-          value={athleteData[question.name]}
-          onChange={handleChange}
-          className="answer-input"
-        >
-          <option value="">Select your institute</option>
-          {affiliations.map((affiliation) => (
-            <option key={affiliation.affiliation_id} value={affiliation.affiliation_id.toString()}>
-              {affiliation.name}
-            </option>
-          ))}
-        </select>
-      ) : (
-        <input
-          type="text"
-          name={question.name}
-          placeholder="Enter your answer"
-          value={athleteData[question.name]}
-          onChange={handleChange}
-          className="answer-input"
-        />
-      )}
-    </div>
-  ));
-}
-
-
-  const allAnswersFilled = Object.values(athleteData).every(x => x !== '');
+  const allAnswersFilled = Object.values(athleteData).every(x => x !== '' && x != null);
 
   return (
     <IonPage>
@@ -124,7 +115,7 @@ function QuestionComponent({ questions, athleteData, affiliations, handleChange 
               { label: "What is your gender?", name: "gender" },
               { label: "What is your height?", name: "height" },
               { label: "What is your weight?", name: "weight" },
-              { label: "What is your Educational Institute/Athletic Program and/or Youth Athletic Club?", name: "institute" }
+              { label: "What is your Educational Institute/Athletic Program and/or Youth Athletic Club?", name: "affiliationId" }
             ]}
             athleteData={athleteData}
             affiliations={affiliations}
@@ -133,7 +124,7 @@ function QuestionComponent({ questions, athleteData, affiliations, handleChange 
         </div>
         <div className="navigation-buttons">
           <button onClick={onBackClick} className="back-button">BACK</button>
-          <button onClick={onFinish} className="next-button" disabled={allAnswersFilled}>
+          <button onClick={onFinish} className="next-button" disabled={!allAnswersFilled}>
             FINISH
           </button>
         </div>

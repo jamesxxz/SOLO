@@ -42,33 +42,33 @@ export class ApiService {
 
   static async createAthlete(athleteData: any) {
     let sentData = {
-      "athleteID": 1,
       "name": athleteData.name,
       "email": athleteData.email,
-      "age": athleteData.age,
-      "gender": athleteData.gender,
-      "height": athleteData.height,
-      "weight": athleteData.weight,
       "phone_number": athleteData.phoneNumber,
       "password": athleteData.password,
       "profile_pic": "fdsa",
-      "title": athleteData.title,
-      "affiliation_id": "222",
-      "coach_id": "1"
+      "age": parseInt(athleteData.age, 10),
+      "gender": athleteData.gender,
+      "height": athleteData.height,
+      "weight": parseInt(athleteData.weight, 10),
+      "affiliation_id": parseInt(athleteData.affiliationId, 10)
     }
     return axios.post(`${BASE_URL}/athlete/sign-up-athlete`, sentData)
       .then(response => response.data)
       .catch(error => {
         throw error;
       });
-  }
+}
 
-  static getAffiliations() {
-    return axios.get(`${BASE_URL}/affiliation`)
-      .then(response => response.data)
-      .catch(error => {
-        console.error('Failed to fetch affiliations:', error);
-        throw error;  
-      });
+
+static async getAffiliations() {
+  try {
+      const response = await axios.get(`${BASE_URL}/affiliation`);
+      return response.data;
+  } catch (error) {
+      console.error('Failed to fetch affiliations:', error);
+      throw error;
   }
 }
+}
+

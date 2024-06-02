@@ -1,9 +1,10 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { IonContent, IonPage } from '@ionic/react';
 import CreateAccountHeader from '../../components/GradientHeader/CreateAccountHeader'; 
 import { useHistory, useLocation } from 'react-router-dom';
-import { AccountContext } from '../../contexts/AccountContext';
 import '../../components/AccountQuestion.css';
+
+const shift = 5; // Example shift value for the encryption function
 
 interface AccountQuestion4Props {
   onNextClick: () => void;
@@ -12,22 +13,17 @@ interface AccountQuestion4Props {
 
 interface NestedState {
   state: {
-      name: string;
-      email: string;
-      phoneNumber: string;
+    name: string;
+    email: string;
+    phoneNumber: string;
   }
 }
 
 const AccountQuestion4: React.FC<AccountQuestion4Props> = ({}) => {
   const history = useHistory();
-  //const { password, setPassword } = useContext(AccountContext); // Use the context
   const location = useLocation<NestedState>();
   const { state } = location;
-  console.log(state);
-  const name = state.state.name;
-  const email = state.state.email;
-  const phoneNumber = state.state.phoneNumber;
-  console.log(name, email, phoneNumber);
+  const { name, email, phoneNumber } = state.state;
 
   const [answer, setAnswer] = useState('');
   const [isValidPassword, setIsValidPassword] = useState(false);
@@ -40,13 +36,21 @@ const AccountQuestion4: React.FC<AccountQuestion4Props> = ({}) => {
 
   const onNextClick = () => {
     if (isValidPassword) {
-      console.log('Current password before setting account:', answer); // Log current password
-      //setPassword(answer); // Set the password in the context
-      console.log('Account password after setting:', answer); // Log updated account password
-      history.push('/account-question-5',{ state: { name: name, email: email, phoneNumber: phoneNumber, password: answer  } }); // Change this based on the route of the next page
+      const encryptedPassword = simpleEncrypt(answer, shift);
+      console.log('Encrypted password:', encryptedPassword);
+      history.push('/account-question-5', { state: { name, email, phoneNumber, password: encryptedPassword } });
     } else {
       alert('Please ensure your password meets all the criteria.');
     }
+  };
+
+  const simpleEncrypt = (text, shift) => {
+    let result = '';
+    for (let i = 0; i < text.length; i++) {
+        let charCode = text.charCodeAt(i) + shift;
+        result += String.fromCharCode(charCode);
+    }
+    return result;
   };
 
   const validatePassword = (password: string) => {
@@ -74,7 +78,6 @@ const AccountQuestion4: React.FC<AccountQuestion4Props> = ({}) => {
     const password = e.target.value;
     setAnswer(password);
     setIsValidPassword(validatePassword(password));
-    console.log('Password input changed:', password); // Log value when input changes
   };
 
   return (
@@ -82,14 +85,14 @@ const AccountQuestion4: React.FC<AccountQuestion4Props> = ({}) => {
       <CreateAccountHeader />
       <IonContent>
         <div className="question-view">
-          <div className="step-info">Step 4 of 6</div>   {/* Change this for the step count */}
-          <div className="question">Please create a password</div> {/* Change this based on current question */}
+          <div className="step-info">Step 4 of 6</div>
+          <div className="question">Please create a password</div>
           <input
-            type="password" // Changed input type to password
+            type="password"
             placeholder="Enter your password"
             value={answer}
             onChange={handleChange}
-            className={`answer-input ${isValidPassword ? '' : 'invalid'}`} // Add a class if the password is invalid
+            className={`answer-input ${isValidPassword ? '' : 'invalid'}`}
           />
           {!isValidPassword && (
             <div className="error-message">

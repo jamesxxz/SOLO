@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { IonContent, IonPage } from '@ionic/react';
 import CreateAccountHeader from '../../components/GradientHeader/AthleteInformation';
 import { useHistory, useLocation } from 'react-router-dom';
@@ -25,12 +25,12 @@ const AAQuestion1: React.FC = () => {
     email: state.state.email,
     phoneNumber: state.state.phoneNumber,
     password: state.state.password,
-    profilePic: state.state.profilePhoto || "default_pic", // Assuming a default profile picture if not provided
+    profilePic: state.state.profilePhoto || "default_pic",
     age: '',
     gender: '',
     height: '',
     weight: '',
-    affiliationId: '' // This should match the key expected by the ApiService.createAthlete method
+    affiliationId: ''
   };
 
   const [athleteData, setAthleteData] = useState(initialAthleteData);
@@ -49,10 +49,14 @@ const AAQuestion1: React.FC = () => {
     fetchAffiliations();
   }, []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setAthleteData(prev => ({ ...prev, [name]: value }));
-  };
+    console.log(`Changing ${name} to ${value}`);
+    setAthleteData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  }, []);
 
   const onBackClick = () => {
     history.goBack();
@@ -134,3 +138,4 @@ const AAQuestion1: React.FC = () => {
 };
 
 export default AAQuestion1;
+

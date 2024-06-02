@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { IonPage, IonHeader, IonToolbar, IonIcon, IonContent } from '@ionic/react';
 import { arrowBackOutline, pencilOutline } from 'ionicons/icons';
 import '../../components/CoachView/ProfileView.css';
 import TabBar from './TabBar';
 import { ApiService } from '../../../services/api.service';
 
+interface CoachProfileParams {
+  id?: string;
+}
+
 const CoachProfileView: React.FC = () => {
   const history = useHistory();
+  const { id } = useParams<CoachProfileParams>();
   const [username, setUsername] = useState('');
   const [emailAddress, setEmailAddress] = useState('');
   const [phone, setPhone] = useState('');
@@ -17,18 +22,22 @@ const CoachProfileView: React.FC = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const profileData = await ApiService.getLoggedInCoachProfile();
-        setUsername(profileData.name);
-        setEmailAddress(profileData.email);
-        setPhone(profileData.phone_number);
-        setProfilePic(profileData.profile_pic);
+        if (id) {
+          const query = { id: parseInt(id) };
+          const profileData = await ApiService.getCoachProfile(query);
+          console.log('Profile data fetched:', profileData);
+          setUsername(profileData.name);
+          setEmailAddress(profileData.email);
+          setPhone(profileData.phone_number);
+          setProfilePic(profileData.profile_pic);
+        }
       } catch (error) {
         console.error('Failed to fetch profile data:', error);
       }
     };
 
     fetchProfile();
-  }, []);
+  }, [id]);
 
   const onBackClick = () => {
     history.push('/coach-home');
@@ -41,14 +50,16 @@ const CoachProfileView: React.FC = () => {
   const onSaveClick = async () => {
     if (username && emailAddress && phone) {
       try {
-        const updatedData = {
-          name: username,
-          email: emailAddress,
-          phone_number: phone
-        };
-        await ApiService.updateCoach(1, updatedData); // Assuming coachId is 1, replace as necessary
-        alert('Profile saved successfully!');
-        setIsEditing(false);
+        if (id) {
+          const updatedData = {
+            name: username,
+            email: emailAddress,
+            phone_number: phone
+          };
+          await ApiService.updateCoachProfile(parseInt(id), updatedData);
+          alert('Profile saved successfully!');
+          setIsEditing(false);
+        }
       } catch (error) {
         console.error('Failed to update profile:', error);
         alert('Failed to update profile.');
@@ -79,7 +90,6 @@ const CoachProfileView: React.FC = () => {
             <h3>Name</h3>
             <input
               type="text"
-              placeholder="User Name"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className="answer-input"
@@ -90,7 +100,6 @@ const CoachProfileView: React.FC = () => {
             <h3>Email Address</h3>
             <input
               type="email"
-              placeholder="User Email Address"
               value={emailAddress}
               onChange={(e) => setEmailAddress(e.target.value)}
               className="answer-input"
@@ -101,7 +110,6 @@ const CoachProfileView: React.FC = () => {
             <h3>Phone Number</h3>
             <input
               type="tel"
-              placeholder="User Phone Number"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               className="answer-input"
@@ -122,3 +130,5 @@ const CoachProfileView: React.FC = () => {
 };
 
 export default CoachProfileView;
+
+

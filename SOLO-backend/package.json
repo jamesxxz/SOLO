@@ -22,6 +22,7 @@
     "aws-sdk": "^2.1621.0",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
+    "crypto-js": "^4.2.0",
     "dotenv": "^10.0.0",
     "es-abstract": "^1.23.2",
     "eslint-config-airbnb-base": "^14.2.1",

@@ -74,4 +74,33 @@ router.delete('/athlete/:id', async (req, res) => {
     }
 });
 
+// Login route for athletes
+router.post('/login-athlete', async (req, res) => {
+    const { email, password } = req.body;
+    try {
+        const [rows] = await pool.query('SELECT * FROM athlete WHERE email = ?', [email]);
+        if (rows.length > 0) {
+            const athlete = rows[0];
+            const decryptedPassword = decryptPassword(athlete.password);
+            if (decryptedPassword === password) {
+                res.status(200).json({ message: 'Login successful', athlete });
+            } else {
+                res.status(401).send('Invalid email or password');
+            }
+        } else {
+            res.status(401).send('Invalid email or password');
+        }
+    } catch (error) {
+        console.error('Error logging in:', error);
+        res.status(500).send('Server error during login');
+    }
+});
+
+// Decrypt function
+const decryptPassword = (encryptedPassword) => {
+    const bytes = CryptoJS.AES.decrypt(encryptedPassword, 'my-secret-key');
+    return bytes.toString(CryptoJS.enc.Utf8);
+};
+
+
 module.exports = router;

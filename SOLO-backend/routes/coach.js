@@ -1,16 +1,22 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../server/db'); // Importing the connection pool
+const CryptoJS = require('crypto-js');
 
-// POST route to register a new coach
 router.post('/sign-up-coach', async (req, res) => {
     const { name, email, phone_number, password, profile_pic, title, affiliation_id } = req.body;
     try {
+        // Store the encrypted password directly
+        const encryptedPassword = password;
+        console.log('Registering coach with email:', email);
+        console.log('Encrypted password to store:', encryptedPassword);
+
         const sql = `INSERT INTO coach (name, email, phone_number, password, profile_pic, title, affiliation_id) VALUES (?, ?, ?, ?, ?, ?, ?)`;
-        const values = [name, email, phone_number, password, profile_pic, title, affiliation_id];
-        const [result] = await pool.query(sql, values); // Assuming you're using a MySQL driver that returns a promise
+        const values = [name, email, phone_number, encryptedPassword, profile_pic, title, affiliation_id];
+        const [result] = await pool.query(sql, values);
         const coachId = result.insertId;
 
+        console.log('Coach registered with ID:', coachId);
         res.status(200).json({ message: 'Coach registered successfully!', id: coachId });
     } catch (err) {
         console.error('Error on registration:', err);
@@ -83,6 +89,35 @@ router.post('/link-athlete-to-coach', async (req, res) => {
     } catch (err) {
         console.error('Error linking athlete to coach:', err);
         res.status(500).send('Server error on linking athlete to coach');
+    }
+});
+
+// Login route for coaches
+// Login route for coaches
+router.post('/login-coach', async (req, res) => {
+    const { email, password } = req.body;
+    try {
+        console.log('Attempting login for email:', email);
+        const [rows] = await pool.query('SELECT * FROM coach WHERE email = ?', [email]);
+        if (rows.length > 0) {
+            const coach = rows[0];
+            console.log('Found coach:', coach);
+
+            // Directly compare the encrypted password from the user with the stored encrypted password
+            if (coach.password === password) {
+                console.log('Login successful for coach:', coach.id);
+                res.status(200).json({ message: 'Login successful', coach });
+            } else {
+                console.log('Invalid password for email:', email);
+                res.status(401).send('Invalid email or password');
+            }
+        } else {
+            console.log('No coach found with email:', email);
+            res.status(401).send('Invalid email or password');
+        }
+    } catch (error) {
+        console.error('Error logging in:', error);
+        res.status(500).send('Server error during login');
     }
 });
 

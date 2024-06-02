@@ -1,6 +1,4 @@
 import axios from 'axios';
-//import { AnswersProvider } from '../src/contexts/CreateAccountAnswersContext';
-
 
 const BASE_URL = 'http://localhost:3000';
 
@@ -8,16 +6,15 @@ export class ApiService {
 
   constructor() {}
 
-  static async createCoach(affiliateData: any) {
+  static async createCoach(coachData: any) {
     let sentData = {
-      "coachID": 1,
-      "name": affiliateData.name,
-      "email": affiliateData.email,
-      "phone_number": affiliateData.phoneNumber,
-      "password": affiliateData.password,
+      "name": coachData.name,
+      "email": coachData.email,
+      "phone_number": coachData.phoneNumber,
+      "password": coachData.password,
       "profile_pic": "fdsa",
-      "title": affiliateData.title,
-      "affiliation_id": "222"
+      "title": coachData.title,
+      "affiliation_id": coachData.affiliationId
     }
     return axios.post(`${BASE_URL}/coach/sign-up-coach`, sentData)
       .then(response => response.data)
@@ -28,7 +25,7 @@ export class ApiService {
 
   static async createAffiliate(affiliateData: any) {
     let sentData = {
-        "name": affiliateData,
+      "name": affiliateData,
       "type": "coach",
       "affiliation_id": "222"
     }
@@ -39,7 +36,6 @@ export class ApiService {
       });
   }
   
-
   static async createAthlete(athleteData: any) {
     let sentData = {
       "name": athleteData.name,
@@ -58,17 +54,68 @@ export class ApiService {
       .catch(error => {
         throw error;
       });
-}
+  }
 
-
-static async getAffiliations() {
-  try {
+  static async getAffiliations() {
+    try {
       const response = await axios.get(`${BASE_URL}/affiliation`);
       return response.data;
-  } catch (error) {
+    } catch (error) {
       console.error('Failed to fetch affiliations:', error);
       throw error;
+    }
+  }
+
+  static async getCoachProfile(query: { email?: string, phoneNumber?: string, id?: number }) {
+    if (!query.id) {
+      throw new Error('Coach ID is required to fetch profile');
+    }
+    try {
+      const response = await axios.get(`${BASE_URL}/coach/${query.id}`);
+      console.log('Coach profile data:', response.data); // Log the data for verification
+      return response.data;
+    } catch (error) {
+      console.error('Failed to fetch coach profile:', error);
+      throw error;
+    }
+  }
+
+  static async loginCoach(email: string, password: string) {
+    return axios.post(`${BASE_URL}/coach/login-coach`, { email, password })
+      .then(response => response.data)
+      .catch(error => {
+        throw error;
+      });
+  }
+
+  static async loginAthlete(email: string, password: string) {
+    return axios.post(`${BASE_URL}/athlete/login-athlete`, { email, password })
+      .then(response => response.data)
+      .catch(error => {
+        throw error;
+      });
+  }
+
+
+  static async getAthleteProfile(query: { id: number }) {
+    try {
+      const response = await axios.get(`${BASE_URL}/athlete/${query.id}`);
+      console.log('Athlete profile data:', response.data); // Log the data for verification
+      return response.data;
+    } catch (error) {
+      console.error('Failed to fetch athlete profile:', error);
+      throw error;
+    }
+  }
+  
+
+  static async updateAthleteProfile(athleteId: number, updatedData: any) {
+    try {
+      const response = await axios.put(`${BASE_URL}/athlete/profile/${athleteId}`, updatedData);
+      return response.data;
+    } catch (error) {
+      console.error('Failed to update athlete profile:', error);
+      throw error;
+    }
   }
 }
-}
-

@@ -1,48 +1,54 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IonContent, IonPage, IonButton } from '@ionic/react';
 import CreateAccountHeader from '../../components/GradientHeader/CoachInformation';
 import { useHistory, useLocation } from 'react-router-dom';
+import { Affiliation } from '../../types/Affiliation';
 import { ApiService } from '../../../services/api.service';
 
-
 interface NestedState {
-        
   state: {
-      name: string;
-      email: string;
-      phoneNumber: string;
-      password: string;
-      profilePhoto: string;
-      role: string;
+    name: string;
+    email: string;
+    phoneNumber: string;
+    password: string;
+    profilePhoto: File | string;
   }
 }
+
 const CAQuestion1: React.FC = () => {
   const history = useHistory();
-  const location = useLocation<NestedState>(); 
+  const location = useLocation<NestedState>();
   const { state } = location;
-  const name = state.state.name;
-  const email = state.state.email;
-  const phoneNumber = state.state.phoneNumber;
-  const password = state.state.password;
-  const profilePhoto = state.state.profilePhoto;
-  const role = state.state.role;  
-  console.log(name, role);
 
-  const initialAnswers = {
-    title: '',  // Assuming 'title' and 'institute' are the only required fields from your questions array
-    institute: ''
+  const initialCoachData = {
+    name: state.state.name,
+    email: state.state.email,
+    phoneNumber: state.state.phoneNumber,
+    password: state.state.password,
+    profilePic: state.state.profilePhoto || "default_pic", // Assuming a default profile picture if not provided
+    title: '',
+    affiliationId: '' // This should match the key expected by the ApiService.createAthlete method
   };
-  //const { name, email, password, file, role} = location.state || {};
+  
+  const [coachData, setCoachData] = useState(initialCoachData);
+  const [affiliations, setAffiliations] = useState<Affiliation[]>([]);
 
-  const [answers, setAnswers] = useState(initialAnswers);
+  useEffect(() => {
+    const fetchAffiliations = async () => {
+      try {
+        const response = await ApiService.getAffiliations();
+        console.log('Fetched affiliations:', response);
+        setAffiliations(response);
+      } catch (error) {
+        console.error('Error fetching affiliations:', error);
+      }
+    };
+    fetchAffiliations();
+  }, []);
 
-  const questions = [
-    { label: "What is your Title (i.e., Head Coach, Assistant Head Coach, Distance Coach)", name: "title" },
-    { label: "What is your Educational Institute/Athletic Program and/or Youth Athletic Club (i.e., Middle School, High School, College, University)", name: "institute" }
-  ];
-
-  const handleChange = (name: string, value: string) => {
-    setAnswers(prev => ({ ...prev, [name]: value }));
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setCoachData(prev => ({ ...prev, [name]: value }));
   };
 
   const onBackClick = () => {
@@ -50,60 +56,72 @@ const CAQuestion1: React.FC = () => {
   };
 
   const onFinish = async () => {
-    console.log(answers);
+    console.log(coachData);
     try {
-        const combinedData = {
-        name: name,
-        email: email,
-        phoneNumber: phoneNumber,
-        password: password,
-        profile:profilePhoto,
-        role: role,
-        title: answers.title,
-        affiliation: answers.institute
-      };
-      const response = await ApiService.createCoach(combinedData);
+      const response = await ApiService.createCoach(coachData);
       console.log('Account created:', response);
-      history.push('/account-question-1');
+      history.push('/start-exploring-coach');
     } catch (error) {
       console.error('Failed to create account:', error);
     }
-    history.push('/start-exploring-coach'); // Adjust to your actual next route
   };
 
-  // Ensure that all required answers are filled
-  const allAnswersFilled = questions.every(question => answers[question.name] !== '');
+  const QuestionComponent = ({ questions, coachData, affiliations, handleChange }) => {
+    return questions.map((question, index) => (
+      <div key={index}>
+        <div className="step-info">Question {index + 1} of {questions.length}</div>
+        <div className="question">{question.label}</div>
+        {question.name === 'affiliationId' ? (
+          <select
+            name={question.name}
+            value={coachData[question.name]}
+            onChange={handleChange}
+            className="answer-input"
+          >
+            <option value="">Select your institute</option>
+            {affiliations.map((affiliation) => (
+              <option key={affiliation.affiliation_id} value={affiliation.affiliation_id}>
+                {affiliation.name}
+              </option>
+            ))}
+          </select>
+        ) : (
+          <input
+            type="text"
+            name={question.name}
+            placeholder="Enter your answer"
+            value={coachData[question.name]}
+            onChange={handleChange}
+            className="answer-input"
+          />
+        )}
+      </div>
+    ));
+  };
+
+  const allAnswersFilled = coachData.title !== '' && coachData.affiliationId !== '';
 
   return (
     <IonPage>
       <CreateAccountHeader />
       <IonContent>
         <div className="question-view">
-          {questions.map((question, index) => (
-            <div key={index}>
-              <div className="step-info">Question {index + 1} of {questions.length}</div>
-              <div className="question">{question.label}</div>
-              <input
-                type="text"
-                name={question.name}
-                placeholder="Enter your answer"
-                value={answers[question.name]}
-                onChange={(e) => handleChange(question.name, e.target.value)}
-                className="answer-input"
-              />
-            </div>
-          ))}
+          <QuestionComponent
+            questions={[
+              { label: "What is your title? (E.g. Head Coach, Assistant Coach)", name: "title" },
+              { label: "What is your Educational Institute/Athletic Program and/or Youth Athletic Club?", name: "affiliationId" }
+            ]}
+            coachData={coachData}
+            affiliations={affiliations}
+            handleChange={handleChange}
+          />
         </div>
         <div className="navigation-buttons">
-            <button onClick={onBackClick} className="back-button">BACK</button>
-            <button 
-              onClick={onFinish} 
-              className="next-button"
-              disabled={!allAnswersFilled}
-            >
-              FINISH
-            </button>
-          </div>
+          <button onClick={onBackClick} className="back-button">BACK</button>
+          <button onClick={onFinish} className="next-button" disabled={!allAnswersFilled}>
+            FINISH
+          </button>
+        </div>
       </IonContent>
     </IonPage>
   );

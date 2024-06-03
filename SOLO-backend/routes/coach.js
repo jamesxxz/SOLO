@@ -3,6 +3,7 @@ const router = express.Router();
 const pool = require('../server/db'); // Importing the connection pool
 const CryptoJS = require('crypto-js');
 
+// Register a coach
 router.post('/sign-up-coach', async (req, res) => {
     const { name, email, phone_number, password, profile_pic, title, affiliation_id } = req.body;
     try {
@@ -28,7 +29,7 @@ router.put('/update-coach/:id', async (req, res) => {
     const { id } = req.params;
     const { name, email, phone_number } = req.body;
     try {
-        const sql = `UPDATE coach SET name = ?, email = ?, phone_number = ? WHERE id = ?`;
+        const sql = `UPDATE coach SET name = ?, email = ?, phone_number = ? WHERE coach_id = ?`;
         const values = [name, email, phone_number, id];
         const [result] = await pool.query(sql, values);
 
@@ -47,7 +48,7 @@ router.put('/update-coach/:id', async (req, res) => {
 router.get('/coach/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const [result] = await pool.query('SELECT * FROM coach WHERE id = ?', [id]);
+        const [result] = await pool.query('SELECT * FROM coach WHERE coach_id = ?', [id]);
 
         if (result.length > 0) {
             res.status(200).json(result[0]);

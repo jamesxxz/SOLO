@@ -1,17 +1,18 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../server/db'); // Importing the connection pool
-const CryptoJS = require('crypto-js');
 
-// POST route to register a new athlete
+// Register an athlete
 router.post('/sign-up-athlete', async (req, res) => {
     const { name, email, phone_number, password, profile_pic, age, gender, height, weight, affiliation_id } = req.body;
     try {
-        const sql = `INSERT INTO athlete (name, email, phone_number, password, profile_pic, age, gender, height, weight, affiliation_id) 
-                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-        const values = [name, email, phone_number, password, profile_pic, age, gender, height, weight, affiliation_id];
-        const [result] = await pool.query(sql, values);
+        const encryptedPassword = password;
+        console.log('Registering athlete with email:', email);
+        console.log('Encrypted password to store:', encryptedPassword);
 
+        const sql = `INSERT INTO athlete (name, email, phone_number, password, profile_pic, age, gender, height, weight, affiliation_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+        const values = [name, email, phone_number, encryptedPassword, profile_pic, age, gender, height, weight, affiliation_id];
+        const [result] = await pool.query(sql, values);
         const athleteId = result.insertId;
 
         console.log('Athlete registered with ID:', athleteId);
@@ -25,10 +26,10 @@ router.post('/sign-up-athlete', async (req, res) => {
 // PUT route to update an athlete's details
 router.put('/update-athlete/:id', async (req, res) => {
     const { id } = req.params;
-    const { name, email, phone_number } = req.body;
+    const { name, email, phone_number, age, gender, height, weight } = req.body;
     try {
-        const sql = `UPDATE athlete SET name = ?, email = ?, phone_number = ? WHERE athlete_id = ?`;
-        const values = [name, email, phone_number, id];
+        const sql = `UPDATE athlete SET name = ?, email = ?, phone_number = ?, age = ?, gender = ?, height = ?, weight = ? WHERE athlete_id = ?`;
+        const values = [name, email, phone_number, age, gender, height, weight, id];
         const [result] = await pool.query(sql, values);
 
         if (result.affectedRows > 0) {
@@ -46,10 +47,10 @@ router.put('/update-athlete/:id', async (req, res) => {
 router.get('/athlete/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const [rows] = await pool.query('SELECT * FROM athlete WHERE athlete_id = ?', [id]);
+        const [result] = await pool.query('SELECT * FROM athlete WHERE athlete_id = ?', [id]);
 
-        if (rows.length > 0) {
-            res.status(200).json(rows[0]);
+        if (result.length > 0) {
+            res.status(200).json(result[0]);
         } else {
             res.status(404).send('Athlete not found');
         }

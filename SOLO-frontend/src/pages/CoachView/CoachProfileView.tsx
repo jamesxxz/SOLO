@@ -1,18 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import React, { useState, useEffect, useContext } from 'react';
+import { useHistory } from 'react-router-dom';
 import { IonPage, IonHeader, IonToolbar, IonIcon, IonContent } from '@ionic/react';
 import { arrowBackOutline, pencilOutline } from 'ionicons/icons';
 import '../../components/CoachView/ProfileView.css';
 import TabBar from './TabBar';
 import { ApiService } from '../../../services/api.service';
-
-interface CoachProfileParams {
-  id?: string;
-}
+import { AuthContext } from '../../contexts/AuthContext';
 
 const CoachProfileView: React.FC = () => {
   const history = useHistory();
-  const { id } = useParams<CoachProfileParams>();
+  const authContext = useContext(AuthContext);
+
+  if (!authContext) {
+    throw new Error('AuthContext must be used within an AuthProvider');
+  }
+
+  const { userId } = authContext;
+
   const [username, setUsername] = useState('');
   const [emailAddress, setEmailAddress] = useState('');
   const [phone, setPhone] = useState('');
@@ -22,9 +26,9 @@ const CoachProfileView: React.FC = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        if (id) {
-          const query = { id: parseInt(id) };
-          const profileData = await ApiService.getCoachProfile(query);
+        if (userId) {
+          console.log('Fetching profile for user ID:', userId);
+          const profileData = await ApiService.getCoachProfile({ id: parseInt(userId) });
           console.log('Profile data fetched:', profileData);
           setUsername(profileData.name);
           setEmailAddress(profileData.email);
@@ -37,7 +41,7 @@ const CoachProfileView: React.FC = () => {
     };
 
     fetchProfile();
-  }, [id]);
+  }, [userId]);
 
   const onBackClick = () => {
     history.push('/coach-home');
@@ -50,13 +54,13 @@ const CoachProfileView: React.FC = () => {
   const onSaveClick = async () => {
     if (username && emailAddress && phone) {
       try {
-        if (id) {
+        if (userId) {
           const updatedData = {
             name: username,
             email: emailAddress,
             phone_number: phone
           };
-          await ApiService.updateCoachProfile(parseInt(id), updatedData);
+          await ApiService.updateCoachProfile(parseInt(userId), updatedData);
           alert('Profile saved successfully!');
           setIsEditing(false);
         }
@@ -130,5 +134,3 @@ const CoachProfileView: React.FC = () => {
 };
 
 export default CoachProfileView;
-
-

@@ -1,18 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
-import '../../components/CoachView/ProfileView.css';
+import React, { useState, useEffect, useContext } from 'react';
+import { useHistory } from 'react-router-dom';
+import { IonPage, IonHeader, IonToolbar, IonIcon, IonContent } from '@ionic/react';
 import { arrowBackOutline, pencilOutline } from 'ionicons/icons';
-import { IonIcon, IonPage, IonContent, IonHeader, IonToolbar } from '@ionic/react';
+import '../../components/CoachView/ProfileView.css';
 import TabBar2 from './TabBar2';
 import { ApiService } from '../../../services/api.service';
-
-interface AthleteProfileParams {
-  id?: string;
-}
+import { AuthContext } from '../../contexts/AuthContext';
 
 const ProfileView: React.FC = () => {
   const history = useHistory();
-  const { id } = useParams<AthleteProfileParams>();
+  const authContext = useContext(AuthContext);
+
+  if (!authContext) {
+    throw new Error('AuthContext must be used within an AuthProvider');
+  }
+
+  const { userId } = authContext;
+
   const [username, setUsername] = useState('');
   const [emailAddress, setEmailAddress] = useState('');
   const [phone, setPhone] = useState('');
@@ -22,20 +26,14 @@ const ProfileView: React.FC = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        if (id) {
-          const query = { id: parseInt(id) };
-          const profileData = await ApiService.getAthleteProfile(query);
-          console.log('Profile data fetched:', profileData); // Log the data for verification
-
-          // Ensure data is present before setting state
-          if (profileData) {
-            setUsername(profileData.name);
-            setEmailAddress(profileData.email);
-            setPhone(profileData.phone_number);
-            setProfilePic(profileData.profile_pic);
-          } else {
-            console.error('No profile data received');
-          }
+        if (userId) {
+          console.log('Fetching profile for user ID:', userId);
+          const profileData = await ApiService.getAthleteProfile({ id: parseInt(userId) });
+          console.log('Profile data fetched:', profileData);
+          setUsername(profileData.name);
+          setEmailAddress(profileData.email);
+          setPhone(profileData.phone_number);
+          setProfilePic(profileData.profile_pic);
         }
       } catch (error) {
         console.error('Failed to fetch profile data:', error);
@@ -43,10 +41,10 @@ const ProfileView: React.FC = () => {
     };
 
     fetchProfile();
-  }, [id]);
+  }, [userId]);
 
   const onBackClick = () => {
-    history.push('/athlete-view-account');
+    history.push('/athlete-home');
   };
 
   const onEditClick = () => {
@@ -56,13 +54,13 @@ const ProfileView: React.FC = () => {
   const onSaveClick = async () => {
     if (username && emailAddress && phone) {
       try {
-        if (id) {
+        if (userId) {
           const updatedData = {
             name: username,
             email: emailAddress,
             phone_number: phone
           };
-          await ApiService.updateAthleteProfile(parseInt(id), updatedData);
+          await ApiService.updateAthleteProfile(parseInt(userId), updatedData);
           alert('Profile saved successfully!');
           setIsEditing(false);
         }
@@ -96,7 +94,7 @@ const ProfileView: React.FC = () => {
             <h3>Name</h3>
             <input
               type="text"
-              value={username} // The username state variable is used here
+              value={username}
               onChange={(e) => setUsername(e.target.value)}
               className="answer-input"
               disabled={!isEditing}
@@ -106,7 +104,7 @@ const ProfileView: React.FC = () => {
             <h3>Email Address</h3>
             <input
               type="email"
-              value={emailAddress} // The emailAddress state variable is used here
+              value={emailAddress}
               onChange={(e) => setEmailAddress(e.target.value)}
               className="answer-input"
               disabled={!isEditing}
@@ -116,7 +114,7 @@ const ProfileView: React.FC = () => {
             <h3>Phone Number</h3>
             <input
               type="tel"
-              value={phone} // The phone state variable is used here
+              value={phone}
               onChange={(e) => setPhone(e.target.value)}
               className="answer-input"
               disabled={!isEditing}
@@ -136,4 +134,3 @@ const ProfileView: React.FC = () => {
 };
 
 export default ProfileView;
-

@@ -58,7 +58,7 @@ const AccountQuestion2: React.FC<AccountQuestion2Props> = ({}) => {
       <CreateAccountHeader />
       <IonContent>
         <div className="question-view">
-          <div className="step-info">Step 2 of 6s</div> {/* Change this for the step count */}
+          <div className="step-info">Step 2 of 6</div> {/* Change this for the step count */}
           <div className="question">What is your email address?</div> {/* Change this based on current question */}
           <input
             type="text"

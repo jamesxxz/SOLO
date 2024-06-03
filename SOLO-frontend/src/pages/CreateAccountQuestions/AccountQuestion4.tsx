@@ -44,7 +44,7 @@ const AccountQuestion4: React.FC<AccountQuestion4Props> = ({}) => {
     }
   };
 
-  const simpleEncrypt = (text, shift) => {
+  const simpleEncrypt = (text: string, shift: number) => {
     let result = '';
     for (let i = 0; i < text.length; i++) {
         let charCode = text.charCodeAt(i) + shift;

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { IonContent, IonPage } from '@ionic/react';
+import { IonContent, IonImg, IonPage } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
 import '../../components/Login.css';
 import { ApiService } from '../../../services/api.service'; // Adjust the import path as needed
@@ -42,7 +42,7 @@ const Login: React.FC = () => {
         history.push('/home');
     };
 
-    const simpleEncrypt = (text, shift) => {
+    const simpleEncrypt = (text: string, shift: number) => {
         let result = '';
         for (let i = 0; i < text.length; i++) {
             let charCode = text.charCodeAt(i) + shift;
@@ -85,6 +85,7 @@ const Login: React.FC = () => {
             <IonContent>
                 <div className="login-container">
                     <div className="login-header">
+                        <IonImg src="/SOLOLogo.png" className="logo-image" />
                         <h1 className="login-title">Login</h1>
                     </div>
                     <div className="login-form">

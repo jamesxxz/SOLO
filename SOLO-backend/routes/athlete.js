@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../server/db'); // Importing the connection pool
+const CryptoJS = require('crypto-js');
 
 // POST route to register a new athlete
 router.post('/sign-up-athlete', async (req, res) => {
@@ -81,8 +82,7 @@ router.post('/login-athlete', async (req, res) => {
         const [rows] = await pool.query('SELECT * FROM athlete WHERE email = ?', [email]);
         if (rows.length > 0) {
             const athlete = rows[0];
-            const decryptedPassword = decryptPassword(athlete.password);
-            if (decryptedPassword === password) {
+            if (athlete.password === password) {
                 res.status(200).json({ message: 'Login successful', athlete });
             } else {
                 res.status(401).send('Invalid email or password');
@@ -95,12 +95,5 @@ router.post('/login-athlete', async (req, res) => {
         res.status(500).send('Server error during login');
     }
 });
-
-// Decrypt function
-const decryptPassword = (encryptedPassword) => {
-    const bytes = CryptoJS.AES.decrypt(encryptedPassword, 'my-secret-key');
-    return bytes.toString(CryptoJS.enc.Utf8);
-};
-
 
 module.exports = router;

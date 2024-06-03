@@ -1,9 +1,10 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useContext } from 'react';
 import { IonContent, IonPage } from '@ionic/react';
 import CreateAccountHeader from '../../components/GradientHeader/AthleteInformation';
 import { useHistory, useLocation } from 'react-router-dom';
 import { Affiliation } from '../../types/Affiliation';
 import { ApiService } from '../../../services/api.service';
+import { AuthContext } from '../../contexts/AuthContext';
 
 interface NestedState {
   state: {
@@ -18,6 +19,13 @@ interface NestedState {
 const AAQuestion1: React.FC = () => {
   const history = useHistory();
   const location = useLocation<NestedState>();
+  const authContext = useContext(AuthContext);
+
+  if (!authContext) {
+    throw new Error('AuthContext must be used within an AuthProvider');
+  }
+
+  const { login } = authContext;
   const { state } = location;
 
   const initialAthleteData = {
@@ -67,12 +75,26 @@ const AAQuestion1: React.FC = () => {
     try {
       const response = await ApiService.createAthlete(athleteData);
       console.log('Account created:', response);
-      history.push('/start-exploring-athlete');
+  
+      // Log the entire response object to see its structure
+      console.log('Full response:', response);
+  
+      // Access the ID directly from the response object
+      const userId = response.id;
+      console.log('User ID:', userId);
+  
+      if (userId) {
+        login(userId); // Store the user ID in context and local storage
+        history.push('/start-exploring-athlete');
+      } else {
+        console.error('Failed to retrieve user ID from response');
+      }
     } catch (error) {
       console.error('Failed to create account:', error);
     }
   };
-
+  
+  
   const QuestionComponent = ({ questions, athleteData, affiliations, handleChange }) => {
     return questions.map((question, index) => (
       <div key={index}>
@@ -138,4 +160,3 @@ const AAQuestion1: React.FC = () => {
 };
 
 export default AAQuestion1;
-

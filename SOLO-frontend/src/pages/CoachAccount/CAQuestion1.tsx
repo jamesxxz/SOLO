@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { IonContent, IonPage, IonButton } from '@ionic/react';
 import CreateAccountHeader from '../../components/GradientHeader/CoachInformation';
 import { useHistory, useLocation } from 'react-router-dom';
 import { Affiliation } from '../../types/Affiliation';
 import { ApiService } from '../../../services/api.service';
+import { AuthContext } from '../../contexts/AuthContext';
 
 interface NestedState {
   state: {
@@ -12,12 +13,19 @@ interface NestedState {
     phoneNumber: string;
     password: string;
     profilePhoto: File | string;
-  }
+  };
 }
 
 const CAQuestion1: React.FC = () => {
   const history = useHistory();
   const location = useLocation<NestedState>();
+  const authContext = useContext(AuthContext);
+
+  if (!authContext) {
+    throw new Error('AuthContext must be used within an AuthProvider');
+  }
+
+  const { login } = authContext;
   const { state } = location;
 
   const initialCoachData = {
@@ -25,11 +33,11 @@ const CAQuestion1: React.FC = () => {
     email: state.state.email,
     phoneNumber: state.state.phoneNumber,
     password: state.state.password,
-    profilePic: state.state.profilePhoto || "default_pic", // Assuming a default profile picture if not provided
+    profilePic: state.state.profilePhoto || 'default_pic',
     title: '',
-    affiliationId: '' // This should match the key expected by the ApiService.createAthlete method
+    affiliationId: '',
   };
-  
+
   const [coachData, setCoachData] = useState(initialCoachData);
   const [affiliations, setAffiliations] = useState<Affiliation[]>([]);
 
@@ -48,11 +56,11 @@ const CAQuestion1: React.FC = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setCoachData(prev => ({ ...prev, [name]: value }));
+    setCoachData((prev) => ({ ...prev, [name]: value }));
   };
 
   const onBackClick = () => {
-    history.goBack(); // Adjust according to your routing logic
+    history.goBack();
   };
 
   const onFinish = async () => {
@@ -60,7 +68,20 @@ const CAQuestion1: React.FC = () => {
     try {
       const response = await ApiService.createCoach(coachData);
       console.log('Account created:', response);
-      history.push('/start-exploring-coach');
+  
+      // Log the entire response object to see its structure
+      console.log('Full response:', response);
+  
+      // Access the ID directly from the response object
+      const userId = response?.id;
+      console.log('User ID:', userId);
+  
+      if (userId) {
+        login(userId); // Store the user ID in context and local storage
+        history.push('/start-exploring-coach');
+      } else {
+        console.error('Failed to retrieve user ID from response');
+      }
     } catch (error) {
       console.error('Failed to create account:', error);
     }

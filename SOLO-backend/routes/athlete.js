@@ -14,6 +14,7 @@ router.post('/sign-up-athlete', async (req, res) => {
 
         const athleteId = result.insertId;
 
+        console.log('Athlete registered with ID:', athleteId);
         res.status(200).json({ message: 'Athlete registered successfully!', id: athleteId });
     } catch (err) {
         console.error('Error on registration:', err);
@@ -85,10 +86,10 @@ router.post('/login-athlete', async (req, res) => {
             if (athlete.password === password) {
                 res.status(200).json({ message: 'Login successful', athlete });
             } else {
-                res.status(401).send('Invalid email or password');
+                res.status(401).json({ message: 'Invalid email or password' });
             }
         } else {
-            res.status(401).send('Invalid email or password');
+            res.status(401).json({ message: 'Invalid email or password' });
         }
     } catch (error) {
         console.error('Error logging in:', error);

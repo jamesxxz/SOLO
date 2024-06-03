@@ -6,7 +6,6 @@ const CryptoJS = require('crypto-js');
 router.post('/sign-up-coach', async (req, res) => {
     const { name, email, phone_number, password, profile_pic, title, affiliation_id } = req.body;
     try {
-        // Store the encrypted password directly
         const encryptedPassword = password;
         console.log('Registering coach with email:', email);
         console.log('Encrypted password to store:', encryptedPassword);
@@ -93,27 +92,19 @@ router.post('/link-athlete-to-coach', async (req, res) => {
 });
 
 // Login route for coaches
-// Login route for coaches
 router.post('/login-coach', async (req, res) => {
     const { email, password } = req.body;
     try {
-        console.log('Attempting login for email:', email);
         const [rows] = await pool.query('SELECT * FROM coach WHERE email = ?', [email]);
         if (rows.length > 0) {
             const coach = rows[0];
-            console.log('Found coach:', coach);
-
-            // Directly compare the encrypted password from the user with the stored encrypted password
             if (coach.password === password) {
-                console.log('Login successful for coach:', coach.id);
                 res.status(200).json({ message: 'Login successful', coach });
             } else {
-                console.log('Invalid password for email:', email);
-                res.status(401).send('Invalid email or password');
+                res.status(401).json({ message: 'Invalid email or password' });
             }
         } else {
-            console.log('No coach found with email:', email);
-            res.status(401).send('Invalid email or password');
+            res.status(401).json({ message: 'Invalid email or password' });
         }
     } catch (error) {
         console.error('Error logging in:', error);

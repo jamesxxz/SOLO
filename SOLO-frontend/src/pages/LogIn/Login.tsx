@@ -1,13 +1,22 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { IonContent, IonImg, IonPage } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
 import '../../components/Login.css';
-import { ApiService } from '../../../services/api.service'; // Adjust the import path as needed
+import { ApiService } from '../../../services/api.service';
+import { AuthContext } from '../../contexts/AuthContext';
 
 const shift = 5; // Example shift value for the encryption function
 
 const Login: React.FC = () => {
     const history = useHistory();
+    const authContext = useContext(AuthContext);
+
+    if (!authContext) {
+        throw new Error('AuthContext must be used within an AuthProvider');
+    }
+
+    const { login } = authContext as { login: (userId: string) => void }; // Update the type of authContext
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [role, setRole] = useState<'coach' | 'athlete'>('coach');
@@ -21,14 +30,22 @@ const Login: React.FC = () => {
             try {
                 let response;
                 if (role === 'coach') {
-                    console.log('Attempting to login as coach with email:', email);
                     response = await ApiService.loginCoach(email, encryptedPassword);
                 } else {
-                    console.log('Attempting to login as athlete with email:', email);
                     response = await ApiService.loginAthlete(email, encryptedPassword);
                 }
                 console.log('Login response:', response);
-                history.push('/tab-bar');
+
+                // Ensure proper response handling
+                const userId = role === 'coach' ? response.coach.coach_id : response.athlete.athlete_id;
+                console.log('User ID:', userId);
+
+                if (userId) {
+                    login(userId); // Save the user ID in context
+                    history.push('/tab-bar');
+                } else {
+                    throw new Error('Invalid response structure');
+                }
             } catch (error) {
                 console.error('Login failed:', error);
                 alert('Login failed. Please check your credentials and try again.');

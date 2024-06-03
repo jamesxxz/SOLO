@@ -25,6 +25,7 @@ import AthleteEditProfile from './pages/AthleteView/AthleteEditProfile';
 import AthleteProfile from './pages/AthleteView/AthleteProfile';
 import CoachProfileView from './pages/CoachView/CoachProfileView';
 import AddAthlete from './components/GradientHeader/AddAthlete';
+import { AuthProvider } from './contexts/AuthContext';
 
 import '@ionic/react/css/core.css';
 
@@ -59,6 +60,7 @@ setupIonicReact();
 
 const App: React.FC = () => (
   <IonApp>
+    <AuthProvider>
     <IonReactRouter>
       <IonRouterOutlet>
         <Route exact path="/home">
@@ -67,6 +69,7 @@ const App: React.FC = () => (
         <Route exact path="/login">
           <Login />
         </Route>
+        
         <Route exact path="/account-question-1">
           <AccountQuestion1 />
         </Route>
@@ -139,6 +142,8 @@ const App: React.FC = () => (
         </Route>
       </IonRouterOutlet>
     </IonReactRouter>
+    </AuthProvider>
+
   </IonApp>
 );
 

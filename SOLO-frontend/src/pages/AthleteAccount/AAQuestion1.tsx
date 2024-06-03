@@ -53,22 +53,9 @@ const AAQuestion1: React.FC = () => {
   }
 
   const { login } = authContext;
-  const { state } = location;
 
-  const initialAthleteData: AthleteData = {
-    name: state.state.name,
-    email: state.state.email,
-    phoneNumber: state.state.phoneNumber,
-    password: state.state.password,
-    profilePic: state.state.profilePhoto || 'default_pic',
-    age: '',
-    gender: '',
-    height: '',
-    weight: '',
-    affiliationId: ''
-  };
-
-  const [athleteData, setAthleteData] = useState<AthleteData>(initialAthleteData);
+  // Call hooks at the top of the component
+  const [athleteData, setAthleteData] = useState<AthleteData | null>(null);
   const [affiliations, setAffiliations] = useState<Affiliation[]>([]);
   const inputRefs = useRef<{ [key: string]: HTMLInputElement | null }>({});
 
@@ -85,10 +72,32 @@ const AAQuestion1: React.FC = () => {
     fetchAffiliations();
   }, []);
 
+  useEffect(() => {
+    const state = location.state?.state;
+    if (state) {
+      const initialAthleteData: AthleteData = {
+        name: state.name,
+        email: state.email,
+        phoneNumber: state.phoneNumber,
+        password: state.password,
+        profilePic: state.profilePhoto || 'default_pic',
+        age: '',
+        gender: '',
+        height: '',
+        weight: '',
+        affiliationId: ''
+      };
+      setAthleteData(initialAthleteData);
+    } else {
+      //console.error('State is undefined');
+      history.push('/start-exploring-athlete'); // Redirect to a safe page if state is missing
+    }
+  }, [location.state, history]);
+
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setAthleteData(prev => ({
-      ...prev,
+      ...prev!,
       [name]: value
     }));
     // Ensure focus is maintained
@@ -102,39 +111,39 @@ const AAQuestion1: React.FC = () => {
   };
 
   const onFinish = async () => {
-    try {
-      // Log the data being sent to the server
-      console.log('Data being sent:', athleteData);
-  
-      const response = await ApiService.createAthlete(athleteData);
-      const userId = response.id;
-  
-      if (userId) {
-        login(userId); // Store the user ID in context and local storage
-        history.push('/start-exploring-athlete');
-      } else {
-        console.error('Failed to retrieve user ID from response');
-      }
-    } catch (error) {
-      console.error('Failed to create account:', error);
-  
-      if (axios.isAxiosError(error)) {
-        if (error.response) {
-          console.error('Response data:', error.response.data);
-          console.error('Response status:', error.response.status);
-          console.error('Response headers:', error.response.headers);
-        } else if (error.request) {
-          console.error('Request data:', error.request);
+    if (athleteData) {
+      try {
+        // Log the data being sent to the server
+        console.log('Data being sent:', athleteData);
+
+        const response = await ApiService.createAthlete(athleteData);
+        const userId = response.id;
+
+        if (userId) {
+          login(userId); // Store the user ID in context and local storage
+          history.push('/start-exploring-athlete');
         } else {
-          console.error('Error message:', error.message);
+          console.error('Failed to retrieve user ID from response');
         }
-      } else {
-        console.error('Unexpected error:', error);
+      } catch (error) {
+        console.error('Failed to create account:', error);
+
+        if (axios.isAxiosError(error)) {
+          if (error.response) {
+            console.error('Response data:', error.response.data);
+            console.error('Response status:', error.response.status);
+            console.error('Response headers:', error.response.headers);
+          } else if (error.request) {
+            console.error('Request data:', error.request);
+          } else {
+            console.error('Error message:', error.message);
+          }
+        } else {
+          console.error('Unexpected error:', error);
+        }
       }
     }
   };
-  
- 
 
   const QuestionComponent: React.FC<QuestionComponentProps> = React.memo(({ questions, athleteData, affiliations, handleChange }) => {
     return (
@@ -174,26 +183,30 @@ const AAQuestion1: React.FC = () => {
     );
   });
 
-  const allAnswersFilled = Object.values(athleteData).every(x => x !== '' && x != null);
+  const allAnswersFilled = athleteData && Object.values(athleteData).every(x => x !== '' && x != null);
 
   return (
     <IonPage>
       <CreateAccountHeader />
       <IonContent>
-        <div className="question-view">
-          <QuestionComponent
-            questions={[
-              { label: 'What is your age?', name: 'age' },
-              { label: 'What is your gender?', name: 'gender' },
-              { label: 'What is your height?', name: 'height' },
-              { label: 'What is your weight?', name: 'weight' },
-              { label: 'What is your Educational Institute/Athletic Program and/or Youth Athletic Club?', name: 'affiliationId' }
-            ]}
-            athleteData={athleteData}
-            affiliations={affiliations}
-            handleChange={handleChange}
-          />
-        </div>
+        {athleteData ? (
+          <div className="question-view">
+            <QuestionComponent
+              questions={[
+                { label: 'What is your age?', name: 'age' },
+                { label: 'What is your gender?', name: 'gender' },
+                { label: 'What is your height?', name: 'height' },
+                { label: 'What is your weight?', name: 'weight' },
+                { label: 'What is your Educational Institute/Athletic Program and/or Youth Athletic Club?', name: 'affiliationId' }
+              ]}
+              athleteData={athleteData}
+              affiliations={affiliations}
+              handleChange={handleChange}
+            />
+          </div>
+        ) : (
+          <div>Loading...</div>
+        )}
         <div className="navigation-buttons">
           <button onClick={onBackClick} className="back-button">BACK</button>
           <button onClick={onFinish} className="next-button" disabled={!allAnswersFilled}>

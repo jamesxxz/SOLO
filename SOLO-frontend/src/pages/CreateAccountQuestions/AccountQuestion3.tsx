@@ -1,62 +1,58 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { IonContent, IonPage } from '@ionic/react';
-import CreateAccountHeader from '../../components/GradientHeader/CreateAccountHeader'; 
+import CreateAccountHeader from '../../components/GradientHeader/CreateAccountHeader';
 import { useHistory, useLocation } from 'react-router-dom';
-import { AccountContext } from '../../contexts/AccountContext';
 import '../../components/AccountQuestion.css';
 
 interface AccountQuestion3Props {
-  onNextClick: () => void;
+  onNextClick: (phoneNumber: string) => void;
   onBackClick: () => void;
 }
 
 interface NestedState {
-    state: {
-        name: string;
-        email: string;
-    }
+  state: {
+    name: string;
+    email: string;
+  };
 }
 
-const AccountQuestion3: React.FC<AccountQuestion3Props> = ({}) => {
+const AccountQuestion3: React.FC<AccountQuestion3Props> = ({ onNextClick, onBackClick }) => {
   const history = useHistory();
   const location = useLocation<NestedState>();
-  const { state } = location;
-  const name = state.state.name;
-  const email = state.state.email;
-  console.log(name, email);
 
-
-  //const { phoneNumber, setPhoneNumber } = useContext(AccountContext); // Use the context for phone number
   const [answer, setAnswer] = useState('');
   const [isValidPhoneNumber, setIsValidPhoneNumber] = useState(true);
-  
 
-  const onBackClick = () => {
-    setAnswer('');
-    history.push('/account-question-1');
+  const state = location.state?.state;
+  if (!state) {
+    //console.error('State is undefined');
+    //history.push('/home'); // Redirect to a safe page if state is missing
+    return null;
   }
 
-  const onNextClick = () => {
+  const handleNextClick = () => {
     if (isValidPhoneNumber) {
       console.log('Current phone number before setting account:', answer); // Log current phone number
-      //setPhoneNumber(answer); // Set the phone number in the context
+      onNextClick(answer); // Use the passed prop to handle the next click
       console.log('Account phone number after setting:', answer); // Log updated account phone number
-      history.push('/account-question-4',{ state: { name: name, email: email, phoneNumber: answer } }); // Change this based on the route of the next page
+      history.push('/account-question-4', { state: { name, email, phoneNumber: answer } });
     }
   };
 
   const validatePhoneNumber = (phoneNumber: string) => {
     const phoneNumberRegex = /^\+?[1-9]\d{1,14}$/; // Simplified regex for international phone numbers
     return phoneNumberRegex.test(phoneNumber);
-  }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const phoneNumber = e.target.value;
     setAnswer(phoneNumber);
     setIsValidPhoneNumber(validatePhoneNumber(phoneNumber));
     console.log('Phone number input changed:', phoneNumber); // Log value when input changes
-  }
+  };
 
+  const { name, email } = state;
+  
   return (
     <IonPage>
       <CreateAccountHeader />
@@ -76,8 +72,8 @@ const AccountQuestion3: React.FC<AccountQuestion3Props> = ({}) => {
       </IonContent>
       <div className="navigation-buttons">
         <button onClick={onBackClick} className="back-button">BACK</button>
-        <button 
-          onClick={onNextClick} 
+        <button
+          onClick={handleNextClick}
           className="next-button"
           disabled={!answer || !isValidPhoneNumber}
         >
@@ -86,6 +82,6 @@ const AccountQuestion3: React.FC<AccountQuestion3Props> = ({}) => {
       </div>
     </IonPage>
   );
-}
+};
 
 export default AccountQuestion3;

@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { IonContent, IonPage } from '@ionic/react';
-import CreateAccountHeader from '../../components/GradientHeader/CreateAccountHeader'; 
+import CreateAccountHeader from '../../components/GradientHeader/CreateAccountHeader';
 import { useHistory, useLocation } from 'react-router-dom';
 import '../../components/AccountQuestion.css';
 
 const shift = 5; // Example shift value for the encryption function
 
 interface AccountQuestion4Props {
-  onNextClick: () => void;
+  onNextClick: (password: string) => void;
   onBackClick: () => void;
 }
 
@@ -16,28 +16,30 @@ interface NestedState {
     name: string;
     email: string;
     phoneNumber: string;
-  }
+  };
 }
 
-const AccountQuestion4: React.FC<AccountQuestion4Props> = ({}) => {
+const AccountQuestion4: React.FC<AccountQuestion4Props> = ({ onNextClick, onBackClick }) => {
   const history = useHistory();
   const location = useLocation<NestedState>();
-  const { state } = location;
-  const { name, email, phoneNumber } = state.state;
-
+  
   const [answer, setAnswer] = useState('');
   const [isValidPassword, setIsValidPassword] = useState(false);
   const [validationMessages, setValidationMessages] = useState<string[]>([]);
 
-  const onBackClick = () => {
-    setAnswer('');
-    history.push('/account-question-3');
-  };
+  const state = location.state?.state;
+  if (!state) {
+    //console.error('State is undefined');
+    //history.push('/home'); // Redirect to a safe page if state is missing
+    return null;
+  }
 
-  const onNextClick = () => {
+
+  const handleNextClick = () => {
     if (isValidPassword) {
       const encryptedPassword = simpleEncrypt(answer, shift);
       console.log('Encrypted password:', encryptedPassword);
+      onNextClick(encryptedPassword); // Use the passed prop to handle the next click
       history.push('/account-question-5', { state: { name, email, phoneNumber, password: encryptedPassword } });
     } else {
       alert('Please ensure your password meets all the criteria.');
@@ -47,8 +49,8 @@ const AccountQuestion4: React.FC<AccountQuestion4Props> = ({}) => {
   const simpleEncrypt = (text: string, shift: number) => {
     let result = '';
     for (let i = 0; i < text.length; i++) {
-        let charCode = text.charCodeAt(i) + shift;
-        result += String.fromCharCode(charCode);
+      let charCode = text.charCodeAt(i) + shift;
+      result += String.fromCharCode(charCode);
     }
     return result;
   };
@@ -80,6 +82,12 @@ const AccountQuestion4: React.FC<AccountQuestion4Props> = ({}) => {
     setIsValidPassword(validatePassword(password));
   };
 
+  // if (!state) {
+  //   return null; // Prevent rendering if state is undefined
+  // }
+
+  const { name, email, phoneNumber } = state;
+
   return (
     <IonPage>
       <CreateAccountHeader />
@@ -108,8 +116,8 @@ const AccountQuestion4: React.FC<AccountQuestion4Props> = ({}) => {
       </IonContent>
       <div className="navigation-buttons">
         <button onClick={onBackClick} className="back-button">BACK</button>
-        <button 
-          onClick={onNextClick} 
+        <button
+          onClick={handleNextClick}
           className="next-button"
           disabled={!answer || !isValidPassword}
         >
@@ -118,6 +126,6 @@ const AccountQuestion4: React.FC<AccountQuestion4Props> = ({}) => {
       </div>
     </IonPage>
   );
-}
+};
 
 export default AccountQuestion4;

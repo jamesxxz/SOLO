@@ -1,57 +1,59 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { IonContent, IonPage } from '@ionic/react';
-import CreateAccountHeader from '../../components/GradientHeader/CreateAccountHeader'; 
+import CreateAccountHeader from '../../components/GradientHeader/CreateAccountHeader';
 import { useHistory, useLocation } from 'react-router-dom';
-import { AccountContext } from '../../contexts/AccountContext';
 import '../../components/AccountQuestion.css';
 
 interface AccountQuestion2Props {
-  onNextClick: () => void;
-  onBackClick: ()  => void;
+  onNextClick: (email: string) => void;
+  onBackClick: () => void;
 }
+
 interface NestedState {
   state: {
-      name: string;
-  }
+    name: string;
+  };
 }
 
-const AccountQuestion2: React.FC<AccountQuestion2Props> = ({}) => {
+const AccountQuestion2: React.FC<AccountQuestion2Props> = ({ onNextClick, onBackClick }) => {
   const history = useHistory();
   const location = useLocation<NestedState>();
-
-  //const { email, setEmail } = useContext(AccountContext); // Use the context
   const [answer, setAnswer] = useState('');
-  const { state } = location;
-  const name = state.state.name;
-
 
   const [isValidEmail, setIsValidEmail] = useState(true);
 
-  const onBackClick = () => {
-    setAnswer('');
-    history.push('/account-question-1');
+  const state = location.state?.state;
+  if (!state) {
+    //console.error('State is undefined');
+    //history.push('/home'); // Redirect to a safe page if state is missing
+    return null;
   }
 
-  const onNextClick = () => {
+  const handleNextClick = () => {
     if (isValidEmail) {
       console.log('Current email before setting account:', answer); // Log current email
-      //setEmail(answer); // Set the email in the context
-      console.log('Account email after setting:', answer); // Log updated account email
-      history.push('/account-question-3', { state: { name: name, email: answer } } ); // Change this based on the route of the next page
+      onNextClick(answer); // Use the passed prop to handle the next click
+      history.push('/account-question-3', { state: { name: name, email: answer } });
     }
   };
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
-  }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const email = e.target.value;
     setAnswer(email);
     setIsValidEmail(validateEmail(email));
     console.log('Email input changed:', email); // Log value when input changes
-  }
+  };
+
+  // if (!state) {
+  //   return null; // Prevent rendering if state is undefined
+  // }
+
+  const name = state.name;
 
   return (
     <IonPage>
@@ -72,8 +74,8 @@ const AccountQuestion2: React.FC<AccountQuestion2Props> = ({}) => {
       </IonContent>
       <div className="navigation-buttons">
         <button onClick={onBackClick} className="back-button">BACK</button>
-        <button 
-          onClick={onNextClick} 
+        <button
+          onClick={handleNextClick}
           className="next-button"
           disabled={!answer || !isValidEmail}
         >
@@ -82,6 +84,6 @@ const AccountQuestion2: React.FC<AccountQuestion2Props> = ({}) => {
       </div>
     </IonPage>
   );
-}
+};
 
 export default AccountQuestion2;

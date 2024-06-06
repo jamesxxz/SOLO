@@ -42,7 +42,9 @@ const Login: React.FC = () => {
 
                 if (userId) {
                     login(userId); // Save the user ID in context
-                    history.push('/tab-bar');
+                    // Navigate to the appropriate home page based on the role
+                    const redirectPath = role === 'coach' ? '/coach-home' : '/athlete-home';
+                    history.push(redirectPath);
                 } else {
                     throw new Error('Invalid response structure');
                 }

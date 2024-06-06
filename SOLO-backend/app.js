@@ -11,6 +11,7 @@ const mediaRouter = require('./routes/media');
 const performanceRouter = require('./routes/performance');
 const workoutTypeRouter = require('./routes/workout_type');
 const workoutRouter = require('./routes/workout');
+const linkAthleteCoachRouter = require('./routes/linkAthleteCoach');
 
 // Middlewares
 app.use(cors());  // if you need to handle CORS
@@ -25,6 +26,7 @@ app.use('/media', mediaRouter);
 app.use('/performance', performanceRouter);
 app.use('/workout-type', workoutTypeRouter);
 app.use('/workout', workoutRouter);
+app.use('/link-athlete-coach', linkAthleteCoachRouter);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, 'localhost', () => {

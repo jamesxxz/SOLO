@@ -1,9 +1,14 @@
 import axios from 'axios';
 
 const BASE_URL = 'http://localhost:3000';
-
+interface AthleteQueryParams {
+  email: string;
+  phone_number: string;
+  affiliation_id: string;
+}
 export class ApiService {
   constructor() {}
+  
 
   static async createCoach(coachData: any) {
     let sentData = {
@@ -11,7 +16,7 @@ export class ApiService {
       email: coachData.email,
       phone_number: coachData.phoneNumber,
       password: coachData.password,
-      profile_pic: "fdsa",
+      profile_pic: coachData.profilePic,
       title: coachData.title,
       affiliation_id: coachData.affiliationId
     };
@@ -125,4 +130,37 @@ export class ApiService {
       throw error;
     }
   }
+
+  static async getAthleteByEmailAndPhoneAndAffiliation({ email, phone_number, affiliation_id }: { email: string; phone_number: string; affiliation_id: string }) {
+    try {
+      const response = await axios.get(`${BASE_URL}/athlete/search`, {
+        params: { email, phone_number, affiliation_id },
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Failed to fetch athlete by email, phone, and affiliation:', error);
+      throw error;
+    }
+  }
+
+  static async linkAthleteToCoach(data: { coach_id: number; athlete_id: number }) {
+    try {
+      const response = await axios.post(`${BASE_URL}/coach/link-athlete-to-coach`, data);
+      return response.data;
+    } catch (error) {
+      console.error('Failed to link athlete to coach:', error);
+      throw error;
+    }
+  }
+  static async getLinkedAthletes(coachId: number) {
+    try {
+      const response = await axios.get(`${BASE_URL}/coach/link-athlete/${coachId}/athletes`);
+      return response.data;
+    } catch (error) {
+      console.error('Failed to fetch linked athletes:', error);
+      throw error;
+    }
+  }
+
+
 }

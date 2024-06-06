@@ -12,7 +12,7 @@ interface NestedState {
     email: string;
     phoneNumber: string;
     password: string;
-    profilePhoto: File | string;
+    profilePhoto:  string;
   };
 }
 
@@ -33,7 +33,7 @@ const CAQuestion1: React.FC = () => {
     email: state.state.email,
     phoneNumber: state.state.phoneNumber,
     password: state.state.password,
-    profilePic: state.state.profilePhoto || 'default_pic',
+    profilePic: state.state.profilePhoto,
     title: '',
     affiliationId: '',
   };

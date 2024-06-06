@@ -82,15 +82,16 @@ router.delete('/coach/:id', async (req, res) => {
 router.post('/link-athlete-to-coach', async (req, res) => {
     const { coach_id, athlete_id } = req.body;
     try {
-        const linkSql = `INSERT INTO coach_athlete_link (coach_id, athlete_id) VALUES (?, ?)`;
-        const linkValues = [coach_id, athlete_id];
-        await pool.query(linkSql, linkValues);
-        res.status(200).json({ message: 'Athlete linked to coach successfully!' });
+      const linkSql = 'INSERT INTO coach_athlete_link (coach_id, athlete_id) VALUES (?, ?)';
+      const linkValues = [coach_id, athlete_id];
+      await pool.query(linkSql, linkValues);
+      res.status(200).json({ message: 'Athlete linked to coach successfully!' });
     } catch (err) {
-        console.error('Error linking athlete to coach:', err);
-        res.status(500).send('Server error on linking athlete to coach');
+      console.error('Error linking athlete to coach:', err);
+      res.status(500).send('Server error on linking athlete to coach');
     }
-});
+  });
+  
 
 // Login route for coaches
 router.post('/login-coach', async (req, res) => {
@@ -110,6 +111,32 @@ router.post('/login-coach', async (req, res) => {
     } catch (error) {
         console.error('Error logging in:', error);
         res.status(500).send('Server error during login');
+    }
+});
+
+router.get('/link-athlete/:coachId/athletes', async (req, res) => {
+    const { coachId } = req.params;
+    console.log('Fetching linked athletes for coachId:', coachId); // Debug log
+
+    try {
+        const sql = `
+            SELECT a.athlete_id, a.name, a.email, a.profile_pic, a.affiliation_id, aff.name as affiliation_name
+            FROM athlete a
+            JOIN coach_athlete_link cal ON a.athlete_id = cal.athlete_id
+            JOIN affiliation aff ON a.affiliation_id = aff.affiliation_id
+            WHERE cal.coach_id = ?
+        `;
+        const [results] = await pool.query(sql, [coachId]);
+        console.log('Query results:', results); // Debug log
+
+        if (results.length > 0) {
+            res.status(200).json(results);
+        } else {
+            res.status(404).send('No linked athletes found');
+        }
+    } catch (error) {
+        console.error('Error fetching linked athletes:', error);
+        res.status(500).send('Server error fetching linked athletes');
     }
 });
 

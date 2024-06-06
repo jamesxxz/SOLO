@@ -98,4 +98,43 @@ router.post('/login-athlete', async (req, res) => {
     }
 });
 
+// In athlete routes
+router.get('/search', async (req, res) => {
+    const { email, phone_number, affiliation_id } = req.query;
+    console.log('Search parameters:', email, phone_number, affiliation_id); // Log the query parameters
+  
+    try {
+      // Convert affiliation_id to an integer
+      const affiliationIdInt = parseInt(affiliation_id, 10);
+  
+      // Check if affiliationIdInt is a valid number
+      if (isNaN(affiliationIdInt)) {
+        return res.status(400).send('Invalid affiliation ID');
+      }
+  
+      const sql = 'SELECT * FROM athlete WHERE email = ? AND phone_number = ? AND affiliation_id = ?';
+      const values = [email, phone_number, affiliationIdInt];
+  
+      // Log the query and values being executed
+      console.log('Executing query:', sql);
+      console.log('With values:', values);
+  
+      const [result] = await pool.query(sql, values);
+      console.log('Search result:', result);
+  
+      if (result.length > 0) {
+        res.status(200).json(result[0]);
+        console.log('Matching athlete found:', result[0]);
+      } else {
+        res.status(404).send('No matching athlete found');
+        console.log('No matching athlete found');
+      }
+    } catch (error) {
+      console.error('Error searching athlete:', error);
+      res.status(500).send('Server error during athlete search');
+    }
+  });
+  
+  
+
 module.exports = router;

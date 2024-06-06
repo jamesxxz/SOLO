@@ -6,7 +6,7 @@ import '../../components/AccountQuestion.css';
 import { useHistory, useLocation } from 'react-router-dom';
 
 interface AccountQuestion5Props {
-  onNextClick: (profilePhoto: File | null) => void;
+  onNextClick: () => void;
   onBackClick: () => void;
 }
 
@@ -16,19 +16,73 @@ interface NestedState {
     email: string;
     phoneNumber: string;
     password: string;
-  };
+  }
 }
 
-const AccountQuestion5: React.FC<AccountQuestion5Props> = ({ onNextClick, onBackClick }) => {
+const AccountQuestion5: React.FC<AccountQuestion5Props> = ({}) => {
   const history = useHistory();
   const location = useLocation<NestedState>();
-
+  const { state } = location;
+  const name = state.state.name;
+  const email = state.state.email;
+  const phoneNumber = state.state.phoneNumber;
+  const password = state.state.password;
   const { profilePhoto, setProfilePhoto } = useAccount();
-  const [localProfilePhoto, setLocalProfilePhoto] = useState<File | null>(profilePhoto || new File([''], 'default.png'));
-  const [imagePreviewUrl, setImagePreviewUrl] = useState<string>('');
+  const [localProfilePhoto, setLocalProfilePhoto] = useState<File | null>(profilePhoto || new File([""], "default.png"));
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string>("");
   const [isValidImage, setIsValidImage] = useState(false);
-  const [validationMessage, setValidationMessage] = useState<string>('');
+  const [validationMessage, setValidationMessage] = useState<string>("");
 
+  const onBackClick = () => {
+    history.push('/account-question-4');
+  };
+
+  const onNextClick = async () => {
+    console.log('isValidImage:', isValidImage);
+    console.log('profilePhoto:', localProfilePhoto);
+
+    if (isValidImage && localProfilePhoto) {
+      console.log('Profile photo before setting account:', profilePhoto);
+
+      const formData = new FormData();
+      formData.append('file', localProfilePhoto
+        
+      );
+
+      try {
+        console.log('Frontend POST: attempting post');
+        const response = await fetch('http://localhost:3001/upload', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (response.ok) {
+          const jsonResponse = await response.json();
+          const { fileName } = jsonResponse;
+          console.log('Frontend POST: Image uploaded successfully, fileName:', fileName);
+
+          history.push('/account-question-6', {
+              state: {
+                  name: name,
+                  email: email,
+                  phoneNumber: phoneNumber,
+                  password: password,
+                  profilePhoto: fileName // Use fileName instead of localProfilePhoto
+              }
+          });
+
+        } else {
+          console.error('Frontend POST response not ok: Image upload failed');
+        }
+      } catch (error) {
+        console.error('Frontend POST catch: Error uploading image:', error);
+      }
+
+      //history.push('/account-question-6', { state: { name: name, email: email, phoneNumber: phoneNumber, password: password, profilePhoto: localProfilePhoto } });
+    } else {
+      alert('Please ensure your image is the correct type.');
+    }
+  };
 
   useEffect(() => {
     if (localProfilePhoto) {
@@ -38,16 +92,9 @@ const AccountQuestion5: React.FC<AccountQuestion5Props> = ({ onNextClick, onBack
       };
       reader.readAsDataURL(localProfilePhoto);
     } else {
-      setImagePreviewUrl(''); // Ensure the image preview is cleared if no photo is present
+      setImagePreviewUrl(""); // Ensure the image preview is cleared if no photo is present
     }
   }, [localProfilePhoto]);
-
-  const state = location.state?.state;
-  if (!state) {
-    //console.error('State is undefined');
-    //istory.push('/home'); // Redirect to a safe page if state is missing
-    return null;
-  }
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const fileList = event.target.files;
@@ -59,7 +106,7 @@ const AccountQuestion5: React.FC<AccountQuestion5Props> = ({ onNextClick, onBack
         console.log('Valid image file selected:', file.type);
         setLocalProfilePhoto(file);
         setIsValidImage(true);
-        setValidationMessage('');
+        setValidationMessage("");
 
         // Update context state after validation
         setProfilePhoto(file);
@@ -74,51 +121,12 @@ const AccountQuestion5: React.FC<AccountQuestion5Props> = ({ onNextClick, onBack
       } else {
         console.error('Invalid file type:', file.type); // Log that an invalid file type was selected
         setIsValidImage(false);
-        setValidationMessage('Invalid file type. Please select a valid image file.');
+        setValidationMessage("Invalid file type. Please select a valid image file.");
       }
     } else {
       console.log('No file selected');
     }
   };
-
-  const handleNextClick = async () => {
-    console.log('isValidImage:', isValidImage);
-    console.log('profilePhoto:', profilePhoto);
-
-    if (isValidImage && profilePhoto) {
-      console.log('Profile photo before setting account:', profilePhoto);
-
-      const formData = new FormData();
-      formData.append('file', profilePhoto);
-
-      try {
-        console.log('Frontend POST: attempting post');
-        const response = await fetch('http://localhost:3000/upload', {
-          method: 'POST',
-          body: formData,
-        });
-
-        if (response.ok) {
-          console.log('Frontend POST: Image uploaded successfully');
-        } else {
-          console.error('Frontend POST: Image upload failed');
-        }
-      } catch (error) {
-        console.error('Frontend POST catch: Error uploading image:', error);
-      }
-
-      onNextClick(profilePhoto); // Use the passed prop to handle the next click
-      history.push('/account-question-6', { state: { name, email, phoneNumber, password, profilePhoto } });
-    } else {
-      alert('Please ensure your image is the correct type.');
-    }
-  };
-
-  // if (!state) {
-  //   return null; // Prevent rendering if state is undefined
-  // }
-
-  const { name, email, phoneNumber, password } = state;
 
   return (
     <IonPage>
@@ -150,7 +158,7 @@ const AccountQuestion5: React.FC<AccountQuestion5Props> = ({ onNextClick, onBack
       <div className="navigation-buttons">
         <button onClick={onBackClick} className="back-button">BACK</button>
         <button
-          onClick={handleNextClick}
+          onClick={onNextClick}
           className="next-button"
           disabled={!isValidImage}
         >

@@ -100,7 +100,7 @@ export class ApiService {
       });
   }
 
-  static async getAthleteProfile(query: { id: number }) {
+  static async getAthleteProfile(query: { id: string }) {
     try {
       const response = await axios.get(`${BASE_URL}/athlete/athlete/${query.id}`);
       console.log('Athlete profile data:', response.data); // Log the data for verification
@@ -162,5 +162,52 @@ export class ApiService {
     }
   }
 
+  static async uploadMedia(mediaData: FormData) {
+    try {
+      const response = await axios.post(`${BASE_URL}/media/media-upload`, mediaData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Failed to upload media:', error);
+      throw error;
+    }
+  }
 
+  static async getMediaByAthleteId(data: { athleteId: string, type: string }) {
+    try {
+      const response = await axios.get(`${BASE_URL}/media/media/athlete`, {
+        params: {
+          athlete_id: data.athleteId,
+          type: data.type
+        }
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Failed to fetch media by athlete ID:', error);
+      throw error;
+    }
+}
+
+static async deleteMediaById(mediaId: string) {
+  try {
+    const response = await axios.delete(`${BASE_URL}/media/media/${mediaId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Failed to delete media:', error);
+    throw error;
+  }
+}
+
+static async getAthleteById(id: string) {
+  try {
+    const response = await axios.get(`${BASE_URL}/athlete/athlete/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching athlete data:', error);
+    throw error;
+  }
+}
 }

@@ -1,32 +1,145 @@
-import React from 'react';
-import { IonPage, IonHeader, IonToolbar, IonButtons, IonBackButton, IonTitle, IonContent, IonList, IonItem, IonLabel, IonButton } from '@ionic/react';
+import React, { useState, useEffect, useContext } from 'react';
+import { IonPage, IonHeader, IonToolbar, IonButtons, IonBackButton, IonContent, IonList, IonItem, IonLabel, IonButton } from '@ionic/react';
+import { useLocation } from 'react-router-dom';
 import DynamicHeader from '../../components/AthleteView/DynamicHeader'; 
 import TabBar2 from './TabBar2';
+import { AuthContext } from '../../contexts/AuthContext';
+import { ApiService } from '../../../services/api.service';
+
+interface MediaItem {
+  media_id: string;
+  id: string;
+  name: string;
+  signedUrl: string;
+}
 
 const AthleteViewMedia: React.FC = () => {
-  const currentMedia = [
-    { id: 1, name: 'xxx.png', url: '/path/to/image1.png' },
-    { id: 2, name: 'yyy.png', url: '/path/to/image2.png' },
-  ];
+  const authContext = useContext(AuthContext);
+  const { userId } = authContext!;
+  const [currentMedia, setCurrentMedia] = useState<MediaItem[]>([]);
+  const [pastMedia, setPastMedia] = useState<MediaItem[]>([]);
+  const [refresh, setRefresh] = useState(false);
+  const location = useLocation();
 
-  const pastMedia = [
-    { id: 1, name: 'xxx.png', url: '/path/to/image3.png' },
-    { id: 2, name: 'yyy.png', url: '/path/to/image4.png' },
-  ];
+  useEffect(() => {
+    if (userId) {
+      fetchCurrentMedia();
+      fetchPastMedia();
+    }
+  }, [userId, refresh, location]);
+
+  const fetchCurrentMedia = async () => {
+    if (!userId) {
+      console.error('User ID is not available');
+      return;
+    }
+
+    try {
+      const response = await ApiService.getMediaByAthleteId({ athleteId: userId, type: 'current' });
+      console.log('Media fetched:', response);
+      setCurrentMedia(response);
+    } catch (error) {
+      console.error('Error fetching media:', error);
+    }
+  };
+
+  const fetchPastMedia = async () => {
+    if (!userId) {
+      console.error('User ID is not available');
+      return;
+    }
+
+    try {
+      const response = await ApiService.getMediaByAthleteId({ athleteId: userId, type: 'past' });
+      console.log('Media fetched:', response);
+      setPastMedia(response);
+    } catch (error) {
+      console.error('Error fetching media:', error);
+    }
+  };
+
+  const handleDelete = async (media_id: string, type: 'current' | 'past') => {
+    try {
+      const response = await fetch(`http://localhost:3000/media/media/${media_id}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        if (type === 'current') {
+          setCurrentMedia(currentMedia.filter(media => media.media_id !== media_id));
+        } else {
+          setPastMedia(pastMedia.filter(media => media.media_id !== media_id));
+        }
+        setRefresh(!refresh); // Trigger refresh
+      } else {
+        console.error('Failed to delete media');
+      }
+    } catch (error) {
+      console.error('Error deleting media:', error);
+    }
+  };
+
+  const handleMoveToPast = async (id: string) => {
+    const mediaToMove = currentMedia.find(media => media.id === id);
+    if (mediaToMove) {
+      const fileResponse = await fetch(mediaToMove.signedUrl);
+      const fileBlob = await fileResponse.blob();
+      const file = new File([fileBlob], mediaToMove.name, { type: fileBlob.type });
+      moveToPastMedia(file, mediaToMove.name, userId);
+    }
+  };
+
+  const moveToPastMedia = async (file: File, title: string, athleteId: string | null) => {
+    if (!athleteId) {
+      console.error('Athlete ID is not available');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('title', title);
+    formData.append('athlete_id', athleteId);
+
+    try {
+      const response = await fetch('http://localhost:3000/media/media-upload/past', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (response.ok) {
+        const jsonResponse = await response.json();
+        console.log('Media stored successfully:', jsonResponse);
+        setRefresh(!refresh); // Trigger refresh
+      } else {
+        console.error('Media upload failed');
+      }
+    } catch (error) {
+      console.error('Error storing media:', error);
+    }
+  };
 
   return (
     <IonPage>
-      <DynamicHeader title="My Media" />
-
+      <IonHeader>
+        <IonToolbar>
+          <IonButtons slot="start">
+            <IonBackButton defaultHref="/athlete-view-account" />
+          </IonButtons>
+          <header style={{ backgroundColor: 'white' }}>
+            <div className="logo">MY MEDIA</div>
+          </header>
+        </IonToolbar>
+      </IonHeader>
       <IonContent fullscreen>
         <div className="media-section">
           <h2 className="section-title">Current Media</h2>
           <IonList>
             {currentMedia.map((media) => (
               <IonItem className="media-item" key={media.id}>
-                <img src={media.url} alt={media.name} className="media-image" />
+                <img src={media.signedUrl} alt={media.name} className="media-image" />
                 <IonLabel>{media.name}</IonLabel>
-                <button className="delete-button">🗑️</button>
+                <button className="delete-button" onClick={() => handleDelete(media.media_id, 'current')}>🗑️</button>
+                <button className="move-button" onClick={() => handleMoveToPast(media.id)}>Move to Past Media</button>
               </IonItem>
             ))}
           </IonList>
@@ -40,9 +153,9 @@ const AthleteViewMedia: React.FC = () => {
           <IonList>
             {pastMedia.map((media) => (  
               <IonItem className="media-item" key={media.id}>
-                <img src={media.url} alt={media.name} className="media-image" />
+                <img src={media.signedUrl} alt={media.name} className="media-image" />
                 <IonLabel>{media.name}</IonLabel>
-                <button className="delete-button">🗑️</button>
+                <button className="delete-button" onClick={() => handleDelete(media.media_id, 'past')}>🗑️</button>
               </IonItem>
             ))}
           </IonList>

@@ -44,7 +44,7 @@ const ProfileView: React.FC = () => {
   }, [userId]);
 
   const onBackClick = () => {
-    history.push('/athlete-home');
+    history.push('/athlete-view-account');
   };
 
   const onEditClick = () => {
@@ -134,3 +134,5 @@ const ProfileView: React.FC = () => {
 };
 
 export default ProfileView;
+
+// unable to fetch picture from the database

@@ -321,3 +321,91 @@ ion-modal {
   align-items: center;    
   justify-content: center;
 }
+
+.media-section {
+  padding: 20px;
+}
+
+.section-title {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.media-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 400px;
+  overflow-y: auto;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  background-color: #f9f9f9;
+}
+
+.media-item {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.media-image {
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+}
+
+.media-video {
+  width: 100px;
+  height: 100px;
+  margin-right: 10px;
+}
+
+.media-details {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.delete-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  color: red;
+}
+
+.view-more-button {
+  display: block;
+  margin: 20px auto;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Optional: Custom scrollbar styling */
+.media-list::-webkit-scrollbar {
+  width: 10px;
+}
+
+.media-list::-webkit-scrollbar-thumb {
+  background-color: #bbb;
+  border-radius: 5px;
+}
+
+.media-list::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+}
+
+.add-media-button {
+  position: fixed;
+  bottom: 56px; /* Adjust if necessary to fit above the TabBar2 */
+  right: 16px;
+  z-index: 1000;
+}

@@ -15,7 +15,7 @@ const uploadMedia = async (bucketName, mediaPath, mediaName) => {
       const mediaFile = fs.readFileSync(mediaPath);
       const ext = path.extname(mediaName).toLowerCase();
       let contentType;
-  
+
       switch (ext) {
         case '.mp4':
           contentType = 'video/mp4';
@@ -64,20 +64,20 @@ const uploadMedia = async (bucketName, mediaPath, mediaName) => {
         default:
           contentType = 'application/octet-stream';
       }
-  
+
       console.log(`Uploading file with content type: ${contentType}`); // Log content type
-  
+
       const params = {
         Bucket: bucketName,
         Key: mediaName,
         Body: mediaFile,
         ContentType: contentType
       };
-  
+
       const command = new PutObjectCommand(params);
-      const data = await s3.send(command);
+      await s3.send(command);
       console.log('Media uploaded successfully:', `https://${bucketName}.s3.${process.env.AWS_REGION}.amazonaws.com/${mediaName}`);
-  
+
       // Return the S3 object key or URL
       return `https://${bucketName}.s3.${process.env.AWS_REGION}.amazonaws.com/${mediaName}`;
     } catch (err) {

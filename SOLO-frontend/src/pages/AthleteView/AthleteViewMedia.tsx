@@ -79,44 +79,17 @@ const AthleteViewMedia: React.FC = () => {
     }
   };
 
+   // start
   const handleMoveToPast = async (id: string) => {
-    const mediaToMove = currentMedia.find(media => media.id === id);
-    if (mediaToMove) {
-      const fileResponse = await fetch(mediaToMove.signedUrl);
-      const fileBlob = await fileResponse.blob();
-      const file = new File([fileBlob], mediaToMove.name, { type: fileBlob.type });
-      moveToPastMedia(file, mediaToMove.name, userId);
-    }
-  };
-
-  const moveToPastMedia = async (file: File, title: string, athleteId: string | null) => {
-    if (!athleteId) {
-      console.error('Athlete ID is not available');
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('title', title);
-    formData.append('athlete_id', athleteId);
-
     try {
-      const response = await fetch('http://localhost:3000/media/media-upload/past', {
-        method: 'POST',
-        body: formData
-      });
-
-      if (response.ok) {
-        const jsonResponse = await response.json();
-        console.log('Media stored successfully:', jsonResponse);
-        setRefresh(!refresh); // Trigger refresh
-      } else {
-        console.error('Media upload failed');
-      }
+      await ApiService.moveToPast(id);
+      setCurrentMedia(currentMedia.filter(media => media.id !== id));
+      setRefresh(!refresh); // Trigger refresh
     } catch (error) {
-      console.error('Error storing media:', error);
+      console.error('Error moving media to past:', error);
     }
   };
+  // end
 
   return (
     <IonPage>

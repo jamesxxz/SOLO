@@ -51,6 +51,19 @@ router.post('/media-upload', upload.single('file'), async (req, res) => {
   }
 });
 
+// Update media type from current to past
+router.put('/media/:id/move-to-past', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const sql = `UPDATE media SET type = 'past' WHERE id = ?`;
+    await pool.query(sql, [id]);
+    res.status(200).json({ message: 'Media moved to past successfully!' });
+  } catch (err) {
+    console.error('Error moving media to past:', err);
+    res.status(500).send('Server error moving media to past');
+  }
+});
+
 router.post('/media-upload/past', upload.single('file'), async (req, res) => {
   const { title, athlete_id } = req.body;
   try {

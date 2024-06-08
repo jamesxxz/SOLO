@@ -176,6 +176,18 @@ export class ApiService {
     }
   }
 
+  // start
+  static async moveToPast(mediaId: string) {
+    try {
+      const response = await axios.put(`${BASE_URL}/media/media/${mediaId}/move-to-past`);
+      return response.data;
+    } catch (error) {
+      console.error('Failed to move media to past:', error);
+      throw error;
+    }
+  }
+  // end
+
   static async getMediaByAthleteId(data: { athleteId: string, type: string }) {
     try {
       const response = await axios.get(`${BASE_URL}/media/media/athlete`, {

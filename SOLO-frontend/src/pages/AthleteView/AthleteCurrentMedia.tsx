@@ -1,5 +1,14 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { IonPage, IonHeader, IonContent, IonButton, IonModal, IonToolbar, IonButtons, IonBackButton } from '@ionic/react';
+import React, { useState, useEffect, useContext, ChangeEvent } from 'react';
+import {
+  IonPage,
+  IonHeader,
+  IonContent,
+  IonButton,
+  IonModal,
+  IonToolbar,
+  IonButtons,
+  IonBackButton
+} from '@ionic/react';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import MediaSection from '../../components/AthleteView/MediaSection';
 import TabBar2 from './TabBar2';
@@ -21,14 +30,20 @@ const AthleteCurrentMedia: React.FC = () => {
   const [currentMedia, setCurrentMedia] = useState<MediaItem[]>([]);
   const [validationMessage, setValidationMessage] = useState<string>("");
 
-  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const fileList = event.target.files;
     if (fileList && fileList[0]) {
       const file = fileList[0];
       const fileName = file.name;
 
       const imageUrl = URL.createObjectURL(file);
-      const newMedia = { id: `id_${currentMedia.length + 1}`, name: fileName, signedUrl: imageUrl };
+      const newMedia: MediaItem = {
+        media_id: `id_${currentMedia.length + 1}`,
+        type: 'image',
+        id: `id_${currentMedia.length + 1}`,
+        name: fileName,
+        signedUrl: imageUrl
+      };
 
       setCurrentMedia(prevMedia => [...prevMedia, newMedia]);
 
@@ -49,7 +64,13 @@ const AthleteCurrentMedia: React.FC = () => {
       });
 
       if (image.webPath) {
-        const newMedia = { id: `id_${currentMedia.length + 1}`, name: 'Photo', signedUrl: image.webPath };
+        const newMedia: MediaItem = {
+          media_id: `id_${currentMedia.length + 1}`,
+          type: 'image',
+          id: `id_${currentMedia.length + 1}`,
+          name: 'Photo',
+          signedUrl: image.webPath
+        };
 
         setCurrentMedia(prevMedia => [...prevMedia, newMedia]);
 
@@ -154,7 +175,12 @@ const AthleteCurrentMedia: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <MediaSection title="Current Media" mediaItems={currentMedia} onViewMore={() => console.log('View more current media')} onDelete={deleteMedia} />
+        <MediaSection
+          title="Current Media"
+          mediaItems={currentMedia}
+          onViewMore={() => console.log('View more current media')}
+          onDelete={deleteMedia}
+        />
         <IonModal isOpen={showModal} onDidDismiss={() => setShowModal(false)}>
           <div className="white-modal" style={{ padding: '20px' }}>
             <h1 className="modal-title">Media Preference</h1>
@@ -178,7 +204,13 @@ const AthleteCurrentMedia: React.FC = () => {
         </IonModal>
         {validationMessage && <div className="error-message">{validationMessage}</div>}
       </IonContent>
-      <IonButton className="add-media-button" style={{ position: 'fixed', bottom: '56px', right: '16px', zIndex: 1000 }} onClick={() => setShowModal(true)}>+ Add Media</IonButton>
+      <IonButton
+        className="add-media-button"
+        style={{ position: 'fixed', bottom: '56px', right: '16px', zIndex: 1000 }}
+        onClick={() => setShowModal(true)}
+      >
+        + Add Media
+      </IonButton>
       <TabBar2 />
     </IonPage>
   );

@@ -37,7 +37,7 @@ const AthleteViewMedia: React.FC = () => {
     try {
       const response = await ApiService.getMediaByAthleteId({ athleteId: userId, type: 'current' });
       console.log('Media fetched:', response);
-      setCurrentMedia(response);
+      setCurrentMedia(response.slice(0, 2)); // Slice to get only the two most recent
     } catch (error) {
       console.error('Error fetching media:', error);
     }
@@ -52,7 +52,7 @@ const AthleteViewMedia: React.FC = () => {
     try {
       const response = await ApiService.getMediaByAthleteId({ athleteId: userId, type: 'past' });
       console.log('Media fetched:', response);
-      setPastMedia(response);
+      setPastMedia(response.slice(0, 2)); // Slice to get only the two most recent
     } catch (error) {
       console.error('Error fetching media:', error);
     }
@@ -79,7 +79,6 @@ const AthleteViewMedia: React.FC = () => {
     }
   };
 
-   // start
   const handleMoveToPast = async (id: string) => {
     try {
       await ApiService.moveToPast(id);
@@ -89,7 +88,6 @@ const AthleteViewMedia: React.FC = () => {
       console.error('Error moving media to past:', error);
     }
   };
-  // end
 
   return (
     <IonPage>

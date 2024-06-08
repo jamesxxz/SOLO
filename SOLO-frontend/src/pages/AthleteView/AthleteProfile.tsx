@@ -28,7 +28,7 @@ const ProfileView: React.FC = () => {
       try {
         if (userId) {
           console.log('Fetching profile for user ID:', userId);
-          const profileData = await ApiService.getAthleteProfile({ id: parseInt(userId) });
+          const profileData = await ApiService.getAthleteProfile({ id: userId });
           console.log('Profile data fetched:', profileData);
           setUsername(profileData.name);
           setEmailAddress(profileData.email);

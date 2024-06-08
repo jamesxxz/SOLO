@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext, useCallback, useRef } from 'react';
+import React, { useEffect, useState, useContext, useCallback, useRef, useMemo } from 'react';
 import { IonContent, IonPage } from '@ionic/react';
 import CreateAccountHeader from '../../components/GradientHeader/AthleteInformation';
 import { useHistory, useLocation } from 'react-router-dom';
@@ -41,6 +41,7 @@ interface QuestionComponentProps {
   athleteData: AthleteData;
   affiliations: Affiliation[];
   handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+  inputRefs: React.MutableRefObject<{ [key: string]: HTMLInputElement | null }>;
 }
 
 const AAQuestion1: React.FC = () => {
@@ -89,7 +90,6 @@ const AAQuestion1: React.FC = () => {
       };
       setAthleteData(initialAthleteData);
     } else {
-      //console.error('State is undefined');
       history.push('/start-exploring-athlete'); // Redirect to a safe page if state is missing
     }
   }, [location.state, history]);
@@ -106,14 +106,13 @@ const AAQuestion1: React.FC = () => {
     }
   }, []);
 
-  const onBackClick = () => {
+  const onBackClick = useCallback(() => {
     history.goBack();
-  };
+  }, [history]);
 
-  const onFinish = async () => {
+  const onFinish = useCallback(async () => {
     if (athleteData) {
       try {
-        // Log the data being sent to the server
         console.log('Data being sent:', athleteData);
 
         const response = await ApiService.createAthlete(athleteData);
@@ -143,47 +142,17 @@ const AAQuestion1: React.FC = () => {
         }
       }
     }
-  };
+  }, [athleteData, history, login]);
 
-  const QuestionComponent: React.FC<QuestionComponentProps> = React.memo(({ questions, athleteData, affiliations, handleChange }) => {
-    return (
-      <>
-        {questions.map((question, index) => (
-          <div key={question.name}>
-            <div className="step-info">Question {index + 1} of {questions.length}</div>
-            <div className="question">{question.label}</div>
-            {question.name === 'affiliationId' ? (
-              <select
-                name={question.name}
-                value={athleteData[question.name]}
-                onChange={handleChange}
-                className="answer-input"
-              >
-                <option value="">Select your institute</option>
-                {affiliations.map((affiliation) => (
-                  <option key={affiliation.affiliation_id} value={affiliation.affiliation_id}>
-                    {affiliation.name}
-                  </option>
-                ))}
-              </select>
-            ) : (
-              <input
-                ref={(el) => (inputRefs.current[question.name] = el)}
-                type="text"
-                name={question.name}
-                placeholder="Enter your answer"
-                value={athleteData[question.name]}
-                onChange={handleChange}
-                className="answer-input"
-              />
-            )}
-          </div>
-        ))}
-      </>
-    );
-  });
+  const questions = useMemo(() => [
+    { label: 'What is your age?', name: 'age' },
+    { label: 'What is your gender?', name: 'gender' },
+    { label: 'What is your height?', name: 'height' },
+    { label: 'What is your weight?', name: 'weight' },
+    { label: 'What is your Educational Institute/Athletic Program and/or Youth Athletic Club?', name: 'affiliationId' }
+  ], []);
 
-  const allAnswersFilled = athleteData && Object.values(athleteData).every(x => x !== '' && x != null);
+  const allAnswersFilled = useMemo(() => athleteData && Object.values(athleteData).every(x => x !== '' && x != null), [athleteData]);
 
   return (
     <IonPage>
@@ -192,16 +161,11 @@ const AAQuestion1: React.FC = () => {
         {athleteData ? (
           <div className="question-view">
             <QuestionComponent
-              questions={[
-                { label: 'What is your age?', name: 'age' },
-                { label: 'What is your gender?', name: 'gender' },
-                { label: 'What is your height?', name: 'height' },
-                { label: 'What is your weight?', name: 'weight' },
-                { label: 'What is your Educational Institute/Athletic Program and/or Youth Athletic Club?', name: 'affiliationId' }
-              ]}
+              questions={questions}
               athleteData={athleteData}
               affiliations={affiliations}
               handleChange={handleChange}
+              inputRefs={inputRefs}
             />
           </div>
         ) : (
@@ -217,5 +181,43 @@ const AAQuestion1: React.FC = () => {
     </IonPage>
   );
 };
+
+const QuestionComponent: React.FC<QuestionComponentProps> = React.memo(({ questions, athleteData, affiliations, handleChange, inputRefs }) => {
+  return (
+    <>
+      {questions.map((question, index) => (
+        <div key={question.name}>
+          <div className="step-info">Question {index + 1} of {questions.length}</div>
+          <div className="question">{question.label}</div>
+          {question.name === 'affiliationId' ? (
+            <select
+              name={question.name}
+              value={athleteData[question.name]}
+              onChange={handleChange}
+              className="answer-input"
+            >
+              <option value="">Select your institute</option>
+              {affiliations.map((affiliation) => (
+                <option key={affiliation.affiliation_id} value={affiliation.affiliation_id}>
+                  {affiliation.name}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <input
+              ref={(el) => (inputRefs.current[question.name] = el)}
+              type="text"
+              name={question.name}
+              placeholder="Enter your answer"
+              value={athleteData[question.name]}
+              onChange={handleChange}
+              className="answer-input"
+            />
+          )}
+        </div>
+      ))}
+    </>
+  );
+});
 
 export default AAQuestion1;

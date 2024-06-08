@@ -48,6 +48,10 @@ const AccountQuestion6: React.FC<AccountQuestion6Props> = ({ onNextClick, onBack
     console.log(`Role set to: ${selectedRole}`); // Log the set role for debugging
   };
 
+  const handleBackClick = () => {
+    history.goBack();
+  };
+
 //   if (!state) {
 //     return null; // Prevent rendering if state is undefined
 //   }
@@ -84,7 +88,7 @@ const AccountQuestion6: React.FC<AccountQuestion6Props> = ({ onNextClick, onBack
         </div>
       </IonContent>
       <div className="navigation-buttons">
-        <button onClick={onBackClick} className="back-button">BACK</button>
+        <button onClick={handleBackClick} className="back-button">BACK</button>
         <button onClick={handleNextClick} className="next-button" disabled={!role}>
           NEXT
         </button>

@@ -82,6 +82,9 @@ const AccountQuestion4: React.FC<AccountQuestion4Props> = ({ onNextClick, onBack
     setIsValidPassword(validatePassword(password));
   };
 
+  const handleBackClick = () => {
+    history.goBack();
+  };
   // if (!state) {
   //   return null; // Prevent rendering if state is undefined
   // }
@@ -115,7 +118,7 @@ const AccountQuestion4: React.FC<AccountQuestion4Props> = ({ onNextClick, onBack
         </div>
       </IonContent>
       <div className="navigation-buttons">
-        <button onClick={onBackClick} className="back-button">BACK</button>
+        <button onClick={handleBackClick} className="back-button">BACK</button>
         <button
           onClick={handleNextClick}
           className="next-button"

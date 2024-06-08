@@ -37,6 +37,10 @@ const AccountQuestion2: React.FC<AccountQuestion2Props> = ({ onNextClick, onBack
     }
   };
 
+  const handleBackClick = () => {
+    history.goBack();
+  };
+
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
@@ -73,7 +77,7 @@ const AccountQuestion2: React.FC<AccountQuestion2Props> = ({ onNextClick, onBack
         </div>
       </IonContent>
       <div className="navigation-buttons">
-        <button onClick={onBackClick} className="back-button">BACK</button>
+        <button onClick={handleBackClick} className="back-button">BACK</button>
         <button
           onClick={handleNextClick}
           className="next-button"

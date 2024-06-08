@@ -48,11 +48,6 @@ const App: React.FC = () => {
     // Add any additional logic you need for the next click here
   };
 
-  const handleBackClick = () => {
-    console.log('Back button clicked!');
-    // Add any additional logic you need for the back click here
-  };
-
   return (
     <IonApp>
       <AuthProvider>
@@ -68,19 +63,19 @@ const App: React.FC = () => {
               <AccountQuestion1 onNextClick={handleNextClick} />
             </Route>
             <Route exact path="/account-question-2">
-              <AccountQuestion2 onNextClick={handleNextClick} onBackClick={handleBackClick} />
+              <AccountQuestion2 onNextClick={handleNextClick} />
             </Route>
             <Route exact path="/account-question-3">
-              <AccountQuestion3 onNextClick={handleNextClick} onBackClick={handleBackClick}/>
+              <AccountQuestion3 onNextClick={handleNextClick} />
             </Route>
             <Route exact path="/account-question-4">
-              <AccountQuestion4 onNextClick={handleNextClick} onBackClick={handleBackClick}/>
+              <AccountQuestion4 onNextClick={handleNextClick} />
             </Route>
             <Route exact path="/account-question-5">
-              <AccountQuestion5 onNextClick={handleNextClick} onBackClick={handleBackClick}/>
+              <AccountQuestion5 onNextClick={handleNextClick} />
             </Route>
             <Route exact path="/account-question-6">
-              <AccountQuestion6 onNextClick={handleNextClick} onBackClick={handleBackClick}/>
+              <AccountQuestion6 onNextClick={handleNextClick} />
             </Route>
             <Route exact path="/coach-account-question-1">
               <CAQuestion1 />
@@ -125,7 +120,7 @@ const App: React.FC = () => {
               <AthletePastMedia />
             </Route>
             <Route exact path="/athlete-edit-profile">
-              <AthleteEditProfile onNextClick={handleNextClick}/>
+              <AthleteEditProfile onNextClick={handleNextClick} />
             </Route>
             <Route exact path="/athlete-profile">
               <AthleteProfile />

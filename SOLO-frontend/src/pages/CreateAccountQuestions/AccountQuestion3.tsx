@@ -51,6 +51,10 @@ const AccountQuestion3: React.FC<AccountQuestion3Props> = ({ onNextClick, onBack
     console.log('Phone number input changed:', phoneNumber); // Log value when input changes
   };
 
+  const handleBackClick = () => {
+    history.goBack();
+  };
+
   const { name, email } = state;
   
   return (
@@ -71,7 +75,7 @@ const AccountQuestion3: React.FC<AccountQuestion3Props> = ({ onNextClick, onBack
         </div>
       </IonContent>
       <div className="navigation-buttons">
-        <button onClick={onBackClick} className="back-button">BACK</button>
+        <button onClick={handleBackClick} className="back-button">BACK</button>
         <button
           onClick={handleNextClick}
           className="next-button"

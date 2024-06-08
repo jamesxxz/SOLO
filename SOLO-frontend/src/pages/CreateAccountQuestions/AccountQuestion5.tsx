@@ -128,6 +128,10 @@ const AccountQuestion5: React.FC<AccountQuestion5Props> = ({}) => {
     }
   };
 
+  const handleBackClick = () => {
+    history.goBack();
+  };
+  
   return (
     <IonPage>
       <CreateAccountHeader />
@@ -156,7 +160,7 @@ const AccountQuestion5: React.FC<AccountQuestion5Props> = ({}) => {
         </div>
       </IonContent>
       <div className="navigation-buttons">
-        <button onClick={onBackClick} className="back-button">BACK</button>
+        <button onClick={handleBackClick} className="back-button">BACK</button>
         <button
           onClick={onNextClick}
           className="next-button"

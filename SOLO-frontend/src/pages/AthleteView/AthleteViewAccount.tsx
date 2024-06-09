@@ -5,6 +5,7 @@ import { AuthContext } from '../../contexts/AuthContext';
 import { ApiService } from '../../../services/api.service';
 import TabBar2 from './TabBar2';
 import defaultImage from '../../../public/Flying Mario.jpeg'; // Adjust the path if necessary
+import '../../components/CoachView/ProfileView.css'
 
 const AthleteHome: React.FC = () => {
   const history = useHistory();
@@ -12,7 +13,7 @@ const AthleteHome: React.FC = () => {
   const { userId } = authContext!;
   const [athlete, setAthlete] = useState({
     id: '',
-    profile_pic: '',
+    profile_pic_url: '',
     name: '',
     email: '',
     affiliation_name: '',
@@ -28,7 +29,10 @@ const AthleteHome: React.FC = () => {
 
         const athleteData = await ApiService.getAthleteById(userId); // Pass the userId directly as a string
         console.log('Fetched athlete data:', athleteData); // Debug log
-        setAthlete(athleteData);
+        setAthlete({
+          ...athleteData,
+          profile_pic_url: athleteData.profile_pic_url || defaultImage,
+        });
       } catch (error) {
         console.error('Error fetching athlete data:', error);
       }
@@ -51,16 +55,16 @@ const AthleteHome: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', padding: '20px' }}>
-          <IonCard key={athlete.id} onClick={handleCardClick} style={{ position: 'relative', cursor: 'pointer' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px' }}>
+          <IonCard key={athlete.id} onClick={handleCardClick} style={{ position: 'relative', cursor: 'pointer', width: '300px', height: '300px' }}>
             <img 
-              src={athlete.profile_pic || defaultImage} // Use the athlete's profile picture if available
+              src={athlete.profile_pic_url} // Use the athlete's profile picture if available
               alt={athlete.name} 
               style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
             />
-            <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', padding: '10px' }}>
-              <IonCardTitle style={{ color: 'white' }}>{athlete.name}</IonCardTitle>
-              <IonCardSubtitle style={{ color: 'white' }}>{athlete.affiliation_name}</IonCardSubtitle>
+            <div style={{ position: 'absolute', bottom: '10px', left: '50%', transform: 'translateX(-50%)', color: 'white', background: 'rgba(0, 0, 0, 0.5)', padding: '5px', textAlign: 'center' }}>
+              <IonCardTitle style={{ margin: 0 }}>{athlete.name}</IonCardTitle>
+              <IonCardSubtitle style={{ margin: 0 }}>{athlete.affiliation_name}</IonCardSubtitle>
             </div>
           </IonCard>
         </div>

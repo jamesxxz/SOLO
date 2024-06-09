@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../server/db'); // Importing the connection pool
+const axios = require('axios'); // Import axios to make HTTP requests
+
 
 // Register an athlete
 router.post('/sign-up-athlete', async (req, res) => {
@@ -44,21 +46,61 @@ router.put('/update-athlete/:id', async (req, res) => {
 });
 
 // GET route to retrieve an athlete by ID
-router.get('/athlete/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
-        const [result] = await pool.query('SELECT * FROM athlete WHERE athlete_id = ?', [id]);
+// router.get('/athlete/:id', async (req, res) => {
+//     try {
+//         const { id } = req.params;
+//         const [result] = await pool.query('SELECT * FROM athlete WHERE athlete_id = ?', [id]);
 
-        if (result.length > 0) {
-            res.status(200).json(result[0]);
-        } else {
-            res.status(404).send('Athlete not found');
+//         if (result.length > 0) {
+//             res.status(200).json(result[0]);
+//         } else {
+//             res.status(404).send('Athlete not found');
+//         }
+//     } catch (error) {
+//         console.error('Error retrieving athlete data:', error);
+//         res.status(500).send('Server error retrieving athlete data');
+//     }
+// });
+
+// start
+// GET route to retrieve an athlete by ID along with profile picture URL
+router.get('/athlete/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const [result] = await pool.query('SELECT * FROM athlete WHERE athlete_id = ?', [id]);
+
+    if (result.length > 0) {
+      const athlete = result[0];
+
+      if (athlete.profile_pic) {
+        try {
+          const response = await axios.get('http://localhost:3001/file-url', {
+            params: { key: athlete.profile_pic }
+          });
+
+          athlete.profile_pic_url = response.data.url;
+        } catch (error) {
+          console.error('Error fetching signed URL for profile picture:', error);
+          athlete.profile_pic_url = '';
         }
-    } catch (error) {
-        console.error('Error retrieving athlete data:', error);
-        res.status(500).send('Server error retrieving athlete data');
+      } else {
+        athlete.profile_pic_url = '';
+      }
+
+      res.status(200).json(athlete);
+    } else {
+      res.status(404).send('Athlete not found');
     }
+  } catch (error) {
+    console.error('Error retrieving athlete data:', error);
+    res.status(500).send('Server error retrieving athlete data');
+  }
 });
+// end
+
+
+module.exports = router;
+
 
 // DELETE route to remove an athlete
 router.delete('/athlete/:id', async (req, res) => {

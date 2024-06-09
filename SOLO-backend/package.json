@@ -21,6 +21,7 @@
     "@aws-sdk/credential-provider-env": "^3.577.0",
     "@aws-sdk/s3-request-presigner": "^3.591.0",
     "aws-sdk": "^2.1621.0",
+    "axios": "^1.7.2",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "crypto-js": "^4.2.0",

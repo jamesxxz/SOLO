@@ -1,10 +1,18 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonButton, IonImg } from '@ionic/react';
-import '../../components/StartExploring.css';
+import React, { useEffect } from 'react';
+import { IonContent, IonPage, IonImg } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
-
+import '../../components/StartExploring.css';
 
 const SEAthlete: React.FC = () => {
   const history = useHistory();
+
+  useEffect(() => {
+    const hasRefreshed = sessionStorage.getItem('hasRefreshed');
+    if (!hasRefreshed) {
+      sessionStorage.setItem('hasRefreshed', 'true');
+      window.location.reload();
+    }
+  }, []);
 
   return (
     <IonPage>
@@ -25,5 +33,3 @@ const SEAthlete: React.FC = () => {
 };
 
 export default SEAthlete;
-
-

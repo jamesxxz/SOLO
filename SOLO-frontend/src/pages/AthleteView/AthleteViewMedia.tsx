@@ -96,7 +96,7 @@ const AthleteViewMedia: React.FC = () => {
           <IonButtons slot="start">
             <IonBackButton defaultHref="/athlete-view-account" />
           </IonButtons>
-          <header style={{ backgroundColor: 'white' }}>
+          <header style={{ backgroundColor: 'white', marginLeft: '18%'}}>
             <div className="logo">MY MEDIA</div>
           </header>
         </IonToolbar>
@@ -108,9 +108,9 @@ const AthleteViewMedia: React.FC = () => {
             {currentMedia.map((media) => (
               <IonItem className="media-item" key={media.id}>
                 <img src={media.signedUrl} alt={media.name} className="media-image" />
-                <IonLabel>{media.name}</IonLabel>
-                <button className="delete-button" onClick={() => handleDelete(media.media_id, 'current')}>🗑️</button>
-                <button className="move-button" onClick={() => handleMoveToPast(media.id)}>Move to Past Media</button>
+                <IonLabel style={{ flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', marginRight: '10px' }}>{media.name}</IonLabel>
+                <button style={{ background: 'none', border: 'none', color: '#007bff', cursor: 'pointer', marginLeft: '5px' }} onClick={() => handleDelete(media.media_id, 'current')}>🗑️</button>
+                <button style={{ background: 'none', border: 'none', color: '#007bff', cursor: 'pointer', marginLeft: '5px' }} onClick={() => handleMoveToPast(media.id)}>Move to Past Media</button>
               </IonItem>
             ))}
           </IonList>
@@ -125,8 +125,8 @@ const AthleteViewMedia: React.FC = () => {
             {pastMedia.map((media) => (  
               <IonItem className="media-item" key={media.id}>
                 <img src={media.signedUrl} alt={media.name} className="media-image" />
-                <IonLabel>{media.name}</IonLabel>
-                <button className="delete-button" onClick={() => handleDelete(media.media_id, 'past')}>🗑️</button>
+                <IonLabel style={{ flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', marginRight: '10px' }}>{media.name}</IonLabel>
+                <button style={{ background: 'none', border: 'none', color: '#007bff', cursor: 'pointer', marginLeft: '5px' }} onClick={() => handleDelete(media.media_id, 'past')}>🗑️</button>
               </IonItem>
             ))}
           </IonList>

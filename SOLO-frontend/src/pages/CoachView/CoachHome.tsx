@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { IonContent, IonHeader, IonPage, IonCard, IonCardTitle, IonCardSubtitle, IonToolbar } from '@ionic/react';
+import React, { useState, useContext } from 'react';
+import { IonContent, IonHeader, IonPage, IonCard, IonCardTitle, IonCardSubtitle, IonToolbar, useIonViewWillEnter } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
 import { ApiService } from '../../../services/api.service'; // Ensure this path is correct
 import { AuthContext } from '../../contexts/AuthContext'; // Ensure this path is correct
@@ -21,26 +21,26 @@ const CoachHome: React.FC = () => {
   const { userId } = authContext!;
   const [athletes, setAthletes] = useState<Athlete[]>([]);
 
-  useEffect(() => {
-    const fetchAthletes = async () => {
-      try {
-        if (!userId) {
-          console.log('userId is not available'); // Debug log
-          return;
-        }
-
-        const coachId = parseInt(userId, 10); // Convert userId to integer
-        console.log('Fetching athletes for coachId:', coachId); // Debug log
-        const linkedAthletes = await ApiService.getLinkedAthletes(coachId);
-        console.log('Linked athletes:', linkedAthletes); // Debug log
-        setAthletes(linkedAthletes);
-      } catch (error) {
-        console.error('Error fetching linked athletes:', error);
+  const fetchAthletes = async () => {
+    try {
+      if (!userId) {
+        console.log('userId is not available'); // Debug log
+        return;
       }
-    };
 
+      const coachId = parseInt(userId, 10); // Convert userId to integer
+      console.log('Fetching athletes for coachId:', coachId); // Debug log
+      const linkedAthletes = await ApiService.getLinkedAthletes(coachId);
+      console.log('Linked athletes:', linkedAthletes); // Debug log
+      setAthletes(linkedAthletes);
+    } catch (error) {
+      console.error('Error fetching linked athletes:', error);
+    }
+  };
+
+  useIonViewWillEnter(() => {
     fetchAthletes();
-  }, [userId]);
+  });
 
   const navigateToAddAthleteView = () => {
     history.push('/add-athlete-view');
@@ -85,7 +85,7 @@ const CoachHome: React.FC = () => {
           style={{
             position: 'fixed',
             right: '0.75rem',
-            bottom: '4.75rem', // Adjusted bottom margin to ensure visibility above the tab bar
+            bottom: '6.75rem', // Adjusted bottom margin to ensure visibility above the tab bar
             backgroundImage: 'linear-gradient(to right, #3499CD 0%, #3485CD 29%, #354DCD 59%, #26256C 100%)',
             color: 'white',
             border: 'none',

@@ -72,7 +72,7 @@ const AthletePastMedia: React.FC = () => {
           <IonButtons slot="start">
             <IonBackButton defaultHref="/athlete-view-media" />
           </IonButtons>
-          <header style={{ backgroundColor: 'white' }}>
+          <header style={{ backgroundColor: 'white', paddingLeft:'9%' }}>
             <div className="logo">MY PAST MEDIA</div>
           </header>
         </IonToolbar>

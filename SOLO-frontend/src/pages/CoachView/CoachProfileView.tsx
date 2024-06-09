@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
-import { IonPage, IonHeader, IonToolbar, IonIcon, IonContent } from '@ionic/react';
+import { IonPage, IonHeader, IonToolbar, IonIcon, IonContent, IonButtons, IonBackButton } from '@ionic/react';
 import { arrowBackOutline, pencilOutline } from 'ionicons/icons';
 import '../../components/CoachView/ProfileView.css';
 import TabBar from './TabBar';
@@ -76,11 +76,13 @@ const CoachProfileView: React.FC = () => {
   return (
     <IonPage>
       <IonHeader>
-        <IonToolbar className="gradient-header">
-          <div className="profile-header">
-            <IonIcon icon={arrowBackOutline} onClick={onBackClick} className="back-button" />
-            <div className="profile-logo">PROFILE</div>
-          </div>
+        <IonToolbar>
+          <IonButtons slot="start">
+            <IonBackButton defaultHref="/coach-home" />
+          </IonButtons>
+          <header style={{ backgroundColor: 'white', paddingLeft:'23%' }}>
+            <div className="logo">PROFILE</div>
+          </header>
         </IonToolbar>
       </IonHeader>
       <IonContent>

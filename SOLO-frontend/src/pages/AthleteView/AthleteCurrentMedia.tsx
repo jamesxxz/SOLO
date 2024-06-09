@@ -169,7 +169,7 @@ const AthleteCurrentMedia: React.FC = () => {
           <IonButtons slot="start">
             <IonBackButton defaultHref="/athlete-view-media" />
           </IonButtons>
-          <header style={{ backgroundColor: 'white' }}>
+          <header style={{ backgroundColor: 'white', paddingLeft:'7%' }}>
             <div className="logo">MY CURRENT MEDIA</div>
           </header>
         </IonToolbar>
@@ -206,7 +206,7 @@ const AthleteCurrentMedia: React.FC = () => {
       </IonContent>
       <IonButton
         className="add-media-button"
-        style={{ position: 'fixed', bottom: '56px', right: '16px', zIndex: 1000 }}
+        style={{ position: 'fixed', bottom: '66px', right: '16px', zIndex: 1000 }}
         onClick={() => setShowModal(true)}
       >
         + Add Media

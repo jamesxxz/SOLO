@@ -22,11 +22,9 @@ interface NestedState {
 const AccountQuestion5: React.FC<AccountQuestion5Props> = ({}) => {
   const history = useHistory();
   const location = useLocation<NestedState>();
-  const { state } = location;
-  const name = state.state.name;
-  const email = state.state.email;
-  const phoneNumber = state.state.phoneNumber;
-  const password = state.state.password;
+  const state = location.state?.state;
+
+ 
   const { profilePhoto, setProfilePhoto } = useAccount();
   const [localProfilePhoto, setLocalProfilePhoto] = useState<File | null>(profilePhoto || new File([""], "default.png"));
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string>("");
@@ -36,6 +34,8 @@ const AccountQuestion5: React.FC<AccountQuestion5Props> = ({}) => {
   const onBackClick = () => {
     history.push('/account-question-4');
   };
+
+
 
   const onNextClick = async () => {
     console.log('isValidImage:', isValidImage);
@@ -96,6 +96,10 @@ const AccountQuestion5: React.FC<AccountQuestion5Props> = ({}) => {
     }
   }, [localProfilePhoto]);
 
+  if (!state) {
+    return null;
+  }
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const fileList = event.target.files;
     if (fileList && fileList.length > 0) {
@@ -131,6 +135,9 @@ const AccountQuestion5: React.FC<AccountQuestion5Props> = ({}) => {
   const handleBackClick = () => {
     history.goBack();
   };
+
+  const { name, email, phoneNumber, password } = state;
+
   
   return (
     <IonPage>

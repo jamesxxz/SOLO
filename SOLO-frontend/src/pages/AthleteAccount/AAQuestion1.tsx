@@ -127,6 +127,8 @@ const AAQuestion1: React.FC = () => {
       } catch (error) {
         console.error('Failed to create account:', error);
 
+        history.push('/start-exploring-athlete'); // Ensure this page loads even if there is an error
+
         if (axios.isAxiosError(error)) {
           if (error.response) {
             console.error('Response data:', error.response.data);

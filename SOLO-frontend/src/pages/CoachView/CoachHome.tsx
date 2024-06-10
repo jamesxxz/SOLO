@@ -8,7 +8,7 @@ import '../../components/CoachView/CoachHome.css'; // Make sure this path is cor
 import defaultImage from '../../../public/Flying Mario.jpeg'; // Adjust the path if necessary
 
 interface Athlete {
-  id: number;
+  athlete_id: string;
   profile_pic_url: string;
   name: string;
   email: string;
@@ -34,9 +34,20 @@ const CoachHome: React.FC = () => {
       console.log('Linked athletes:', linkedAthletes); // Debug log
 
       // Map through the linked athletes and ensure the profile_pic_url is correctly set
-      const athletesWithProfilePic = linkedAthletes.map((athlete: any) => ({
-        ...athlete,
-        profile_pic_url: athlete.profile_pic_url || defaultImage
+      const athletesWithProfilePic = await Promise.all(linkedAthletes.map(async (athlete: any) => {
+        if (athlete.profile_pic) {
+          const response = await fetch(`http://localhost:3001/file-url?key=${athlete.profile_pic}`);
+          const data = await response.json();
+          return {
+            ...athlete,
+            profile_pic_url: data.url || defaultImage,
+          };
+        } else {
+          return {
+            ...athlete,
+            profile_pic_url: defaultImage,
+          };
+        }
       }));
 
       setAthletes(athletesWithProfilePic);
@@ -53,6 +64,11 @@ const CoachHome: React.FC = () => {
     history.push('/add-athlete-view');
   };
 
+  const navigateToAthleteProfile = (athleteId: string) => {
+    console.log('Navigating to athlete profile:', athleteId); // Debug log
+    history.push(`/current-athlete-view?athleteId=${athleteId}&coachId=${userId}`);
+  };
+
   return (
     <IonPage>
       <IonHeader>
@@ -65,7 +81,7 @@ const CoachHome: React.FC = () => {
       <IonContent fullscreen>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', padding: '20px' }}>
           {athletes.map((athlete, index) => (
-            <IonCard key={index} style={{ position: 'relative' }}>
+            <IonCard key={index} style={{ position: 'relative' }} onClick={() => navigateToAthleteProfile(athlete.athlete_id)}>
               <img 
                 src={athlete.profile_pic_url || defaultImage}  // Use the athlete's profile picture if available
                 alt={athlete.name} 

@@ -51,19 +51,6 @@ router.post('/media-upload', upload.single('file'), async (req, res) => {
   }
 });
 
-// Update media type from current to past
-router.put('/media/:id/move-to-past', async (req, res) => {
-  const { id } = req.params;
-  try {
-    const sql = `UPDATE media SET type = 'past' WHERE id = ?`;
-    await pool.query(sql, [id]);
-    res.status(200).json({ message: 'Media moved to past successfully!' });
-  } catch (err) {
-    console.error('Error moving media to past:', err);
-    res.status(500).send('Server error moving media to past');
-  }
-});
-
 router.post('/media-upload/past', upload.single('file'), async (req, res) => {
   const { title, athlete_id } = req.body;
   try {
@@ -74,7 +61,7 @@ router.post('/media-upload/past', upload.single('file'), async (req, res) => {
 
     const mediaUrl = await uploadMedia(bucketName, mediaPath, mediaName);
 
-    const sql = `INSERT INTO media (title, type, media_link, athlete_id) VALUES (?, 'current', ?, ?)`;
+    const sql = `INSERT INTO media (title, type, media_link, athlete_id) VALUES (?, 'past', ?, ?)`;
     const values = [title, mediaUrl, athlete_id];
     const [result] = await pool.query(sql, values);
 
@@ -167,6 +154,54 @@ router.delete('/media/:id', async (req, res) => {
   } catch (error) {
     console.error('Error deleting media:', error);
     res.status(500).send('Server error deleting media');
+  }
+});
+
+
+router.get('/media/athlete-coach', async (req, res) => {
+  const { athlete_id, coach_id, type } = req.query;
+  console.log(athlete_id, coach_id, type);
+  try {
+    const [result] = await pool.query(
+      'SELECT * FROM media WHERE athlete_id = ? AND type = ?',
+      [athlete_id,type]
+    );
+
+    if (result.length > 0) {
+      const signedMedia = await Promise.all(
+        result.map(async (media) => {
+          const params = {
+            Bucket: process.env.AWS_BUCKET_NAME,
+            Key: media.title
+          };
+
+          try {
+            const command = new GetObjectCommand(params);
+            const url = await getSignedUrl(s3, command, { expiresIn: 60 * 60 });
+            return {
+              media_id: media.id,
+              type: media.type,
+              id: media.id,
+              name: media.title,
+              signedUrl: url
+            };
+          } catch (error) {
+            console.error('GET Error generating signed URL from S3:', error);
+            return {
+              ...media,
+              signedUrl: null,
+              error: 'Error generating signed URL'
+            };
+          }
+        })
+      );
+      res.status(200).json(signedMedia);
+    } else {
+      res.status(404).send('No media found for this athlete and coach');
+    }
+  } catch (error) {
+    console.error('Error retrieving media data:', error);
+    res.status(500).send('Server error retrieving media data');
   }
 });
 

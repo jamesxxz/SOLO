@@ -21,7 +21,7 @@ const CoachProfileView: React.FC = () => {
   const [username, setUsername] = useState('');
   const [emailAddress, setEmailAddress] = useState('');
   const [phone, setPhone] = useState('');
-  const [profilePic, setProfilePic] = useState('');
+  const [profilePicUrl, setProfilePicUrl] = useState('');
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
@@ -32,12 +32,21 @@ const CoachProfileView: React.FC = () => {
           return;
         }
 
-        const profileData = await ApiService.getCoachProfile({ id: parseInt(userId) });
+        const profileData = await ApiService.getCoachProfile({ id:userId });
         console.log('Fetched coach data:', profileData); // Debug log
         setUsername(profileData.name);
         setEmailAddress(profileData.email);
         setPhone(profileData.phone_number);
-        setProfilePic(profileData.profile_pic_url || defaultImage); // Assuming profile_pic_url contains the full URL
+
+        // Fetch profile picture URL
+        if (profileData.profile_pic) {
+          const response = await fetch(`http://localhost:3001/file-url?key=${profileData.profile_pic}`);
+          const data = await response.json();
+          setProfilePicUrl(data.url || defaultImage);
+        } else {
+          setProfilePicUrl(defaultImage);
+        }
+
       } catch (error) {
         console.error('Error fetching coach data:', error);
       }
@@ -91,7 +100,7 @@ const CoachProfileView: React.FC = () => {
       <IonContent>
         <div className="profile-content">
           <img
-            src={profilePic || "/default-profile-pic.png"} // Show a default image if profilePic is not available
+            src={profilePicUrl} // Use the profile picture URL
             alt="Banner"
             className="banner-image"
             style={{

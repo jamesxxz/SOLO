@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { IonContent, IonHeader, IonPage, IonCard, IonCardTitle, IonCardSubtitle, IonToolbar, useIonViewWillEnter } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
 import { ApiService } from '../../../services/api.service'; // Ensure this path is correct
@@ -9,7 +9,7 @@ import defaultImage from '../../../public/Flying Mario.jpeg'; // Adjust the path
 
 interface Athlete {
   id: number;
-  profile_pic: string;
+  profile_pic_url: string;
   name: string;
   email: string;
   affiliation_name: string;
@@ -32,7 +32,14 @@ const CoachHome: React.FC = () => {
       console.log('Fetching athletes for coachId:', coachId); // Debug log
       const linkedAthletes = await ApiService.getLinkedAthletes(coachId);
       console.log('Linked athletes:', linkedAthletes); // Debug log
-      setAthletes(linkedAthletes);
+
+      // Map through the linked athletes and ensure the profile_pic_url is correctly set
+      const athletesWithProfilePic = linkedAthletes.map((athlete: any) => ({
+        ...athlete,
+        profile_pic_url: athlete.profile_pic_url || defaultImage
+      }));
+
+      setAthletes(athletesWithProfilePic);
     } catch (error) {
       console.error('Error fetching linked athletes:', error);
     }
@@ -60,7 +67,7 @@ const CoachHome: React.FC = () => {
           {athletes.map((athlete, index) => (
             <IonCard key={index} style={{ position: 'relative' }}>
               <img 
-                src={athlete.profile_pic || defaultImage}  // Use the athlete's profile picture if available
+                src={athlete.profile_pic_url || defaultImage}  // Use the athlete's profile picture if available
                 alt={athlete.name} 
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
               />
@@ -73,7 +80,7 @@ const CoachHome: React.FC = () => {
                 backgroundColor: 'rgba(255, 255, 255, 0.6)', // Semi-transparent white background
                 backdropFilter: 'blur(1px)', // Blurring effect
                 WebkitBackdropFilter: 'blur(10px)', // Blurring effect for Safari
-                }}>
+              }}>
                 <IonCardTitle style={{ color: 'black' }}>{athlete.name}</IonCardTitle>
                 <IonCardSubtitle style={{ color: 'grey' }}>{athlete.affiliation_name}</IonCardSubtitle>
               </div>

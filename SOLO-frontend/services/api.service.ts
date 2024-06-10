@@ -46,7 +46,7 @@ export class ApiService {
       email: athleteData.email,
       phone_number: athleteData.phoneNumber,
       password: athleteData.password,
-      profile_pic: athleteData.profile_pic,
+      profile_pic: athleteData.profilePic,
       age: parseInt(athleteData.age, 10),
       gender: athleteData.gender,
       height: athleteData.height,

@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
-import { IonPage, IonHeader, IonToolbar, IonIcon, IonContent, IonButtons, IonBackButton } from '@ionic/react';
-import { arrowBackOutline, pencilOutline } from 'ionicons/icons';
+import { IonPage, IonHeader, IonToolbar, IonContent, IonButtons, IonBackButton, IonCardTitle, IonCardSubtitle, IonIcon } from '@ionic/react';
+import { pencilOutline } from 'ionicons/icons';
 import '../../components/CoachView/ProfileView.css';
 import TabBar from './TabBar';
 import { ApiService } from '../../../services/api.service';
 import { AuthContext } from '../../contexts/AuthContext';
+import defaultImage from '../../../public/Flying Mario.jpeg'; // Adjust the path if necessary
 
 const CoachProfileView: React.FC = () => {
   const history = useHistory();
@@ -20,23 +21,34 @@ const CoachProfileView: React.FC = () => {
   const [username, setUsername] = useState('');
   const [emailAddress, setEmailAddress] = useState('');
   const [phone, setPhone] = useState('');
-  const [profilePic, setProfilePic] = useState('');
+  const [profilePicUrl, setProfilePicUrl] = useState('');
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        if (userId) {
-          console.log('Fetching profile for user ID:', userId);
-          const profileData = await ApiService.getCoachProfile({ id: parseInt(userId) });
-          console.log('Profile data fetched:', profileData);
-          setUsername(profileData.name);
-          setEmailAddress(profileData.email);
-          setPhone(profileData.phone_number);
-          setProfilePic(profileData.profile_pic);
+        if (!userId) {
+          console.log('userId is not available'); // Debug log
+          return;
         }
+
+        const profileData = await ApiService.getCoachProfile({ id:userId });
+        console.log('Fetched coach data:', profileData); // Debug log
+        setUsername(profileData.name);
+        setEmailAddress(profileData.email);
+        setPhone(profileData.phone_number);
+
+        // Fetch profile picture URL
+        if (profileData.profile_pic) {
+          const response = await fetch(`http://localhost:3001/file-url?key=${profileData.profile_pic}`);
+          const data = await response.json();
+          setProfilePicUrl(data.url || defaultImage);
+        } else {
+          setProfilePicUrl(defaultImage);
+        }
+
       } catch (error) {
-        console.error('Failed to fetch profile data:', error);
+        console.error('Error fetching coach data:', error);
       }
     };
 
@@ -80,7 +92,7 @@ const CoachProfileView: React.FC = () => {
           <IonButtons slot="start">
             <IonBackButton defaultHref="/coach-home" />
           </IonButtons>
-          <header style={{ backgroundColor: 'white', paddingLeft:'23%' }}>
+          <header style={{ backgroundColor: 'white', paddingLeft: '23%' }}>
             <div className="logo">PROFILE</div>
           </header>
         </IonToolbar>
@@ -88,10 +100,21 @@ const CoachProfileView: React.FC = () => {
       <IonContent>
         <div className="profile-content">
           <img
-            src={profilePic || "/default-profile-pic.png"} // Show a default image if profilePic is not available
+            src={profilePicUrl} // Use the profile picture URL
             alt="Banner"
             className="banner-image"
+            style={{
+              width: '100%',
+              height: '200px',
+              objectFit: 'cover',
+              borderRadius: '0 0 10px 10px',
+              marginBottom: '0' // Adjust this value to reduce the space
+            }}
           />
+          <div style={{ padding: '10px 20px 0', textAlign: 'center' }}> {/* Adjust padding top to reduce space */}
+            <IonCardTitle style={{ fontSize: '24px', fontWeight: 'bold' }}>{username}</IonCardTitle>
+            <IonCardSubtitle style={{ fontSize: '18px' }}>{emailAddress}</IonCardSubtitle>
+          </div>
           <div className="profile-input-group">
             <h3>Name</h3>
             <input

@@ -46,7 +46,7 @@ export class ApiService {
       email: athleteData.email,
       phone_number: athleteData.phoneNumber,
       password: athleteData.password,
-      profile_pic: athleteData.profile_pic,
+      profile_pic: athleteData.profilePic,
       age: parseInt(athleteData.age, 10),
       gender: athleteData.gender,
       height: athleteData.height,
@@ -70,7 +70,7 @@ export class ApiService {
     }
   }
 
-  static async getCoachProfile(query: { id: number }) {
+  static async getCoachProfile(query: { id: string }) {
     if (!query.id) {
       throw new Error('Coach ID is required to fetch profile');
     }
@@ -219,6 +219,22 @@ static async getAthleteById(id: string) {
     return response.data;
   } catch (error) {
     console.error('Error fetching athlete data:', error);
+    throw error;
+  }
+}
+
+static async getMediaByAthleteIdAndCoachId(athleteId: string, coachId: string, type: string) {
+  try {
+    const response = await axios.get(`${BASE_URL}/media/media/athlete-coach`, {
+      params: {
+        athlete_id: athleteId,
+        coach_id: coachId,
+        type: type
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Failed to fetch media by athlete ID and coach ID:', error);
     throw error;
   }
 }

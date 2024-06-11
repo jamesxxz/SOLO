@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { IonContent, IonHeader, IonPage, IonCard, IonCardTitle, IonCardSubtitle, IonToolbar, useIonViewWillEnter } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
 import { ApiService } from '../../../services/api.service'; // Ensure this path is correct
@@ -8,8 +8,8 @@ import '../../components/CoachView/CoachHome.css'; // Make sure this path is cor
 import defaultImage from '../../../public/Flying Mario.jpeg'; // Adjust the path if necessary
 
 interface Athlete {
-  id: number;
-  profile_pic: string;
+  athlete_id: string;
+  profile_pic_url: string;
   name: string;
   email: string;
   affiliation_name: string;
@@ -32,7 +32,25 @@ const CoachHome: React.FC = () => {
       console.log('Fetching athletes for coachId:', coachId); // Debug log
       const linkedAthletes = await ApiService.getLinkedAthletes(coachId);
       console.log('Linked athletes:', linkedAthletes); // Debug log
-      setAthletes(linkedAthletes);
+
+      // Map through the linked athletes and ensure the profile_pic_url is correctly set
+      const athletesWithProfilePic = await Promise.all(linkedAthletes.map(async (athlete: any) => {
+        if (athlete.profile_pic) {
+          const response = await fetch(`http://localhost:3001/file-url?key=${athlete.profile_pic}`);
+          const data = await response.json();
+          return {
+            ...athlete,
+            profile_pic_url: data.url || defaultImage,
+          };
+        } else {
+          return {
+            ...athlete,
+            profile_pic_url: defaultImage,
+          };
+        }
+      }));
+
+      setAthletes(athletesWithProfilePic);
     } catch (error) {
       console.error('Error fetching linked athletes:', error);
     }
@@ -44,6 +62,11 @@ const CoachHome: React.FC = () => {
 
   const navigateToAddAthleteView = () => {
     history.push('/add-athlete-view');
+  };
+
+  const navigateToAthleteProfile = (athleteId: string) => {
+    console.log('Navigating to athlete profile:', athleteId); // Debug log
+    history.push(`/current-athlete-view?athleteId=${athleteId}&coachId=${userId}`);
   };
 
   return (
@@ -58,9 +81,9 @@ const CoachHome: React.FC = () => {
       <IonContent fullscreen>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', padding: '20px' }}>
           {athletes.map((athlete, index) => (
-            <IonCard key={index} style={{ position: 'relative' }}>
+            <IonCard key={index} style={{ position: 'relative' }} onClick={() => navigateToAthleteProfile(athlete.athlete_id)}>
               <img 
-                src={athlete.profile_pic || defaultImage}  // Use the athlete's profile picture if available
+                src={athlete.profile_pic_url || defaultImage}  // Use the athlete's profile picture if available
                 alt={athlete.name} 
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
               />
@@ -73,7 +96,7 @@ const CoachHome: React.FC = () => {
                 backgroundColor: 'rgba(255, 255, 255, 0.6)', // Semi-transparent white background
                 backdropFilter: 'blur(1px)', // Blurring effect
                 WebkitBackdropFilter: 'blur(10px)', // Blurring effect for Safari
-                }}>
+              }}>
                 <IonCardTitle style={{ color: 'black' }}>{athlete.name}</IonCardTitle>
                 <IonCardSubtitle style={{ color: 'grey' }}>{athlete.affiliation_name}</IonCardSubtitle>
               </div>

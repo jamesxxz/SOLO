@@ -36,6 +36,13 @@ const AddAthleteView: React.FC = () => {
     history.push('/coach-home');
   };
 
+  const resetFormFields = () => {
+    setUsername('');
+    setEmailAddress('');
+    setPhone('');
+    setAffiliationId('');
+  };
+
   const onAddAthleteClick = async () => {
     if (isFormValid) {
       try {
@@ -58,9 +65,11 @@ const AddAthleteView: React.FC = () => {
 
           alert('Athlete found and added successfully!');
 
+          // Reset form fields
+          resetFormFields();
+
           // Navigate back to coach home
           history.push('/coach-home');
-
         } else {
           alert('No matching athlete found.');
         }

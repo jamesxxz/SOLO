@@ -7,11 +7,15 @@ const SEAthlete: React.FC = () => {
   const history = useHistory();
 
   useEffect(() => {
-    const hasRefreshed = sessionStorage.getItem('hasRefreshed');
-    if (!hasRefreshed) {
-      sessionStorage.setItem('hasRefreshed', 'true');
-      window.location.reload();
+    console.log('Page loaded');
+    if (document.readyState === 'complete') {
+      return; // Page is already loaded, no need to reload
     }
+    const timeoutId = setTimeout(() => {
+      window.location.reload();
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
   }, []);
 
   return (

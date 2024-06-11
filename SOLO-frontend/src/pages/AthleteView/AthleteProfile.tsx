@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
-import { IonPage, IonHeader, IonToolbar, IonIcon, IonContent, IonButtons, IonBackButton } from '@ionic/react';
-import { arrowBackOutline, pencilOutline } from 'ionicons/icons';
+import { IonPage, IonHeader, IonToolbar, IonContent, IonButtons, IonBackButton, IonCardTitle, IonCardSubtitle, IonIcon } from '@ionic/react';
+import { pencilOutline } from 'ionicons/icons';
 import '../../components/CoachView/ProfileView.css';
 import TabBar2 from './TabBar2';
 import { ApiService } from '../../../services/api.service';
 import { AuthContext } from '../../contexts/AuthContext';
+import defaultImage from '../../../public/Flying Mario.jpeg'; // Adjust the path if necessary
 
 const ProfileView: React.FC = () => {
   const history = useHistory();
@@ -26,17 +27,19 @@ const ProfileView: React.FC = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        if (userId) {
-          console.log('Fetching profile for user ID:', userId);
-          const profileData = await ApiService.getAthleteProfile({ id: userId });
-          console.log('Profile data fetched:', profileData);
-          setUsername(profileData.name);
-          setEmailAddress(profileData.email);
-          setPhone(profileData.phone_number);
-          setProfilePic(profileData.profile_pic);
+        if (!userId) {
+          console.log('userId is not available'); // Debug log
+          return;
         }
+
+        const profileData = await ApiService.getAthleteById(userId); // Pass the userId directly as a string
+        console.log('Fetched athlete data:', profileData); // Debug log
+        setUsername(profileData.name);
+        setEmailAddress(profileData.email);
+        setPhone(profileData.phone_number);
+        setProfilePic(profileData.profile_pic_url || defaultImage); // Assuming profile_pic_url contains the full URL
       } catch (error) {
-        console.error('Failed to fetch profile data:', error);
+        console.error('Error fetching athlete data:', error);
       }
     };
 
@@ -75,12 +78,12 @@ const ProfileView: React.FC = () => {
 
   return (
     <IonPage>
-            <IonHeader>
+      <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton defaultHref="/athlete-view-media" />
+            <IonBackButton defaultHref="/athlete-view-account" />
           </IonButtons>
-          <header style={{ backgroundColor: 'white', paddingLeft:'23%' }}>
+          <header style={{ backgroundColor: 'white', paddingLeft: '23%' }}>
             <div className="logo">PROFILE</div>
           </header>
         </IonToolbar>
@@ -91,7 +94,18 @@ const ProfileView: React.FC = () => {
             src={profilePic || "/default-profile-pic.png"} // Show a default image if profilePic is not available
             alt="Banner"
             className="banner-image"
+            style={{
+              width: '100%',
+              height: '200px',
+              objectFit: 'cover',
+              borderRadius: '0 0 10px 10px',
+              marginBottom: '0' // Adjust this value to reduce the space
+            }}
           />
+          <div style={{ padding: '10px 20px 0', textAlign: 'center' }}> {/* Adjust padding top to reduce space */}
+            <IonCardTitle style={{ fontSize: '24px', fontWeight: 'bold' }}>{username}</IonCardTitle>
+            <IonCardSubtitle style={{ fontSize: '18px' }}>{emailAddress}</IonCardSubtitle>
+          </div>
           <div className="profile-input-group">
             <h3>Name</h3>
             <input
@@ -136,5 +150,3 @@ const ProfileView: React.FC = () => {
 };
 
 export default ProfileView;
-
-// unable to fetch picture from the database

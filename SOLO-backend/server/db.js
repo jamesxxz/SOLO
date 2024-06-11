@@ -25,20 +25,12 @@ const s3 = new S3Client({
     credentials: fromEnv()
 });
 
-// const pool = mysql.createPool({
-//     host: process.env.DB_HOST,
-//     user: process.env.DB_USER,
-//     port: process.env.DB_PORT,
-//     password: process.env.DB_PASSWORD,
-//     database: process.env.DB_NAME
-// });
-
 const pool = mysql.createPool({
-    host: "solotestdb.cxqsaw0a4eyq.us-west-1.rds.amazonaws.com",
-    user: "admin",
-    port: 3306,
-    password: "SoloTestDB",
-    database: "SoloTestDB"
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    port: process.env.DB_PORT,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME
 });
 
 // Ensure the uploads directory exists within the services directory
@@ -79,7 +71,7 @@ app.post('/upload', (req, res, next) => {
   
         const mediaName = file.originalname;
   
-        const bucketName = 'solo-media-bucket-test'; // replace with your bucket name
+        const bucketName = process.env.AWS_BUCKET_NAME; 
         const mediaUrl = await uploadMedia(bucketName, mediaPath, mediaName);
   
         fs.unlinkSync(mediaPath);
@@ -96,7 +88,7 @@ app.get('/file-url', async (req, res) => {
     const { key } = req.query; // Expecting the file key as a query parameter
 
     const params = {
-        Bucket: 'solo-media-bucket-test', // replace with your bucket name
+        Bucket: process.env.AWS_BUCKET_NAME, 
         Key: key // Name of file uploaded. For example: mario.png
     };
 
@@ -130,7 +122,7 @@ app.post('/api/users', upload.single('profilePhoto'), async (req, res) => {
         const [result] = await pool.query(query, [name, email, password, profilePhoto]);
         res.send({ id: result.insertId, name, email, password, profilePhoto, role });
     } catch (error) {
-        console.error('Database query error:', error); // More specific error message
+        console.error('Database query error:', error); 
         res.status(500).send('Server error');
     }
 });

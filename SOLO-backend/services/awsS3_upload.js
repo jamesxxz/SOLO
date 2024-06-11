@@ -1,5 +1,5 @@
 // awsS3_upload.js
-require('dotenv').config({ path: './services/.env' });
+require('dotenv').config();
 const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
 const { fromEnv } = require('@aws-sdk/credential-provider-env');
 const fs = require('fs');

@@ -1,0 +1,7 @@
+{
+  "name": "SOLO-frontend",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}

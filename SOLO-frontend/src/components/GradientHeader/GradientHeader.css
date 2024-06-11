@@ -1,0 +1,25 @@
+/* GradientHeader.css */
+.gradient-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: calc(10px + var(--ion-safe-area-top)) 20px 10px; /* Adding safe area padding */
+  background-image: linear-gradient(to right, 
+    #3499CD 0%, 
+    #3485CD 29%, 
+    #354DCD 59%, 
+    #26256C 100%);
+}
+
+.logo {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+}

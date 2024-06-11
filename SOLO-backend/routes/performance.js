@@ -8,10 +8,12 @@ router.post('/upload-performance', async (req, res) => {
     try {
         const sql = `INSERT INTO performance (athlete_id, workout_id, results, date) VALUES (?, ?, ?, ?)`;
         const values = [athlete_id, workout_id, results, date];
-        await pool.query(sql, values);
-        res.status(200).json({ message: 'Performance registered successfully!' });
+        const [result] = await pool.query(sql, values);
+        const performanceId = result.insertId;
+
+        res.status(200).json({ message: 'Performance registered successfully!', id: performanceId });
     } catch (err) {
-        console.error(err);
+        console.error('Error on performance registration:', err);
         res.status(500).send('Server error on performance registration');
     }
 });
@@ -21,7 +23,7 @@ router.put('/update-performance/:id', async (req, res) => {
     const { id } = req.params;
     const { athlete_id, workout_id, results, date } = req.body;
     try {
-        const sql = `UPDATE performance SET athlete_id = ?, workout_id = ?, results = ?, date = ? WHERE performance_id = ?`;
+        const sql = `UPDATE performance SET athlete_id = ?, workout_id = ?, results = ?, date = ? WHERE id = ?`;
         const values = [athlete_id, workout_id, results, date, id];
         const [result] = await pool.query(sql, values);
 
@@ -40,15 +42,15 @@ router.put('/update-performance/:id', async (req, res) => {
 router.get('/performance/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const [rows] = await pool.query('SELECT * FROM performance WHERE performance_id = ?', [id]);
+        const [result] = await pool.query('SELECT * FROM performance WHERE id = ?', [id]);
 
-        if (rows.length > 0) {
-            res.status(200).json(rows[0]);
+        if (result.length > 0) {
+            res.status(200).json(result[0]);
         } else {
             res.status(404).send('Performance not found');
         }
     } catch (error) {
-        console.error(error);
+        console.error('Error retrieving performance data:', error);
         res.status(500).send('Server error retrieving performance data');
     }
 });
@@ -57,7 +59,7 @@ router.get('/performance/:id', async (req, res) => {
 router.delete('/performance/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const [result] = await pool.query('DELETE FROM performance WHERE performance_id = ?', [id]);
+        const [result] = await pool.query('DELETE FROM performance WHERE id = ?', [id]);
 
         if (result.affectedRows > 0) {
             res.status(200).json({ message: 'Performance deleted successfully' });

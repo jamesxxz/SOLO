@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 import { IonContent, IonHeader, IonPage, IonCard, IonCardTitle, IonCardSubtitle, IonToolbar, IonButton, IonModal, IonLabel, IonItem, IonSelect, IonSelectOption, IonDatetime } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
 import { ApiService } from '../../../services/api.service'; // Ensure this path is correct
@@ -7,6 +7,7 @@ import TabBar from './TabBar';
 import '../../components/CoachView/WorkoutBuilder.css'; // Make sure this path is correct
 import CalendarBar from './CalendarBar'; // Import the new CalendarBar component
 import defaultImage from '../../../public/Flying Mario.jpeg'; // Adjust the path if necessary
+import { OverlayEventDetail } from '@ionic/react/dist/types/components/react-component-lib/interfaces';
 
 interface Athlete {
   athlete_id: string;
@@ -17,6 +18,8 @@ interface Athlete {
 }
 
 const WorkoutBuilder: React.FC = () => {
+  const modal = useRef<HTMLIonModalElement>(null);
+  const input = useRef<HTMLIonInputElement>(null);
   const history = useHistory();
   const authContext = useContext(AuthContext);
   const { userId } = authContext!;
@@ -110,6 +113,14 @@ const WorkoutBuilder: React.FC = () => {
     ],
   };
 
+  function confirm() {
+    modal.current?.dismiss(input.current?.value, 'confirm');
+  }
+  function onWillDismiss(ev: CustomEvent<OverlayEventDetail>) {
+    if (ev.detail.role === 'confirm') {
+      console.log('Generate workout modal dismissed with confirm'); // Debug log
+    }
+  }
   return (
     <IonPage>
       <IonHeader>
@@ -137,7 +148,7 @@ const WorkoutBuilder: React.FC = () => {
             Generate Workout
           </IonButton>
         </div>
-        <IonModal isOpen={showModal} onDidDismiss={() => setShowModal(false)}>
+        <IonModal isOpen={showModal} onWillDismiss={(ev) => onWillDismiss(ev)} className="fullscreen-modal">
           <div className="modal-content">
             <h2>Generate Workout</h2>
             <IonItem>

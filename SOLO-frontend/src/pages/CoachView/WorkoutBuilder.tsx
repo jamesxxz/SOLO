@@ -172,36 +172,30 @@ const WorkoutBuilder: React.FC = () => {
                 ))}
               </IonSelect>
             </IonItem>
-            {selectedAthlete && (
-              <IonItem>
-                <IonLabel>Select Build:</IonLabel>
-                <IonSelect value={selectedBuild} onIonChange={(e) => setSelectedBuild(e.detail.value)}>
-                  {buildOptions.map((option) => (
-                    <IonSelectOption key={option.value} value={option.value}>
-                      {option.label}
-                    </IonSelectOption>
-                  ))}
-                </IonSelect>
-              </IonItem>
-            )}
-            {selectedBuild && (
-              <IonItem>
-                <IonLabel>Select Type:</IonLabel>
-                <IonSelect value={selectedType} onIonChange={(e) => setSelectedType(e.detail.value)}>
-                  {typeOptions[selectedBuild].map((option) => (
-                    <IonSelectOption key={option.value} value={option.value}>
-                      {option.label}
-                    </IonSelectOption>
-                  ))}
-                </IonSelect>
-              </IonItem>
-            )}
-            {selectedType && (
-              <IonItem>
-                <IonLabel>Assign Due Date:</IonLabel>
-                <IonDatetime value={dueDate} onIonChange={(e) => setDueDate(e.detail.value)} />
-              </IonItem>
-            )}
+            <IonItem>
+              <IonLabel>Select Build:</IonLabel>
+              <IonSelect value={selectedBuild} onIonChange={(e) => setSelectedBuild(e.detail.value)} disabled={!selectedAthlete}>
+                {buildOptions.map((option) => (
+                  <IonSelectOption key={option.value} value={option.value}>
+                    {option.label}
+                  </IonSelectOption>
+                ))}
+              </IonSelect>
+            </IonItem>
+            <IonItem>
+              <IonLabel>Select Type:</IonLabel>
+              <IonSelect value={selectedType} onIonChange={(e) => setSelectedType(e.detail.value)} disabled={!selectedBuild}>
+                {selectedBuild && typeOptions[selectedBuild].map((option) => (
+                  <IonSelectOption key={option.value} value={option.value}>
+                    {option.label}
+                  </IonSelectOption>
+                ))}
+              </IonSelect>
+            </IonItem>
+            <IonItem>
+              <IonLabel>Assign Due Date:</IonLabel>
+              <IonDatetime value={dueDate} onIonChange={(e) => setDueDate(e.detail.value)} disabled={!selectedType} />
+            </IonItem>
             <IonButton expand="full" onClick={handleGenerate} disabled={!selectedType || !dueDate}>
               Generate
             </IonButton>

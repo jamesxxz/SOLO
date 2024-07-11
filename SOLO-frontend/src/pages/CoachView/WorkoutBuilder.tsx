@@ -82,11 +82,20 @@ const WorkoutBuilder: React.FC = () => {
     // Logic to handle generating a workout
     setShowModal(false);
     alert('Workout generated!');
+    clearForm();
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
     setDemonstration(file);
+  };
+
+  const clearForm = () => {
+    setSelectedAthlete(null);
+    setSelectedBuild(null);
+    setSelectedType(null);
+    setDueDate('');
+    setDemonstration(null);
   };
 
   const buildOptions = [
@@ -120,6 +129,7 @@ const WorkoutBuilder: React.FC = () => {
     if (ev.detail.role === 'confirm') {
       console.log('Generate workout modal dismissed with confirm'); // Debug log
     }
+    clearForm();
   }
   return (
     <IonPage>
@@ -151,6 +161,7 @@ const WorkoutBuilder: React.FC = () => {
         <IonModal isOpen={showModal} onWillDismiss={(ev) => onWillDismiss(ev)} className="fullscreen-modal">
           <div className="modal-content">
             <h2>Generate Workout</h2>
+            <IonButton fill="clear" onClick={() => setShowModal(false)}>Close</IonButton>
             <IonItem>
               <IonLabel>Select Athlete:</IonLabel>
               <IonSelect value={selectedAthlete} onIonChange={(e) => setSelectedAthlete(e.detail.value)}>

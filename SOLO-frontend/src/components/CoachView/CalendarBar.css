@@ -1,0 +1,47 @@
+.calendar-bar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #f0f0f0;
+    padding: 10px;
+  }
+  
+  .month {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+  }
+  
+  .dates-container {
+    display: flex;
+    overflow-x: scroll;
+    white-space: nowrap;
+    width: 100%;
+  }
+  
+  .calendar-date {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0 5px;
+    cursor: pointer;
+  }
+  
+  .day-letter {
+    font-size: 1em;
+    margin-bottom: 5px;
+  }
+  
+  .date-number {
+    padding: 10px;
+    border-radius: 50%;
+    background: lightgrey;
+    text-align: center;
+    min-width: 40px;
+  }
+  
+  .highlight .date-number {
+    background: blue;
+    color: white;
+  }
+  

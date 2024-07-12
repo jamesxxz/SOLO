@@ -78,12 +78,42 @@ const WorkoutBuilder: React.FC = () => {
     setShowModal(true);
   };
 
-  const handleGenerate = () => {
-    // Logic to handle generating a workout
+  const handleGenerate = async () => {
+    if (!selectedAthlete || !selectedBuild || !selectedType || !dueDate) {
+      alert('Please fill out all fields.');
+      return;
+    }
+  
+    const build = buildOptions.find(option => option.value === selectedBuild);
+    const type = typeOptions[selectedBuild].find(option => option.value === selectedType);
+  
+    if (!build || !type) {
+      alert('Invalid build or type selected.');
+      return;
+    }
+  
+    const workoutData = {
+      coach_id: userId,
+      athlete_id: selectedAthlete,
+      build_id: build.id,
+      type_id: type.id,
+      due_date: dueDate,
+      demonstration: demonstration ? demonstration.name : null,
+    };
+  
+    try {
+      const response = await ApiService.addWorkout(workoutData);
+      console.log('Workout added:', response);
+      alert('Workout generated!');
+      clearForm();
+    } catch (error) {
+      console.error('Error generating workout:', error);
+      alert('Failed to generate workout');
+    }
+  
     setShowModal(false);
-    alert('Workout generated!');
-    clearForm();
   };
+  
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
@@ -99,28 +129,29 @@ const WorkoutBuilder: React.FC = () => {
   };
 
   const buildOptions = [
-    { label: 'Warm-Up', value: 'warm-up' },
-    { label: 'Core', value: 'core' },
-    { label: 'Cool Down', value: 'cool-down' },
+    { label: 'Warm-Up', value: 'warm-up', id: 1 },
+    { label: 'Core', value: 'core', id: 2 },
+    { label: 'Cool Down', value: 'cool-down', id: 3 },
   ];
-
+  
   const typeOptions = {
     'warm-up': [
-      { label: 'Standard (Demonstration: Runs, Stretches, Drills)', value: 'standard' },
-      { label: 'Dynamic (Demonstration: Runs, Stretches, Drills)', value: 'dynamic' },
-      { label: 'Competition (Demonstration: Runs, Stretches, Drills)', value: 'competition' },
-      { label: 'Custom (Search/Add - Runs, Stretches, Drills)', value: 'custom' },
+      { label: 'Standard (Demonstration: Runs, Stretches, Drills)', value: 'standard', id: 1 },
+      { label: 'Dynamic (Demonstration: Runs, Stretches, Drills)', value: 'dynamic', id: 2 },
+      { label: 'Competition (Demonstration: Runs, Stretches, Drills)', value: 'competition', id: 3 },
+      { label: 'Custom (Search/Add - Runs, Stretches, Drills)', value: 'custom', id: 4 },
     ],
     'core': [
-      { label: 'Drills (Demonstration – Type, Distance, Recovery, Reps)', value: 'drills' },
-      { label: 'Runs (Demonstration - Distance(s), Time(s), Recovery, Reps)', value: 'runs' },
-      { label: 'Lifts (Demonstration – Type, Weight, Reps, Recovery)', value: 'lifts' },
+      { label: 'Drills (Demonstration – Type, Distance, Recovery, Reps)', value: 'drills', id: 5 },
+      { label: 'Runs (Demonstration - Distance(s), Time(s), Recovery, Reps)', value: 'runs', id: 6 },
+      { label: 'Lifts (Demonstration – Type, Weight, Reps, Recovery)', value: 'lifts', id: 7 },
     ],
     'cool-down': [
-      { label: 'Slow Runs (Demonstration – Type, Distance, Recovery, Reps)', value: 'slow-runs' },
-      { label: 'Standard + Dynamic Stretches (Demonstration – Type, Reps)', value: 'stretches' },
+      { label: 'Slow Runs (Demonstration – Type, Distance, Recovery, Reps)', value: 'slow-runs', id: 8 },
+      { label: 'Standard + Dynamic Stretches (Demonstration – Type, Reps)', value: 'stretches', id: 9 },
     ],
   };
+  
 
   function confirm() {
     modal.current?.dismiss(input.current?.value, 'confirm');

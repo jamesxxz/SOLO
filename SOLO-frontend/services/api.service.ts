@@ -238,4 +238,15 @@ static async getMediaByAthleteIdAndCoachId(athleteId: string, coachId: string, t
     throw error;
   }
 }
+
+static async addWorkout(data: any) {
+  try {
+    const response = await axios.post(`${BASE_URL}/coach/workout`, data);
+    return response.data;
+  } catch (error) {
+    console.error('Failed to add workout:', error);
+    throw error;
+  }
+}
+
 }

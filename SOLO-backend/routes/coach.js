@@ -1,7 +1,8 @@
+// coach.js
 const express = require('express');
 const router = express.Router();
-const pool = require('../server/db'); // Importing the connection pool
 const CryptoJS = require('crypto-js');
+const pool = require('../server/db');
 
 // Register a coach
 router.post('/sign-up-coach', async (req, res) => {
@@ -139,5 +140,23 @@ router.get('/link-athlete/:coachId/athletes', async (req, res) => {
         res.status(500).send('Server error fetching linked athletes');
     }
 });
+
+router.post('/workout', async (req, res) => {
+    const { coach_id, athlete_id, workout_id, type_id, due_date, demonstration } = req.body;
+
+    const query = `
+        INSERT INTO workout (type_id, coach_id, athlete_id, workout_id, due_date, demonstration)
+        VALUES (?, ?, ?, ?, ?, ?)
+    `;
+
+    try {
+        const [result] = await pool.query(query, [type_id, coach_id, athlete_id, workout_id, due_date, demonstration]);
+        res.status(200).json({ message: 'Workout added successfully', workoutId: result.insertId });
+    } catch (err) {
+        console.error('Error inserting workout:', err);
+        res.status(500).json({ error: 'Failed to insert workout' });
+    }
+});
+
 
 module.exports = router;

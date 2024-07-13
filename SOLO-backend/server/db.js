@@ -30,8 +30,12 @@ const pool = mysql.createPool({
     user: process.env.DB_USER,
     port: process.env.DB_PORT,
     password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME
+    database: process.env.DB_NAME,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
 });
+
 
 // Ensure the uploads directory exists within the services directory
 const uploadsDir = path.join(__dirname, 'uploads');

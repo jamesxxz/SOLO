@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { IonContent, IonHeader, IonPage, IonToolbar, IonButton, IonModal, IonLabel, IonItem, IonInput, IonAccordionGroup, IonAccordion } from '@ionic/react';
 import '../../components/CoachView/WorkoutBuilder.css'; // Make sure this path is correct
 import TabBar from './TabBar';
@@ -12,10 +12,16 @@ interface Workout {
 const WorkoutBuilder: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedSection, setSelectedSection] = useState<string | null>(null);
+  const [expandedSections, setExpandedSections] = useState<string[]>([]);
   const [standardWorkouts, setStandardWorkouts] = useState<Workout[]>([]);
   const [dynamicWorkouts, setDynamicWorkouts] = useState<Workout[]>([]);
   const [competitionWorkouts, setCompetitionWorkouts] = useState<Workout[]>([]);
   const [newWorkout, setNewWorkout] = useState<Workout>({ title: '', intensity: '', time: 0 });
+
+  useEffect(() => {
+    // Expand all sections initially
+    setExpandedSections(['standard', 'dynamic', 'competition']);
+  }, []);
 
   const generateWorkout = () => {
     if (selectedSection === 'standard') {
@@ -29,6 +35,16 @@ const WorkoutBuilder: React.FC = () => {
     setShowModal(false);
   };
 
+  const handleAccordionChange = (value: string | null) => {
+    if (value) {
+      setExpandedSections((prevSections) =>
+        prevSections.includes(value)
+          ? prevSections.filter(section => section !== value)
+          : [...prevSections, value]
+      );
+    }
+  };
+
   return (
     <IonPage>
       <IonHeader>
@@ -39,8 +55,11 @@ const WorkoutBuilder: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <IonAccordionGroup expand="inset">
-          <IonAccordion value="standard">
+        <IonAccordionGroup
+          value={expandedSections}
+          onIonChange={e => handleAccordionChange(e.detail.value)}
+        >
+          <IonAccordion class="accordions" value="standard">
             <IonItem slot="header" color="light" onClick={() => setSelectedSection('standard')}>
               <IonLabel>Standard Workouts</IonLabel>
             </IonItem>
@@ -55,10 +74,13 @@ const WorkoutBuilder: React.FC = () => {
                   <button className="edit-button">Edit Workout</button>
                 </div>
               ))}
-              <IonButton onClick={() => setShowModal(true)}>Generate Workout</IonButton>
+              <IonButton onClick={() => {
+                setSelectedSection('standard');
+                setShowModal(true);
+              }}>Generate Workout</IonButton>
             </div>
           </IonAccordion>
-          <IonAccordion value="dynamic">
+          <IonAccordion class="accordions" value="dynamic">
             <IonItem slot="header" color="light" onClick={() => setSelectedSection('dynamic')}>
               <IonLabel>Dynamic Workouts</IonLabel>
             </IonItem>
@@ -73,10 +95,13 @@ const WorkoutBuilder: React.FC = () => {
                   <button className="edit-button">Edit Workout</button>
                 </div>
               ))}
-              <IonButton onClick={() => setShowModal(true)}>Generate Workout</IonButton>
+              <IonButton onClick={() => {
+                setSelectedSection('dynamic');
+                setShowModal(true);
+              }}>Generate Workout</IonButton>
             </div>
           </IonAccordion>
-          <IonAccordion value="competition">
+          <IonAccordion class="accordions" value="competition">
             <IonItem slot="header" color="light" onClick={() => setSelectedSection('competition')}>
               <IonLabel>Competition Workouts</IonLabel>
             </IonItem>
@@ -91,16 +116,27 @@ const WorkoutBuilder: React.FC = () => {
                   <button className="edit-button">Edit Workout</button>
                 </div>
               ))}
-              <IonButton onClick={() => setShowModal(true)}>Generate Workout</IonButton>
+              <IonButton onClick={() => {
+                setSelectedSection('competition');
+                setShowModal(true);
+              }}>Generate Workout</IonButton>
             </div>
           </IonAccordion>
         </IonAccordionGroup>
-        <IonModal isOpen={showModal} onDidDismiss={() => setShowModal(false)}>
+
+        <IonModal isOpen={showModal} onDidDismiss={() => setShowModal(false)} className="fullscreen-modal">
+          <IonHeader>
+            <IonToolbar>
+              <header className="gradient-header">
+                <div className="logo">GENERATE WORKOUT</div>
+              </header>
+            </IonToolbar>
+          </IonHeader>
           <div className="modal-content">
-            <h2>Generate Workout</h2>
+
             <IonItem>
-              <IonLabel position="floating">Title:</IonLabel>
-              <IonInput value={newWorkout.title} onIonChange={(e) => setNewWorkout({ ...newWorkout, title: e.detail.value! })} />
+            <IonInput label="Name" placeholder="Please enter name of the workout"></IonInput>
+
             </IonItem>
             <IonItem>
               <IonLabel position="floating">Intensity Level:</IonLabel>

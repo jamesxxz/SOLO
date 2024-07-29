@@ -1,7 +1,10 @@
+// CalendarBar.tsx
+
 import React, { useState, useEffect, useRef } from 'react';
 import moment from 'moment';
 import '../../components/CoachView/CalendarBar.css'; // Ensure this path is correct 
-const CalendarBar: React.FC = () => {
+
+const CalendarBar: React.FC<{ onDateClick: (date: string) => void }> = ({ onDateClick }) => {
   const [dates, setDates] = useState<string[]>([]);
   const [currentDate, setCurrentDate] = useState<string>(moment().format('D'));
   const [currentMonth, setCurrentMonth] = useState<string>(moment().format('MMMM'));
@@ -26,6 +29,12 @@ const CalendarBar: React.FC = () => {
     }
   }, [dates]);
 
+  const handleDateClick = (date: string) => {
+    setCurrentDate(date);
+    const selectedDate = moment().date(parseInt(date)).format('YYYY-MM-DD');
+    onDateClick(selectedDate); // Call the onDateClick function passed as a prop
+};
+
   return (
     <div className="calendar-bar">
       <div className="month">{currentMonth}</div>
@@ -35,6 +44,7 @@ const CalendarBar: React.FC = () => {
             key={index}
             ref={date === currentDate ? currentDayRef : null}
             className={`calendar-date ${date === currentDate ? 'highlight' : ''}`}
+            onClick={() => handleDateClick(date)} // Add onClick handler
           >
             <div className="day-letter">{moment().date(index + 1).format('dd').charAt(0)}</div>
             <div className="date-number">{date}</div>

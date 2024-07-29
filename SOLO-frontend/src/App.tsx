@@ -28,6 +28,7 @@ import CoachProfileView from './pages/CoachView/CoachProfileView';
 import AddAthlete from './components/GradientHeader/AddAthlete';
 import CurrentAthleteView from './pages/CoachView/AthleteProfile';
 import WorkoutBuilder from './pages/CoachView/WorkoutBuilder';
+import CalendarPage from './pages/CoachView/CalendarPage';
 import { AuthProvider } from './contexts/AuthContext';
 
 import '@ionic/react/css/core.css';
@@ -137,6 +138,9 @@ const App: React.FC = () => {
             </Route>
             <Route exact path="/coach-workout-builder">
               <WorkoutBuilder />
+            </Route>
+            <Route exact path="/coach-calendar-page">
+              <CalendarPage />
             </Route>
             <Route exact path="/">
               <Home />

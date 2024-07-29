@@ -158,5 +158,27 @@ router.post('/workout', async (req, res) => {
     }
 });
 
+router.get('/workout', async (req, res) => {
+    const { date } = req.query;
+    try {
+        const sql = `
+            SELECT w.*, a.name as athlete_name, c.name as coach_name
+            FROM workout w
+            JOIN athlete a ON w.athlete_id = a.athlete_id
+            JOIN coach c ON w.coach_id = c.coach_id
+            WHERE DATE(w.due_date) = ?
+        `;
+        const [results] = await pool.query(sql, [date]);
+
+        if (results.length > 0) {
+            res.status(200).json(results);
+        } else {
+            res.status(404).send('No workouts found for the given date');
+        }
+    } catch (error) {
+        console.error('Error retrieving workouts by date:', error);
+        res.status(500).send('Server error retrieving workouts by date');
+    }
+});
 
 module.exports = router;

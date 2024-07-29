@@ -249,4 +249,13 @@ static async addWorkout(data: any) {
   }
 }
 
+static async getWorkoutsByDate(date: string) {
+  try {
+      const response = await axios.get(`${BASE_URL}/coach/workout`, { params: { date } });
+      return response.data;
+  } catch (error) {
+      console.error('Failed to fetch workouts by date:', error);
+      throw error;
+  }
+}
 }

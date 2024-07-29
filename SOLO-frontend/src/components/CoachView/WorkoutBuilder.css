@@ -89,3 +89,21 @@
     margin-top: 10px;
   }
   
+  .workout-item {
+    background-color: #E4EDF1;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 15px; /* Makes the rectangle edges rounded */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: adds a slight shadow for better separation */
+  }
+  
+  .edit-button {
+    background-color: #e0e0e0;
+    color: #000;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: auto; /* Aligns the button to the right */
+  }
+  

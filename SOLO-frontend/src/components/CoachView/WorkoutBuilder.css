@@ -117,4 +117,63 @@
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
 }
+.custom-ion-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 15px;
+}
+
+.custom-label {
+  font-size: 18px;
+  margin-bottom: 5px;
+  padding:8%;
+}
+
+.custom-input,
+.custom-select {
+  width: 100%;
+  padding: 2%;
+  font-size: 18px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.custom-input:focus,
+.custom-select:focus {
+  outline: black;
+  border-color: #3499cd;
+}
+
+.custom-card {
+  width: 363px;
+  height: 109px;
+  background-color: #E4EDF1;
+  border-radius: 8px;
+  padding: 10px;
+  margin: 10px auto;
+  position: relative;
   
+}
+
+.custom-card-title {
+  font-size: 16px;
+  color: #333;
+}
+
+.custom-add-button {
+  background-color: #DEF8CA;
+  position: absolute;
+  font-size: 16px;
+  bottom: 10px;
+  right: 15px;
+  border-radius: 10%;
+  width: 80px;
+  height: 35px;
+  border-width: thick;
+  border-color: #549E6A;
+  color: #549E6A;
+  border-width: 2px; /* Example: setting border-width to 2 pixels */
+  border-style: solid; 
+}

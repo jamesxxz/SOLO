@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { IonContent, IonHeader, IonPage, IonToolbar, IonButton, IonModal, IonLabel, IonItem, IonInput, IonAccordionGroup, IonAccordion } from '@ionic/react';
+import { IonContent, IonHeader, IonPage, IonToolbar, IonButton, IonModal, IonLabel, IonItem, IonInput, IonAccordionGroup, IonAccordion, IonSelect, IonSelectOption } from '@ionic/react';
 import '../../components/CoachView/WorkoutBuilder.css'; // Make sure this path is correct
 import TabBar from './TabBar';
 
@@ -80,6 +80,11 @@ const WorkoutBuilder: React.FC = () => {
               }}>Generate Workout</IonButton>
             </div>
           </IonAccordion>
+          </IonAccordionGroup>
+          <IonAccordionGroup
+          value={expandedSections}
+          onIonChange={e => handleAccordionChange(e.detail.value)}
+        >
           <IonAccordion class="accordions" value="dynamic">
             <IonItem slot="header" color="light" onClick={() => setSelectedSection('dynamic')}>
               <IonLabel>Dynamic Workouts</IonLabel>
@@ -101,6 +106,11 @@ const WorkoutBuilder: React.FC = () => {
               }}>Generate Workout</IonButton>
             </div>
           </IonAccordion>
+          </IonAccordionGroup>
+          <IonAccordionGroup
+          value={expandedSections}
+          onIonChange={e => handleAccordionChange(e.detail.value)}
+        >
           <IonAccordion class="accordions" value="competition">
             <IonItem slot="header" color="light" onClick={() => setSelectedSection('competition')}>
               <IonLabel>Competition Workouts</IonLabel>
@@ -125,27 +135,41 @@ const WorkoutBuilder: React.FC = () => {
         </IonAccordionGroup>
 
         <IonModal isOpen={showModal} onDidDismiss={() => setShowModal(false)} className="fullscreen-modal">
-          <IonHeader>
-            <IonToolbar>
-              <header className="gradient-header">
-                <div className="logo">GENERATE WORKOUT</div>
-              </header>
-            </IonToolbar>
-          </IonHeader>
+        <IonHeader>
+        <IonToolbar>
+          <header className="gradient-header">
+            <div className="logo">GENERATE WORKOUT</div>
+          </header>
+        </IonToolbar>
+      </IonHeader>
           <div className="modal-content">
+          
+          <IonItem className="custom-ion-item">
+            <IonInput label="Name" placeholder="Please enter name of the workout" value={newWorkout.title} onIonChange={(e) => setNewWorkout({ ...newWorkout, title: e.detail.value! })}></IonInput>
+          </IonItem>
 
-            <IonItem>
-            <IonInput label="Name" placeholder="Please enter name of the workout"></IonInput>
+          <IonItem className="custom-ion-item">
+            <IonSelect label="Intensity Level" labelPlacement="floating" value={newWorkout.intensity} onIonChange={(e) => setNewWorkout({ ...newWorkout, intensity: e.detail.value! })}>
+              <IonSelectOption value="easy">Easy</IonSelectOption>
+              <IonSelectOption value="medium">Medium</IonSelectOption>
+              <IonSelectOption value="hard">Hard</IonSelectOption>
+            </IonSelect>
+          </IonItem>
 
-            </IonItem>
-            <IonItem>
-              <IonLabel position="floating">Intensity Level:</IonLabel>
-              <IonInput value={newWorkout.intensity} onIonChange={(e) => setNewWorkout({ ...newWorkout, intensity: e.detail.value! })} />
-            </IonItem>
-            <IonItem>
-              <IonLabel position="floating">Time (mins):</IonLabel>
-              <IonInput type="number" value={newWorkout.time} onIonChange={(e) => setNewWorkout({ ...newWorkout, time: parseInt(e.detail.value!, 10) })} />
-            </IonItem>
+          <div className="custom-card">
+            <IonLabel className="custom-card-title">Warm Up</IonLabel>
+            <button className="custom-add-button" >Add</button>
+          </div>
+
+          <div className="custom-card">
+            <IonLabel className="custom-card-title">Core</IonLabel>
+            <button className="custom-add-button" >Add</button>
+          </div>
+
+          <div className="custom-card">
+            <IonLabel className="custom-card-title">Cool Down</IonLabel>
+            <button className="custom-add-button" >Add</button>
+          </div>
             <IonButton expand="full" onClick={generateWorkout}>
               Generate
             </IonButton>

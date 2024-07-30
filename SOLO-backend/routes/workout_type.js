@@ -3,20 +3,66 @@ const router = express.Router();
 const pool = require('../server/db'); // Importing the connection pool
 
 // POST route to register a new workout type
-router.post('/upload-workout-type', async (req, res) => {
-    const { warmup, core, cooldown } = req.body;
-    try {
-        const sql = `INSERT INTO workout_type (warmup, core, cooldown) VALUES (?, ?, ?)`;
-        const values = [warmup, core, cooldown];
-        const [result] = await pool.query(sql, values);
-        const workoutTypeId = result.insertId;
+const crypto = require('crypto');
 
-        res.status(200).json({ message: 'Workout Type registered successfully!', id: workoutTypeId });
+router.post('/upload-workout-type', async (req, res) => {
+    const {
+        name,
+        warmUpDrills,
+        warmUpDistance,
+        coreDistance,
+        coreRep1,
+        coreRep2,
+        coreRest,
+        coolDownDrills,
+        coolDownDistance
+    } = req.body;
+
+    // Generate a simple tokenized workoutType_id
+    const workoutType_id = `${Date.now()}-${crypto.randomBytes(4).toString('hex')}`;
+
+    try {
+        const sql = `
+            INSERT INTO workout_type (
+                workoutType_id,
+                name,
+                warmUpDrills,
+                warmUpDistance,
+                coreDistance,
+                coreRep1,
+                coreRep2,
+                coreRest,
+                coolDownDrills,
+                coolDownDistance
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `;
+
+        const values = [
+            workoutType_id,
+            name,
+            warmUpDrills,
+            warmUpDistance,
+            coreDistance,
+            coreRep1,
+            coreRep2,
+            coreRest,
+            coolDownDrills,
+            coolDownDistance
+        ];
+
+        await pool.query(sql, values);
+
+        res.status(200).json({ message: 'Workout Type registered successfully!', id: workoutType_id });
     } catch (err) {
-        console.error('Error on registration:', err);
-        res.status(500).send('Server error on registration');
+        if (err.code === 'ER_DUP_ENTRY') {
+            res.status(409).json({ message: 'Workout Type name already exists' });
+        } else {
+            console.error('Error on registration:', err);
+            res.status(500).send('Server error on registration');
+        }
     }
 });
+
 
 // PUT route to update workout type details
 router.put('/update-workout-type/:id', async (req, res) => {
@@ -42,7 +88,7 @@ router.put('/update-workout-type/:id', async (req, res) => {
 router.get('/workout_type/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const [result] = await pool.query('SELECT * FROM workout_type WHERE id = ?', [id]);
+        const [result] = await pool.query('SELECT name FROM workout_type WHERE workoutType_id = ?', [id]);
 
         if (result.length > 0) {
             res.status(200).json(result[0]);

@@ -12,7 +12,7 @@ __Note:__ The rest of the directories are in Swift. They do not have the backend
 
 ## Frontend setup
 1. Go into frontend folder ```cd SOLO-frontend```
-2. Download dependencies ```npm i```
+2. Download dependencies ```npm i``` or ```npm install --legacy-peer-deps```
 
 ## Backend setup
 1. Read __SOLO-backend/services/SERVICES.md__ to set up .env

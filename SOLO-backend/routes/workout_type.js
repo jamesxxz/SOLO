@@ -5,10 +5,60 @@ const pool = require('../server/db'); // Importing the connection pool
 // POST route to register a new workout type
 const crypto = require('crypto');
 
-
 router.post('/upload-workout-type', async (req, res) => {
     const {
-        name,
+      title,
+      warmUpDrills,
+      warmUpDistance,
+      coreDistance,
+      coreRep1,
+      coreRep2,
+      coreRest,
+      coolDownDrills,
+      coolDownDistance,
+      intensity,
+      time,
+      workoutType,
+      userId // Add userId
+    } = req.body;
+  
+    console.log('Received values:', {
+      title,
+      warmUpDrills,
+      warmUpDistance,
+      coreDistance,
+      coreRep1,
+      coreRep2,
+      coreRest,
+      coolDownDrills,
+      coolDownDistance,
+      intensity,
+      time,
+      workoutType,
+      userId
+    });
+  
+    try {
+      const sql = `
+        INSERT INTO workout_type (
+          name,
+          warmUpDrills,
+          warmUpDistance,
+          coreDistance,
+          coreRep1,
+          coreRep2,
+          coreRest,
+          coolDownDrills,
+          coolDownDistance,
+          intensity,
+          time,
+          workoutType,
+          userId
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `;
+  
+      const values = [
+        title,
         warmUpDrills,
         warmUpDistance,
         coreDistance,
@@ -18,60 +68,20 @@ router.post('/upload-workout-type', async (req, res) => {
         coolDownDrills,
         coolDownDistance,
         intensity,
-        time
-    } = req.body;
-
-    // Generate a simple tokenized workoutType_id
-    const workoutType_id = `${Date.now()}-${crypto.randomBytes(4).toString('hex')}`;
-
-    try {
-        const sql = `
-            INSERT INTO workout_type (
-                workoutType_id,
-                name,
-                warmUpDrills,
-                warmUpDistance,
-                coreDistance,
-                coreRep1,
-                coreRep2,
-                coreRest,
-                coolDownDrills,
-                coolDownDistance,
-                intensity,
-                time
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `;
-
-        const values = [
-            workoutType_id,
-            name,
-            warmUpDrills,
-            warmUpDistance,
-            coreDistance,
-            coreRep1,
-            coreRep2,
-            coreRest,
-            coolDownDrills,
-            coolDownDistance,
-            intensity,
-            time
-        ];
-
-        await pool.query(sql, values);
-
-        res.status(200).json({ message: 'Workout Type registered successfully!', id: workoutType_id });
+        time,
+        workoutType,
+        userId
+      ];
+  
+      await pool.query(sql, values);
+  
+      res.status(200).json({ message: 'Workout Type registered successfully!' });
     } catch (err) {
-        if (err.code === 'ER_DUP_ENTRY') {
-            res.status(409).json({ message: 'Workout Type name already exists' });
-        } else {
-            console.error('Error on registration:', err);
-            res.status(500).send('Server error on registration');
-        }
+      console.error('Error on registration:', err);
+      res.status(500).send('Server error on registration');
     }
-});
-
-
-
+  });
+  
 
 // PUT route to update workout type details
 router.put('/update-workout-type/:id', async (req, res) => {
@@ -110,6 +120,18 @@ router.get('/get_workout/:id', async (req, res) => {
     }
 });
 
+router.get('/get_workouts/:userId/:workoutType', async (req, res) => {
+    try {
+      const { userId, workoutType } = req.params;
+      console.log(workoutType)
+      const [results] = await pool.query('SELECT * FROM workout_type WHERE userId = ? AND workoutType = ?', [userId, workoutType]);
+  
+      res.status(200).json(results);
+    } catch (error) {
+      console.error('Error fetching workouts:', error);
+      res.status(500).send('Server error fetching workouts');
+    }
+  });
 // DELETE route to remove a workout type
 router.delete('/delete_workout_type/:id', async (req, res) => {
     try {

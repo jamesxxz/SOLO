@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   IonContent, IonHeader, IonPage, IonToolbar, IonButton, IonModal, IonLabel, IonItem, IonInput,
   IonAccordionGroup, IonAccordion, IonChip, IonPopover, IonList, IonSearchbar, IonToast,
-  IonSelectOption,
-  IonSelect
+  IonSelectOption, IonSelect, IonAlert
 } from '@ionic/react';
-import '../../components/CoachView/WorkoutBuilder.css'; // Make sure this path is correct
+import '../../components/CoachView/WorkoutBuilder.css';
 import TabBar from './TabBar';
-import { ApiService } from '../../../services/api.service'; // Make sure this path is correct
+import { ApiService } from '../../../services/api.service';
+import { AuthContext } from '../../contexts/AuthContext';
 
 interface Workout {
   title: string;
@@ -21,12 +21,17 @@ interface Workout {
   coreRest?: number;
   coolDownDrills?: string[];
   coolDownDistance?: string;
+  workoutType: string;
+  userId: string; // Add userId field
 }
 
 const initialDrills = ["A-skip", "B-skip", "C-skip", "High knees", "Side shuffle", "Bounce Bounce Turn", "Running backwards", "Butt kicks", "Frankensteins", "Lunges", "Fast Lunges", "Fast Lunges w/ twist", "Karoke", "Back Hamstring active stretches", "Half sprints", "Knee pulls"];
 const initialDistances = ["100m", "200m", "400m", "800m"];
 
 const WorkoutBuilder: React.FC = () => {
+  const authContext = useContext(AuthContext);
+  const { userId } = authContext;
+
   const [showModal, setShowModal] = useState(false);
   const [showWarmUpModal, setShowWarmUpModal] = useState(false);
   const [showCoreModal, setShowCoreModal] = useState(false);
@@ -37,7 +42,8 @@ const WorkoutBuilder: React.FC = () => {
   const [standardWorkouts, setStandardWorkouts] = useState<Workout[]>([]);
   const [dynamicWorkouts, setDynamicWorkouts] = useState<Workout[]>([]);
   const [competitionWorkouts, setCompetitionWorkouts] = useState<Workout[]>([]);
-  const [newWorkout, setNewWorkout] = useState<Workout>({ title: '', intensity: '', time: 0 });
+  const [newWorkout, setNewWorkout] = useState<Workout>({ title: '', intensity: '', time: 0, workoutType: '', userId: userId });
+
   const [warmUpDrills, setWarmUpDrills] = useState<string[]>([]);
   const [warmUpDistance, setWarmUpDistance] = useState<string>('');
   const [coreDistance, setCoreDistance] = useState<string>('');
@@ -60,11 +66,34 @@ const WorkoutBuilder: React.FC = () => {
 
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [confirmAction, setConfirmAction] = useState<(() => void) | null>(null);
 
   useEffect(() => {
+    // Fetch workouts for each section on component mount
+    fetchWorkoutsByType('standard');
+    fetchWorkoutsByType('dynamic');
+    fetchWorkoutsByType('competition');
+
     // Expand all sections initially
     setExpandedSections(['standard', 'dynamic', 'competition']);
-  }, []);
+  }, [userId]);
+
+  const fetchWorkoutsByType = async (workoutType: string) => {
+    try {
+      const workouts = await ApiService.getWorkoutsByUserAndType(userId, workoutType);
+      if (workoutType === 'standard') {
+        setStandardWorkouts(workouts);
+      } else if (workoutType === 'dynamic') {
+        setDynamicWorkouts(workouts);
+      } else if (workoutType === 'competition') {
+        setCompetitionWorkouts(workouts);
+      }
+    } catch (error) {
+      console.error(`Failed to fetch ${workoutType} workouts:`, error);
+    }
+  };
 
   const calculateTotalTime = () => {
     return (coreRep1 || 0) + (coreRep2 || 0) + (coreRest || 0);
@@ -81,34 +110,28 @@ const WorkoutBuilder: React.FC = () => {
       coreRep2,
       coreRest,
       coolDownDrills,
-      coolDownDistance
+      coolDownDistance,
+      workoutType: selectedSection!,
+      userId: userId,
     };
+
+    console.log('Sending values:', workoutWithWarmUp);
 
     try {
       await ApiService.createWorkoutType(workoutWithWarmUp);
-      if (selectedSection === 'standard') {
-        setStandardWorkouts([...standardWorkouts, workoutWithWarmUp]);
-      } else if (selectedSection === 'dynamic') {
-        setDynamicWorkouts([...dynamicWorkouts, workoutWithWarmUp]);
-      } else if (selectedSection === 'competition') {
-        setCompetitionWorkouts([...competitionWorkouts, workoutWithWarmUp]);
-      }
-      setNewWorkout({ title: '', intensity: '', time: 0 });
-      setWarmUpDrills([]);
-      setWarmUpDistance('');
-      setCoreDistance('');
-      setCoreRep1(undefined);
-      setCoreRep2(undefined);
-      setCoreRest(undefined);
-      setCoolDownDrills([]);
-      setCoolDownDistance('');
+      fetchWorkoutsByType(selectedSection!); // Fetch the updated list after creating a new workout
+      setNewWorkout({ title: '', intensity: '', time: 0, workoutType: '', userId: userId });
+      clearWarmUpFields();
+      clearCoreFields();
+      clearCoolDownFields();
       setShowModal(false);
       setWarmUpSaved(false);
       setCoreSaved(false);
       setCoolDownSaved(false);
     } catch (error) {
       console.error('Failed to create workout type:', error);
-      // Handle error (e.g., show a notification)
+      setToastMessage('Failed to create workout. Please try again later.');
+      setShowToast(true);
     }
   };
 
@@ -132,20 +155,16 @@ const WorkoutBuilder: React.FC = () => {
   const addCustomDrill = () => {
     if (drillSearch && !drills.includes(drillSearch)) {
       setDrills([...drills, drillSearch]);
-      setWarmUpDrills([drillSearch]);
       setShowToast(true);
       setToastMessage(`Added custom drill: ${drillSearch}`);
-      // Keep the drillSearch value to show the added custom input
     }
   };
 
   const addCustomDistance = () => {
     if (distanceSearch && !distances.includes(distanceSearch)) {
       setDistances([...distances, distanceSearch]);
-      setWarmUpDistance(distanceSearch);
       setShowToast(true);
       setToastMessage(`Added custom distance: ${distanceSearch}`);
-      // Keep the distanceSearch value to show the added custom input
     }
   };
 
@@ -170,15 +189,95 @@ const WorkoutBuilder: React.FC = () => {
   };
 
   const selectDrill = (drill: string) => {
-    setWarmUpDrills([drill]);
+    if (showWarmUpModal) {
+      setWarmUpDrills([drill]);
+    } else if (showCoolDownModal) {
+      setCoolDownDrills([drill]);
+    }
     setDrillSearch(drill);
     setShowDrillPopover(false);
   };
 
   const selectDistance = (distance: string) => {
-    setWarmUpDistance(distance);
+    if (showCoreModal) {
+      setCoreDistance(distance);
+    } else if (showCoolDownModal) {
+      setCoolDownDistance(distance);
+    } else {
+      setWarmUpDistance(distance);
+    }
     setDistanceSearch(distance);
     setShowDistancePopover(false);
+  };
+
+  const confirmActionWithAlert = (action: () => void, message: string) => {
+    setConfirmAction(() => action);
+    setAlertMessage(message);
+    setShowAlert(true);
+  };
+
+  const clearWarmUpFields = () => {
+    setWarmUpDrills([]);
+    setWarmUpDistance('');
+    setDrillSearch('');
+    setDistanceSearch('');
+  };
+
+  const clearCoreFields = () => {
+    setCoreDistance('');
+    setCoreRep1(undefined);
+    setCoreRep2(undefined);
+    setCoreRest(undefined);
+    setDistanceSearch('');
+  };
+
+  const clearCoolDownFields = () => {
+    setCoolDownDrills([]);
+    setCoolDownDistance('');
+    setDrillSearch('');
+    setDistanceSearch('');
+  };
+
+  const closeWarmUpModal = () => {
+    setShowWarmUpModal(false);
+  };
+
+  const closeCoreModal = () => {
+    setShowCoreModal(false);
+  };
+
+  const closeCoolDownModal = () => {
+    setShowCoolDownModal(false);
+  };
+
+  const closeMainModal = () => {
+    confirmActionWithAlert(() => {
+      setShowModal(false);
+      clearWarmUpFields();
+      clearCoreFields();
+      clearCoolDownFields();
+    }, 'Do you want to discard the changes?');
+  };
+
+  const saveWarmUp = () => {
+    confirmActionWithAlert(() => {
+      setWarmUpSaved(true);
+      setShowWarmUpModal(false);
+    }, 'Are you sure the Warm Up details are correct?');
+  };
+
+  const saveCore = () => {
+    confirmActionWithAlert(() => {
+      setCoreSaved(true);
+      setShowCoreModal(false);
+    }, 'Are you sure the Core details are correct?');
+  };
+
+  const saveCoolDown = () => {
+    confirmActionWithAlert(() => {
+      setCoolDownSaved(true);
+      setShowCoolDownModal(false);
+    }, 'Are you sure the Cool Down details are correct?');
   };
 
   return (
@@ -260,7 +359,7 @@ const WorkoutBuilder: React.FC = () => {
           </IonAccordion>
         </IonAccordionGroup>
 
-        <IonModal isOpen={showModal} onDidDismiss={() => setShowModal(false)} className="fullscreen-modal">
+        <IonModal isOpen={showModal} onDidDismiss={closeMainModal} className="fullscreen-modal">
           <IonHeader>
             <IonToolbar>
               <header className="gradient-header">
@@ -344,13 +443,13 @@ const WorkoutBuilder: React.FC = () => {
             <IonButton expand="full" onClick={generateWorkout}>
               Generate
             </IonButton>
-            <IonButton fill="clear" onClick={() => setShowModal(false)}>
+            <IonButton fill="clear" onClick={closeMainModal}>
               Close
             </IonButton>
           </div>
         </IonModal>
 
-        <IonModal isOpen={showWarmUpModal} onDidDismiss={() => setShowWarmUpModal(false)} className="fullscreen-modal">
+        <IonModal isOpen={showWarmUpModal} onDidDismiss={closeWarmUpModal} className="fullscreen-modal">
           <IonHeader>
             <IonToolbar>
               <header className="gradient-header">
@@ -413,19 +512,16 @@ const WorkoutBuilder: React.FC = () => {
               </IonList>
             </IonPopover>
 
-            <IonButton expand="full" style={{ marginTop: '20px' }} onClick={() => {
-              setShowWarmUpModal(false);
-              setWarmUpSaved(true); // Update warm-up saved state
-            }}>
+            <IonButton expand="full" style={{ marginTop: '20px' }} onClick={saveWarmUp}>
               Save
             </IonButton>
-            <IonButton fill="clear" onClick={() => setShowWarmUpModal(false)}>
+            <IonButton fill="clear" onClick={closeWarmUpModal}>
               Close
             </IonButton>
           </div>
         </IonModal>
 
-        <IonModal isOpen={showCoreModal} onDidDismiss={() => setShowCoreModal(false)} className="fullscreen-modal">
+        <IonModal isOpen={showCoreModal} onDidDismiss={closeCoreModal} className="fullscreen-modal">
           <IonHeader>
             <IonToolbar>
               <header className="gradient-header">
@@ -438,7 +534,7 @@ const WorkoutBuilder: React.FC = () => {
               <IonInput
                 value={coreDistance}
                 placeholder="Search or add custom distance"
-                onIonChange={(e) => setDistanceSearch(e.detail.value!)}
+                onIonChange={(e) => setCoreDistance(e.detail.value!)}
                 onClick={openDistancePopover}
               />
               <IonButton onClick={addCustomDistance}>Add</IonButton>
@@ -485,19 +581,16 @@ const WorkoutBuilder: React.FC = () => {
                 onIonChange={(e) => setCoreRest(Number(e.detail.value!))}
               ></IonInput>
             </IonItem>
-            <IonButton expand="full" style={{ marginTop: '20px' }} onClick={() => {
-              setShowCoreModal(false);
-              setCoreSaved(true); // Update core saved state
-            }}>
+            <IonButton expand="full" style={{ marginTop: '20px' }} onClick={saveCore}>
               Save
             </IonButton>
-            <IonButton fill="clear" onClick={() => setShowCoreModal(false)}>
+            <IonButton fill="clear" onClick={closeCoreModal}>
               Close
             </IonButton>
           </div>
         </IonModal>
 
-        <IonModal isOpen={showCoolDownModal} onDidDismiss={() => setShowCoolDownModal(false)} className="fullscreen-modal">
+        <IonModal isOpen={showCoolDownModal} onDidDismiss={closeCoolDownModal} className="fullscreen-modal">
           <IonHeader>
             <IonToolbar>
               <header className="gradient-header">
@@ -560,13 +653,10 @@ const WorkoutBuilder: React.FC = () => {
               </IonList>
             </IonPopover>
 
-            <IonButton expand="full" style={{ marginTop: '20px' }} onClick={() => {
-              setShowCoolDownModal(false);
-              setCoolDownSaved(true); // Update cool down saved state
-            }}>
+            <IonButton expand="full" style={{ marginTop: '20px' }} onClick={saveCoolDown}>
               Save
             </IonButton>
-            <IonButton fill="clear" onClick={() => setShowCoolDownModal(false)}>
+            <IonButton fill="clear" onClick={closeCoolDownModal}>
               Close
             </IonButton>
           </div>
@@ -576,6 +666,27 @@ const WorkoutBuilder: React.FC = () => {
           onDidDismiss={() => setShowToast(false)}
           message={toastMessage}
           duration={2000}
+        />
+        <IonAlert
+          isOpen={showAlert}
+          onDidDismiss={() => setShowAlert(false)}
+          message={alertMessage}
+          buttons={[
+            {
+              text: 'No',
+              role: 'cancel',
+              handler: () => {
+                setConfirmAction(null);
+              }
+            },
+            {
+              text: 'Yes',
+              handler: () => {
+                if (confirmAction) confirmAction();
+                setConfirmAction(null);
+              }
+            }
+          ]}
         />
       </IonContent>
       <TabBar />

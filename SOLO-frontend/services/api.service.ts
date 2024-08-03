@@ -248,6 +248,17 @@ static async createWorkoutType(workoutTypeData: any) {
     });
 }
 
+static async getWorkoutsByUserAndType(userId: string, workoutType: string) {
+  return axios.get(`${BASE_URL}/workout-type/get_workouts`, {
+    params: { userId, workoutType },
+  })
+    .then(response => response.data)
+    .catch(error => {
+      throw error;
+    });
+}
+
+
 // Method to update an existing workout type
 static async updateWorkoutType(id: string, workoutTypeData: any) {
   return axios.put(`${BASE_URL}/workout-type/update-workout-type/${id}`, workoutTypeData)
@@ -259,6 +270,14 @@ static async updateWorkoutType(id: string, workoutTypeData: any) {
 
 // Method to get a workout type by ID
 static async getWorkoutTypeById(id: string) {
+  return axios.get(`${BASE_URL}/workout-type/get_workout_type/${id}`)
+    .then(response => response.data)
+    .catch(error => {
+      throw error;
+    });
+}
+
+static async getUse(id: string) {
   return axios.get(`${BASE_URL}/workout-type/get_workout_type/${id}`)
     .then(response => response.data)
     .catch(error => {

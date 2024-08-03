@@ -123,7 +123,6 @@ router.get('/get_workout/:id', async (req, res) => {
 router.get('/get_workouts/:userId/:workoutType', async (req, res) => {
     try {
       const { userId, workoutType } = req.params;
-      console.log(workoutType)
       const [results] = await pool.query('SELECT * FROM workout_type WHERE userId = ? AND workoutType = ?', [userId, workoutType]);
   
       res.status(200).json(results);

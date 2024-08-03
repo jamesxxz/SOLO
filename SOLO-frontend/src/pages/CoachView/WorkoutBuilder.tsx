@@ -30,8 +30,8 @@ const initialDistances = ["100m", "200m", "400m", "800m"];
 
 const WorkoutBuilder: React.FC = () => {
   const authContext = useContext(AuthContext);
-  const { userId } = authContext;
-
+  const { userId } = authContext!;
+  
   const [showModal, setShowModal] = useState(false);
   const [showWarmUpModal, setShowWarmUpModal] = useState(false);
   const [showCoreModal, setShowCoreModal] = useState(false);
@@ -43,7 +43,6 @@ const WorkoutBuilder: React.FC = () => {
   const [dynamicWorkouts, setDynamicWorkouts] = useState<Workout[]>([]);
   const [competitionWorkouts, setCompetitionWorkouts] = useState<Workout[]>([]);
   const [newWorkout, setNewWorkout] = useState<Workout>({ title: '', intensity: '', time: 0, workoutType: '', userId: userId });
-
   const [warmUpDrills, setWarmUpDrills] = useState<string[]>([]);
   const [warmUpDistance, setWarmUpDistance] = useState<string>('');
   const [coreDistance, setCoreDistance] = useState<string>('');
@@ -112,7 +111,7 @@ const WorkoutBuilder: React.FC = () => {
       coolDownDrills,
       coolDownDistance,
       workoutType: selectedSection!,
-      userId: userId,
+      userId: userId // Ensure userId is included
     };
 
     console.log('Sending values:', workoutWithWarmUp);
@@ -315,6 +314,12 @@ const WorkoutBuilder: React.FC = () => {
               }}>Generate Workout</IonButton>
             </div>
           </IonAccordion>
+        </IonAccordionGroup>
+
+          <IonAccordionGroup
+          value={expandedSections}
+          onIonChange={e => handleAccordionChange(e.detail.value)}
+        >
           <IonAccordion class="accordions" value="dynamic">
             <IonItem slot="header" color="light" onClick={() => setSelectedSection('dynamic')}>
               <IonLabel>Dynamic Workouts</IonLabel>
@@ -336,6 +341,10 @@ const WorkoutBuilder: React.FC = () => {
               }}>Generate Workout</IonButton>
             </div>
           </IonAccordion>
+          </IonAccordionGroup>
+          <IonAccordionGroup
+          value={expandedSections}
+          onIonChange={e => handleAccordionChange(e.detail.value)}>
           <IonAccordion class="accordions" value="competition">
             <IonItem slot="header" color="light" onClick={() => setSelectedSection('competition')}>
               <IonLabel>Competition Workouts</IonLabel>

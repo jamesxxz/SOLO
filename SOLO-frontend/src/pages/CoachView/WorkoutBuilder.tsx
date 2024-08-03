@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import {
   IonContent, IonHeader, IonPage, IonToolbar, IonButton, IonModal, IonLabel, IonItem, IonInput,
-  IonAccordionGroup, IonAccordion, IonSelect, IonSelectOption, IonChip
+  IonAccordionGroup, IonAccordion, IonChip, IonPopover, IonList, IonSearchbar, IonToast,
+  IonSelectOption,
+  IonSelect
 } from '@ionic/react';
-import FuzzySearch from 'react-fuzzy';
 import '../../components/CoachView/WorkoutBuilder.css'; // Make sure this path is correct
 import TabBar from './TabBar';
+import { ApiService } from '../../../services/api.service'; // Make sure this path is correct
 
 interface Workout {
   title: string;
@@ -21,23 +23,8 @@ interface Workout {
   coolDownDistance?: string;
 }
 
-const allDrills = ["A-skip",
-  "B-skip",
-  "C-skip",
-  "High knees",
-  "Side shuffle",
-  "Bounce Bounce Turn",
-  "Running backwards",
-  "Butt kicks",
-  "Frankensteins",
-  "Lunges",
-  "Fast Lunges",
-  "Fast Lunges w/ twist",
-  "Karoke",
-  "Back Hamstring active stretches",
-  "Half sprints",
-  "Knee pulls"];
-const allDistances = ["100m", "200m", "400m", "800m"];
+const initialDrills = ["A-skip", "B-skip", "C-skip", "High knees", "Side shuffle", "Bounce Bounce Turn", "Running backwards", "Butt kicks", "Frankensteins", "Lunges", "Fast Lunges", "Fast Lunges w/ twist", "Karoke", "Back Hamstring active stretches", "Half sprints", "Knee pulls"];
+const initialDistances = ["100m", "200m", "400m", "800m"];
 
 const WorkoutBuilder: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
@@ -65,16 +52,25 @@ const WorkoutBuilder: React.FC = () => {
   const [coreSaved, setCoreSaved] = useState(false);
   const [coolDownSaved, setCoolDownSaved] = useState(false);
 
+  const [drills, setDrills] = useState(initialDrills);
+  const [distances, setDistances] = useState(initialDistances);
+
+  const [showDrillPopover, setShowDrillPopover] = useState(false);
+  const [showDistancePopover, setShowDistancePopover] = useState(false);
+
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+
   useEffect(() => {
     // Expand all sections initially
     setExpandedSections(['standard', 'dynamic', 'competition']);
   }, []);
 
   const calculateTotalTime = () => {
-    return (coreRep1) + (coreRep2) + (coreRest);
+    return (coreRep1 || 0) + (coreRep2 || 0) + (coreRest || 0);
   };
 
-  const generateWorkout = () => {
+  const generateWorkout = async () => {
     const workoutWithWarmUp = {
       ...newWorkout,
       time: calculateTotalTime(),
@@ -88,26 +84,32 @@ const WorkoutBuilder: React.FC = () => {
       coolDownDistance
     };
 
-    if (selectedSection === 'standard') {
-      setStandardWorkouts([...standardWorkouts, workoutWithWarmUp]);
-    } else if (selectedSection === 'dynamic') {
-      setDynamicWorkouts([...dynamicWorkouts, workoutWithWarmUp]);
-    } else if (selectedSection === 'competition') {
-      setCompetitionWorkouts([...competitionWorkouts, workoutWithWarmUp]);
+    try {
+      await ApiService.createWorkoutType(workoutWithWarmUp);
+      if (selectedSection === 'standard') {
+        setStandardWorkouts([...standardWorkouts, workoutWithWarmUp]);
+      } else if (selectedSection === 'dynamic') {
+        setDynamicWorkouts([...dynamicWorkouts, workoutWithWarmUp]);
+      } else if (selectedSection === 'competition') {
+        setCompetitionWorkouts([...competitionWorkouts, workoutWithWarmUp]);
+      }
+      setNewWorkout({ title: '', intensity: '', time: 0 });
+      setWarmUpDrills([]);
+      setWarmUpDistance('');
+      setCoreDistance('');
+      setCoreRep1(undefined);
+      setCoreRep2(undefined);
+      setCoreRest(undefined);
+      setCoolDownDrills([]);
+      setCoolDownDistance('');
+      setShowModal(false);
+      setWarmUpSaved(false);
+      setCoreSaved(false);
+      setCoolDownSaved(false);
+    } catch (error) {
+      console.error('Failed to create workout type:', error);
+      // Handle error (e.g., show a notification)
     }
-    setNewWorkout({ title: '', intensity: '', time: 0 });
-    setWarmUpDrills([]);
-    setWarmUpDistance('');
-    setCoreDistance('');
-    setCoreRep1(undefined);
-    setCoreRep2(undefined);
-    setCoreRest(undefined);
-    setCoolDownDrills([]);
-    setCoolDownDistance('');
-    setShowModal(false);
-    setWarmUpSaved(false);
-    setCoreSaved(false);
-    setCoolDownSaved(false);
   };
 
   const handleAccordionChange = (value: string | null) => {
@@ -124,8 +126,60 @@ const WorkoutBuilder: React.FC = () => {
     return options.filter(option => option.toLowerCase().includes(query.toLowerCase()));
   };
 
-  const filteredDrills = filterOptions(allDrills, drillSearch);
-  const filteredDistances = filterOptions(allDistances, distanceSearch);
+  const filteredDrills = filterOptions(drills, drillSearch);
+  const filteredDistances = filterOptions(distances, distanceSearch);
+
+  const addCustomDrill = () => {
+    if (drillSearch && !drills.includes(drillSearch)) {
+      setDrills([...drills, drillSearch]);
+      setWarmUpDrills([drillSearch]);
+      setShowToast(true);
+      setToastMessage(`Added custom drill: ${drillSearch}`);
+      // Keep the drillSearch value to show the added custom input
+    }
+  };
+
+  const addCustomDistance = () => {
+    if (distanceSearch && !distances.includes(distanceSearch)) {
+      setDistances([...distances, distanceSearch]);
+      setWarmUpDistance(distanceSearch);
+      setShowToast(true);
+      setToastMessage(`Added custom distance: ${distanceSearch}`);
+      // Keep the distanceSearch value to show the added custom input
+    }
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent, addItem: () => void) => {
+    if (event.key === 'Enter') {
+      addItem();
+    }
+  };
+
+  const handleBlur = (addItem: () => void) => {
+    addItem();
+  };
+
+  const openDrillPopover = (event: React.MouseEvent) => {
+    event.preventDefault();
+    setShowDrillPopover(true);
+  };
+
+  const openDistancePopover = (event: React.MouseEvent) => {
+    event.preventDefault();
+    setShowDistancePopover(true);
+  };
+
+  const selectDrill = (drill: string) => {
+    setWarmUpDrills([drill]);
+    setDrillSearch(drill);
+    setShowDrillPopover(false);
+  };
+
+  const selectDistance = (distance: string) => {
+    setWarmUpDistance(distance);
+    setDistanceSearch(distance);
+    setShowDistancePopover(false);
+  };
 
   return (
     <IonPage>
@@ -305,52 +359,61 @@ const WorkoutBuilder: React.FC = () => {
             </IonToolbar>
           </IonHeader>
           <div className="modal-content">
-            <FuzzySearch
-              list={allDrills.map(drill => ({ id: drill, title: drill }))}
-              keys={['title']}
-              width={430}
-              onSelect={(selectedItem) => {
-                setWarmUpDrills([selectedItem.title]); // Restrict to one drill
-              }}
-              placeholder="Search drills"
-              resultsTemplate={(props, state, styles, clickHandler) => {
-                return state.results.map((val, i) => {
-                  const style = state.selectedIndex === i ? styles.selectedResultStyle : styles.resultsStyle;
-                  return (
-                    <div
-                      key={i}
-                      style={style}
-                      onClick={() => clickHandler(i)}
-                    >
-                      {val.title}
-                    </div>
-                  );
-                });
-              }}
-            />
+            <IonItem>
+              <IonInput
+                value={drillSearch}
+                placeholder="Search or add custom drill"
+                onIonChange={(e) => setDrillSearch(e.detail.value!)}
+                onClick={openDrillPopover}
+              />
+              <IonButton onClick={addCustomDrill}>Add</IonButton>
+            </IonItem>
+            <IonPopover
+              isOpen={showDrillPopover}
+              onDidDismiss={() => setShowDrillPopover(false)}
+            >
+              <IonSearchbar
+                value={drillSearch}
+                onIonInput={(e) => setDrillSearch(e.detail.value!)}
+                placeholder="Search drills"
+              />
+              <IonList>
+                {filteredDrills.map((drill, index) => (
+                  <IonItem key={index} button onClick={() => selectDrill(drill)}>
+                    {drill}
+                  </IonItem>
+                ))}
+              </IonList>
+            </IonPopover>
 
-            <FuzzySearch
-              list={allDistances.map(distance => ({ id: distance, title: distance }))}
-              keys={['title']}
-              width={430}
-              onSelect={(selectedItem: { title: React.SetStateAction<string>; }) => setWarmUpDistance(selectedItem.title)}
-              placeholder="Search distances"
-              resultsTemplate={(props, state, styles, clickHandler) => {
-                return state.results.map((val, i) => {
-                  const style = state.selectedIndex === i ? styles.selectedResultStyle : styles.resultsStyle;
-                  return (
-                    <div
-                      key={i}
-                      style={style}
-                      onClick={() => clickHandler(i)}
-                    >
-                      {val.title}
-                    </div>
-                  );
-                });
-              }}
-            />
-            <IonButton expand="full" onClick={() => {
+            <IonItem>
+              <IonInput
+                value={distanceSearch}
+                placeholder="Search or add custom distance"
+                onIonChange={(e) => setDistanceSearch(e.detail.value!)}
+                onClick={openDistancePopover}
+              />
+              <IonButton onClick={addCustomDistance}>Add</IonButton>
+            </IonItem>
+            <IonPopover
+              isOpen={showDistancePopover}
+              onDidDismiss={() => setShowDistancePopover(false)}
+            >
+              <IonSearchbar
+                value={distanceSearch}
+                onIonInput={(e) => setDistanceSearch(e.detail.value!)}
+                placeholder="Search distances"
+              />
+              <IonList>
+                {filteredDistances.map((distance, index) => (
+                  <IonItem key={index} button onClick={() => selectDistance(distance)}>
+                    {distance}
+                  </IonItem>
+                ))}
+              </IonList>
+            </IonPopover>
+
+            <IonButton expand="full" style={{ marginTop: '20px' }} onClick={() => {
               setShowWarmUpModal(false);
               setWarmUpSaved(true); // Update warm-up saved state
             }}>
@@ -371,37 +434,58 @@ const WorkoutBuilder: React.FC = () => {
             </IonToolbar>
           </IonHeader>
           <div className="modal-content">
-            <FuzzySearch
-              list={allDistances.map(distance => ({ id: distance, title: distance }))}
-              keys={['title']}
-              width={430}
-              onSelect={(selectedItem: { title: React.SetStateAction<string>; }) => setCoreDistance(selectedItem.title)}
-              placeholder="Search distances"
-              resultsTemplate={(props, state, styles, clickHandler) => {
-                return state.results.map((val, i) => {
-                  const style = state.selectedIndex === i ? styles.selectedResultStyle : styles.resultsStyle;
-                  return (
-                    <div
-                      key={i}
-                      style={style}
-                      onClick={() => clickHandler(i)}
-                    >
-                      {val.title}
-                    </div>
-                  );
-                });
-              }}
-            />
+            <IonItem>
+              <IonInput
+                value={coreDistance}
+                placeholder="Search or add custom distance"
+                onIonChange={(e) => setDistanceSearch(e.detail.value!)}
+                onClick={openDistancePopover}
+              />
+              <IonButton onClick={addCustomDistance}>Add</IonButton>
+            </IonItem>
+            <IonPopover
+              isOpen={showDistancePopover}
+              onDidDismiss={() => setShowDistancePopover(false)}
+            >
+              <IonSearchbar
+                value={distanceSearch}
+                onIonInput={(e) => setDistanceSearch(e.detail.value!)}
+                placeholder="Search distances"
+              />
+              <IonList>
+                {filteredDistances.map((distance, index) => (
+                  <IonItem key={index} button onClick={() => selectDistance(distance)}>
+                    {distance}
+                  </IonItem>
+                ))}
+              </IonList>
+            </IonPopover>
+
             <IonItem className="custom-ion-item">
-              <IonInput placeholder="Please enter rep 1 time (mins)" type="number" value={coreRep1} onIonChange={(e) => setCoreRep1(Number(e.detail.value!))}></IonInput>
+              <IonInput
+                placeholder="Please enter rep 1 time (mins)"
+                type="number"
+                value={coreRep1}
+                onIonChange={(e) => setCoreRep1(Number(e.detail.value!))}
+              ></IonInput>
             </IonItem>
             <IonItem className="custom-ion-item">
-              <IonInput placeholder="Please enter rep 2 time (mins)" type="number" value={coreRep2} onIonChange={(e) => setCoreRep2(Number(e.detail.value!))}></IonInput>
+              <IonInput
+                placeholder="Please enter rep 2 time (mins)"
+                type="number"
+                value={coreRep2}
+                onIonChange={(e) => setCoreRep2(Number(e.detail.value!))}
+              ></IonInput>
             </IonItem>
             <IonItem className="custom-ion-item">
-              <IonInput placeholder="Please enter rest time (mins)" type="number" value={coreRest} onIonChange={(e) => setCoreRest(Number(e.detail.value!))}></IonInput>
+              <IonInput
+                placeholder="Please enter rest time (mins)"
+                type="number"
+                value={coreRest}
+                onIonChange={(e) => setCoreRest(Number(e.detail.value!))}
+              ></IonInput>
             </IonItem>
-            <IonButton expand="full" onClick={() => {
+            <IonButton expand="full" style={{ marginTop: '20px' }} onClick={() => {
               setShowCoreModal(false);
               setCoreSaved(true); // Update core saved state
             }}>
@@ -422,52 +506,61 @@ const WorkoutBuilder: React.FC = () => {
             </IonToolbar>
           </IonHeader>
           <div className="modal-content">
-            <FuzzySearch
-              list={allDrills.map(drill => ({ id: drill, title: drill }))}
-              keys={['title']}
-              width={430}
-              onSelect={(selectedItem) => {
-                setCoolDownDrills([selectedItem.title]); // Restrict to one drill
-              }}
-              placeholder="Search drills"
-              resultsTemplate={(props, state, styles, clickHandler) => {
-                return state.results.map((val, i) => {
-                  const style = state.selectedIndex === i ? styles.selectedResultStyle : styles.resultsStyle;
-                  return (
-                    <div
-                      key={i}
-                      style={style}
-                      onClick={() => clickHandler(i)}
-                    >
-                      {val.title}
-                    </div>
-                  );
-                });
-              }}
-            />
+            <IonItem>
+              <IonInput
+                value={drillSearch}
+                placeholder="Search or add custom drill"
+                onIonChange={(e) => setDrillSearch(e.detail.value!)}
+                onClick={openDrillPopover}
+              />
+              <IonButton onClick={addCustomDrill}>Add</IonButton>
+            </IonItem>
+            <IonPopover
+              isOpen={showDrillPopover}
+              onDidDismiss={() => setShowDrillPopover(false)}
+            >
+              <IonSearchbar
+                value={drillSearch}
+                onIonInput={(e) => setDrillSearch(e.detail.value!)}
+                placeholder="Search drills"
+              />
+              <IonList>
+                {filteredDrills.map((drill, index) => (
+                  <IonItem key={index} button onClick={() => selectDrill(drill)}>
+                    {drill}
+                  </IonItem>
+                ))}
+              </IonList>
+            </IonPopover>
 
-            <FuzzySearch
-              list={allDistances.map(distance => ({ id: distance, title: distance }))}
-              keys={['title']}
-              width={430}
-              onSelect={(selectedItem: { title: React.SetStateAction<string>; }) => setCoolDownDistance(selectedItem.title)}
-              placeholder="Search distances"
-              resultsTemplate={(props, state, styles, clickHandler) => {
-                return state.results.map((val, i) => {
-                  const style = state.selectedIndex === i ? styles.selectedResultStyle : styles.resultsStyle;
-                  return (
-                    <div
-                      key={i}
-                      style={style}
-                      onClick={() => clickHandler(i)}
-                    >
-                      {val.title}
-                    </div>
-                  );
-                });
-              }}
-            />
-            <IonButton expand="full" onClick={() => {
+            <IonItem>
+              <IonInput
+                value={distanceSearch}
+                placeholder="Search or add custom distance"
+                onIonChange={(e) => setDistanceSearch(e.detail.value!)}
+                onClick={openDistancePopover}
+              />
+              <IonButton onClick={addCustomDistance}>Add</IonButton>
+            </IonItem>
+            <IonPopover
+              isOpen={showDistancePopover}
+              onDidDismiss={() => setShowDistancePopover(false)}
+            >
+              <IonSearchbar
+                value={distanceSearch}
+                onIonInput={(e) => setDistanceSearch(e.detail.value!)}
+                placeholder="Search distances"
+              />
+              <IonList>
+                {filteredDistances.map((distance, index) => (
+                  <IonItem key={index} button onClick={() => selectDistance(distance)}>
+                    {distance}
+                  </IonItem>
+                ))}
+              </IonList>
+            </IonPopover>
+
+            <IonButton expand="full" style={{ marginTop: '20px' }} onClick={() => {
               setShowCoolDownModal(false);
               setCoolDownSaved(true); // Update cool down saved state
             }}>
@@ -478,6 +571,12 @@ const WorkoutBuilder: React.FC = () => {
             </IonButton>
           </div>
         </IonModal>
+        <IonToast
+          isOpen={showToast}
+          onDidDismiss={() => setShowToast(false)}
+          message={toastMessage}
+          duration={2000}
+        />
       </IonContent>
       <TabBar />
     </IonPage>

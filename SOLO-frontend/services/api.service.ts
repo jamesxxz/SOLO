@@ -239,23 +239,39 @@ static async getMediaByAthleteIdAndCoachId(athleteId: string, coachId: string, t
   }
 }
 
-static async addWorkout(data: any) {
-  try {
-    const response = await axios.post(`${BASE_URL}/coach/workout`, data);
-    return response.data;
-  } catch (error) {
-    console.error('Failed to add workout:', error);
-    throw error;
-  }
+// Method to create a new workout type
+static async createWorkoutType(workoutTypeData: any) {
+  return axios.post(`${BASE_URL}/workout-type/upload-workout-type`, workoutTypeData)
+    .then(response => response.data)
+    .catch(error => {
+      throw error;
+    });
 }
 
-static async getWorkoutsByDate(date: string) {
-  try {
-      const response = await axios.get(`${BASE_URL}/coach/workout`, { params: { date } });
-      return response.data;
-  } catch (error) {
-      console.error('Failed to fetch workouts by date:', error);
+// Method to update an existing workout type
+static async updateWorkoutType(id: string, workoutTypeData: any) {
+  return axios.put(`${BASE_URL}/workout-type/update-workout-type/${id}`, workoutTypeData)
+    .then(response => response.data)
+    .catch(error => {
       throw error;
-  }
+    });
+}
+
+// Method to get a workout type by ID
+static async getWorkoutTypeById(id: string) {
+  return axios.get(`${BASE_URL}/workout-type/get_workout_type/${id}`)
+    .then(response => response.data)
+    .catch(error => {
+      throw error;
+    });
+}
+
+// Method to delete a workout type by ID
+static async deleteWorkoutType(id: string) {
+  return axios.delete(`${BASE_URL}/workout_type/delete_workout_type/${id}`)
+    .then(response => response.data)
+    .catch(error => {
+      throw error;
+    });
 }
 }

@@ -5,6 +5,7 @@ const pool = require('../server/db'); // Importing the connection pool
 // POST route to register a new workout type
 const crypto = require('crypto');
 
+
 router.post('/upload-workout-type', async (req, res) => {
     const {
         name,
@@ -15,7 +16,9 @@ router.post('/upload-workout-type', async (req, res) => {
         coreRep2,
         coreRest,
         coolDownDrills,
-        coolDownDistance
+        coolDownDistance,
+        intensity,
+        time
     } = req.body;
 
     // Generate a simple tokenized workoutType_id
@@ -33,8 +36,10 @@ router.post('/upload-workout-type', async (req, res) => {
                 coreRep2,
                 coreRest,
                 coolDownDrills,
-                coolDownDistance
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                coolDownDistance,
+                intensity,
+                time
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
 
         const values = [
@@ -47,7 +52,9 @@ router.post('/upload-workout-type', async (req, res) => {
             coreRep2,
             coreRest,
             coolDownDrills,
-            coolDownDistance
+            coolDownDistance,
+            intensity,
+            time
         ];
 
         await pool.query(sql, values);
@@ -62,6 +69,8 @@ router.post('/upload-workout-type', async (req, res) => {
         }
     }
 });
+
+
 
 
 // PUT route to update workout type details
@@ -85,7 +94,7 @@ router.put('/update-workout-type/:id', async (req, res) => {
 });
 
 // GET route to retrieve a workout type by ID
-router.get('/workout_type/:id', async (req, res) => {
+router.get('/get_workout/:id', async (req, res) => {
     try {
         const { id } = req.params;
         const [result] = await pool.query('SELECT name FROM workout_type WHERE workoutType_id = ?', [id]);
@@ -102,7 +111,7 @@ router.get('/workout_type/:id', async (req, res) => {
 });
 
 // DELETE route to remove a workout type
-router.delete('/workout_type/:id', async (req, res) => {
+router.delete('/delete_workout_type/:id', async (req, res) => {
     try {
         const { id } = req.params;
         const [result] = await pool.query('DELETE FROM workout_type WHERE id = ?', [id]);

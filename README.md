@@ -17,7 +17,14 @@ __Note:__ The rest of the directories are in Swift. They do not have the backend
 ## Backend setup
 1. Read __SOLO-backend/services/SERVICES.md__ to set up .env
 2. Go into frontend folder ```cd SOLO-backend```
-3. Download dependencies ```npm i```
+3. Download dependencies
+   ``` 
+    git init
+    npm uninstall husky
+    npm install husky --save-dev
+    npx husky install
+    npm i
+    ```
 
 ## Running the app
 ### via web browser

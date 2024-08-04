@@ -69,6 +69,8 @@ const WorkoutBuilder: React.FC = () => {
   const [alertMessage, setAlertMessage] = useState('');
   const [confirmAction, setConfirmAction] = useState<(() => void) | null>(null);
 
+  const [editingWorkout, setEditingWorkout] = useState<Workout | null>(null);
+
   useEffect(() => {
     fetchWorkoutsByType('standard');
     fetchWorkoutsByType('dynamic');
@@ -108,12 +110,20 @@ const WorkoutBuilder: React.FC = () => {
       coolDownDrills,
       coolDownDistance,
       workoutType: selectedSection!,
-      userId: userId
+      userId: userId // Ensure userId is included
     };
-
+  
+    console.log('Sending values:', workoutWithWarmUp);
+  
     try {
-      await ApiService.createWorkoutType(workoutWithWarmUp);
-      fetchWorkoutsByType(selectedSection!);
+      if (editingWorkout) {
+        await ApiService.updateWorkoutType(editingWorkout.id!, workoutWithWarmUp);
+        setToastMessage('Workout updated successfully!');
+      } else {
+        await ApiService.createWorkoutType(workoutWithWarmUp);
+        setToastMessage('Workout generated successfully!');
+      }
+      fetchWorkoutsByType(selectedSection!); 
       setNewWorkout({ title: '', intensity: '', time: 0, workoutType: '', userId: userId });
       clearWarmUpFields();
       clearCoreFields();
@@ -122,9 +132,11 @@ const WorkoutBuilder: React.FC = () => {
       setWarmUpSaved(false);
       setCoreSaved(false);
       setCoolDownSaved(false);
+      setEditingWorkout(null);
+      setShowToast(true);
     } catch (error) {
-      console.error('Failed to create workout type:', error);
-      setToastMessage('Failed to create workout. Please try again later.');
+      console.error('Failed to create or update workout:', error);
+      setToastMessage('Failed to create or update workout. Please try again later.');
       setShowToast(true);
     }
   };
@@ -137,6 +149,20 @@ const WorkoutBuilder: React.FC = () => {
           : [...prevSections, value]
       );
     }
+  };
+
+  const handleEditWorkout = (workout: Workout) => {
+    setNewWorkout(workout);
+    setWarmUpDrills(workout.warmUpDrills || []);
+    setWarmUpDistance(workout.warmUpDistance || '');
+    setCoreDistance(workout.coreDistance || '');
+    setCoreRep1(workout.coreRep1);
+    setCoreRep2(workout.coreRep2);
+    setCoreRest(workout.coreRest);
+    setCoolDownDrills(workout.coolDownDrills || []);
+    setCoolDownDistance(workout.coolDownDistance || '');
+    setEditingWorkout(workout);
+    setShowModal(true);
   };
 
   const filterOptions = (options: string[], query: string) => {
@@ -257,12 +283,11 @@ const WorkoutBuilder: React.FC = () => {
   };
 
   const closeMainModal = () => {
-    confirmActionWithAlert(() => {
-      setShowModal(false);
-      clearWarmUpFields();
-      clearCoreFields();
-      clearCoolDownFields();
-    }, 'Do you want to discard the changes?');
+    setShowModal(false);
+    clearWarmUpFields();
+    clearCoreFields();
+    clearCoolDownFields();
+    setEditingWorkout(null);
   };
 
   const saveWarmUp = () => {
@@ -312,7 +337,7 @@ const WorkoutBuilder: React.FC = () => {
                     <p>Intensity Level: {workout.intensity}</p>
                     <p>Time: {workout.time} mins</p>
                   </div>
-                  <button className="edit-button">Edit Workout</button>
+                  <button className="edit-button" onClick={() => handleEditWorkout(workout)}>Edit Workout</button>
                 </div>
               ))}
               <IonButton onClick={() => {
@@ -339,7 +364,7 @@ const WorkoutBuilder: React.FC = () => {
                     <p>Intensity Level: {workout.intensity}</p>
                     <p>Time: {workout.time} mins</p>
                   </div>
-                  <button className="edit-button">Edit Workout</button>
+                  <button className="edit-button" onClick={() => handleEditWorkout(workout)}>Edit Workout</button>
                 </div>
               ))}
               <IonButton onClick={() => {
@@ -366,7 +391,7 @@ const WorkoutBuilder: React.FC = () => {
                     <p>Intensity Level: {workout.intensity}</p>
                     <p>Time: {workout.time} mins</p>
                   </div>
-                  <button className="edit-button">Edit Workout</button>
+                  <button className="edit-button" onClick={() => handleEditWorkout(workout)}>Edit Workout</button>
                 </div>
               ))}
               <IonButton onClick={() => {

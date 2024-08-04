@@ -22,7 +22,7 @@ interface Workout {
   coolDownDrills?: string[];
   coolDownDistance?: string;
   workoutType: string;
-  userId: string; // Add userId field
+  userId: string;
 }
 
 const initialDrills = ["A-skip", "B-skip", "C-skip", "High knees", "Side shuffle", "Bounce Bounce Turn", "Running backwards", "Butt kicks", "Frankensteins", "Lunges", "Fast Lunges", "Fast Lunges w/ twist", "Karoke", "Back Hamstring active stretches", "Half sprints", "Knee pulls"];
@@ -70,12 +70,9 @@ const WorkoutBuilder: React.FC = () => {
   const [confirmAction, setConfirmAction] = useState<(() => void) | null>(null);
 
   useEffect(() => {
-    // Fetch workouts for each section on component mount
     fetchWorkoutsByType('standard');
     fetchWorkoutsByType('dynamic');
     fetchWorkoutsByType('competition');
-
-    // Expand all sections initially
     setExpandedSections(['standard', 'dynamic', 'competition']);
   }, [userId]);
 
@@ -111,14 +108,12 @@ const WorkoutBuilder: React.FC = () => {
       coolDownDrills,
       coolDownDistance,
       workoutType: selectedSection!,
-      userId: userId // Ensure userId is included
+      userId: userId
     };
-
-    console.log('Sending values:', workoutWithWarmUp);
 
     try {
       await ApiService.createWorkoutType(workoutWithWarmUp);
-      fetchWorkoutsByType(selectedSection!); // Fetch the updated list after creating a new workout
+      fetchWorkoutsByType(selectedSection!);
       setNewWorkout({ title: '', intensity: '', time: 0, workoutType: '', userId: userId });
       clearWarmUpFields();
       clearCoreFields();
@@ -154,6 +149,11 @@ const WorkoutBuilder: React.FC = () => {
   const addCustomDrill = () => {
     if (drillSearch && !drills.includes(drillSearch)) {
       setDrills([...drills, drillSearch]);
+      if (showWarmUpModal) {
+        setWarmUpDrills([...warmUpDrills, drillSearch]);
+      } else if (showCoolDownModal) {
+        setCoolDownDrills([...coolDownDrills, drillSearch]);
+      }
       setShowToast(true);
       setToastMessage(`Added custom drill: ${drillSearch}`);
     }
@@ -162,6 +162,13 @@ const WorkoutBuilder: React.FC = () => {
   const addCustomDistance = () => {
     if (distanceSearch && !distances.includes(distanceSearch)) {
       setDistances([...distances, distanceSearch]);
+      if (showCoreModal) {
+        setCoreDistance(distanceSearch);
+      } else if (showCoolDownModal) {
+        setCoolDownDistance(distanceSearch);
+      } else {
+        setWarmUpDistance(distanceSearch);
+      }
       setShowToast(true);
       setToastMessage(`Added custom distance: ${distanceSearch}`);
     }
@@ -189,9 +196,9 @@ const WorkoutBuilder: React.FC = () => {
 
   const selectDrill = (drill: string) => {
     if (showWarmUpModal) {
-      setWarmUpDrills([drill]);
+      setWarmUpDrills([...warmUpDrills, drill]);
     } else if (showCoolDownModal) {
-      setCoolDownDrills([drill]);
+      setCoolDownDrills([...coolDownDrills, drill]);
     }
     setDrillSearch(drill);
     setShowDrillPopover(false);
@@ -316,7 +323,7 @@ const WorkoutBuilder: React.FC = () => {
           </IonAccordion>
         </IonAccordionGroup>
 
-          <IonAccordionGroup
+        <IonAccordionGroup
           value={expandedSections}
           onIonChange={e => handleAccordionChange(e.detail.value)}
         >
@@ -341,10 +348,12 @@ const WorkoutBuilder: React.FC = () => {
               }}>Generate Workout</IonButton>
             </div>
           </IonAccordion>
-          </IonAccordionGroup>
-          <IonAccordionGroup
+        </IonAccordionGroup>
+
+        <IonAccordionGroup
           value={expandedSections}
-          onIonChange={e => handleAccordionChange(e.detail.value)}>
+          onIonChange={e => handleAccordionChange(e.detail.value)}
+        >
           <IonAccordion class="accordions" value="competition">
             <IonItem slot="header" color="light" onClick={() => setSelectedSection('competition')}>
               <IonLabel>Competition Workouts</IonLabel>
@@ -473,6 +482,8 @@ const WorkoutBuilder: React.FC = () => {
                 placeholder="Search or add custom drill"
                 onIonChange={(e) => setDrillSearch(e.detail.value!)}
                 onClick={openDrillPopover}
+                onKeyDown={(e) => handleKeyDown(e, addCustomDrill)}
+                onBlur={() => handleBlur(addCustomDrill)}
               />
               <IonButton onClick={addCustomDrill}>Add</IonButton>
             </IonItem>
@@ -500,6 +511,8 @@ const WorkoutBuilder: React.FC = () => {
                 placeholder="Search or add custom distance"
                 onIonChange={(e) => setDistanceSearch(e.detail.value!)}
                 onClick={openDistancePopover}
+                onKeyDown={(e) => handleKeyDown(e, addCustomDistance)}
+                onBlur={() => handleBlur(addCustomDistance)}
               />
               <IonButton onClick={addCustomDistance}>Add</IonButton>
             </IonItem>
@@ -545,6 +558,8 @@ const WorkoutBuilder: React.FC = () => {
                 placeholder="Search or add custom distance"
                 onIonChange={(e) => setCoreDistance(e.detail.value!)}
                 onClick={openDistancePopover}
+                onKeyDown={(e) => handleKeyDown(e, addCustomDistance)}
+                onBlur={() => handleBlur(addCustomDistance)}
               />
               <IonButton onClick={addCustomDistance}>Add</IonButton>
             </IonItem>
@@ -614,6 +629,8 @@ const WorkoutBuilder: React.FC = () => {
                 placeholder="Search or add custom drill"
                 onIonChange={(e) => setDrillSearch(e.detail.value!)}
                 onClick={openDrillPopover}
+                onKeyDown={(e) => handleKeyDown(e, addCustomDrill)}
+                onBlur={() => handleBlur(addCustomDrill)}
               />
               <IonButton onClick={addCustomDrill}>Add</IonButton>
             </IonItem>
@@ -641,6 +658,8 @@ const WorkoutBuilder: React.FC = () => {
                 placeholder="Search or add custom distance"
                 onIonChange={(e) => setDistanceSearch(e.detail.value!)}
                 onClick={openDistancePopover}
+                onKeyDown={(e) => handleKeyDown(e, addCustomDistance)}
+                onBlur={() => handleBlur(addCustomDistance)}
               />
               <IonButton onClick={addCustomDistance}>Add</IonButton>
             </IonItem>

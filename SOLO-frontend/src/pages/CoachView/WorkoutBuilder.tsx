@@ -20,8 +20,7 @@ interface Workout {
   time: number;
   warmUpDrills?: Drill[];
   coreDistance?: string;
-  coreRep1?: number;
-  coreRep2?: number;
+  coreReps?: { repTime?: number }[];
   coreRest?: number;
   coolDownDrills?: Drill[];
   workoutType: string;
@@ -48,8 +47,7 @@ const WorkoutBuilder: React.FC = () => {
   const [newWorkout, setNewWorkout] = useState<Workout>({ title: '', intensity: '', time: 0, workoutType: '', userId: userId });
   const [warmUpDrills, setWarmUpDrills] = useState<Drill[]>([]);
   const [coreDistance, setCoreDistance] = useState<string>('');
-  const [coreRep1, setCoreRep1] = useState<number>();
-  const [coreRep2, setCoreRep2] = useState<number>();
+  const [coreReps, setCoreReps] = useState<{ repTime?: number }[]>([]);
   const [coreRest, setCoreRest] = useState<number>();
   const [coolDownDrills, setCoolDownDrills] = useState<Drill[]>([]);
   const [drillSearch, setDrillSearch] = useState('');
@@ -71,6 +69,12 @@ const WorkoutBuilder: React.FC = () => {
   const [confirmAction, setConfirmAction] = useState<(() => void) | null>(null);
 
   const [editingWorkout, setEditingWorkout] = useState<Workout | null>(null);
+
+  const [tempWarmUpDrills, setTempWarmUpDrills] = useState<Drill[]>([]);
+  const [tempCoreDistance, setTempCoreDistance] = useState<string>('');
+  const [tempCoreReps, setTempCoreReps] = useState<{ repTime?: number }[]>([]);
+  const [tempCoreRest, setTempCoreRest] = useState<number>();
+  const [tempCoolDownDrills, setTempCoolDownDrills] = useState<Drill[]>([]);
 
   useEffect(() => {
     fetchWorkoutsByType('standard');
@@ -95,7 +99,7 @@ const WorkoutBuilder: React.FC = () => {
   };
 
   const calculateTotalTime = () => {
-    return (coreRep1 || 0) + (coreRep2 || 0) + (coreRest || 0);
+    return coreReps.reduce((total, rep) => total + (rep.repTime || 0), 0) + (coreRest || 0);
   };
 
   const generateWorkout = async () => {
@@ -104,8 +108,7 @@ const WorkoutBuilder: React.FC = () => {
       time: calculateTotalTime(),
       warmUpDrills,
       coreDistance,
-      coreRep1,
-      coreRep2,
+      coreReps,
       coreRest,
       coolDownDrills,
       workoutType: selectedSection!,
@@ -154,8 +157,7 @@ const WorkoutBuilder: React.FC = () => {
     setNewWorkout(workout);
     setWarmUpDrills(workout.warmUpDrills || []);
     setCoreDistance(workout.coreDistance || '');
-    setCoreRep1(workout.coreRep1);
-    setCoreRep2(workout.coreRep2);
+    setCoreReps(workout.coreReps || []);
     setCoreRest(workout.coreRest);
     setCoolDownDrills(workout.coolDownDrills || []);
     setEditingWorkout(workout);
@@ -198,31 +200,51 @@ const WorkoutBuilder: React.FC = () => {
   const openDrillPopover = (event: React.MouseEvent, index: number) => {
     event.preventDefault();
     setShowDrillPopover(true);
-    setDrillSearch(warmUpDrills[index]?.name || '');
+    setDrillSearch(tempWarmUpDrills[index]?.name || '');
   };
 
-  const openDistancePopover = (event: React.MouseEvent, index: number) => {
+  const openDistancePopover = (event: React.MouseEvent, index: number, forCore: boolean = false) => {
     event.preventDefault();
     setShowDistancePopover(true);
-    setDistanceSearch(warmUpDrills[index]?.distance || '');
+    setDistanceSearch(forCore ? tempCoreDistance : tempWarmUpDrills[index]?.distance || '');
   };
 
   const selectDrill = (drill: string) => {
-    const newWarmUpDrills = [...warmUpDrills];
+    const newWarmUpDrills = [...tempWarmUpDrills];
     newWarmUpDrills[newWarmUpDrills.length - 1].name = drill;
-    setWarmUpDrills(newWarmUpDrills);
+    setTempWarmUpDrills(newWarmUpDrills);
     setShowDrillPopover(false);
     setDrillSearch('');
   };
 
-  const selectDistance = (distance: string) => {
-    const newWarmUpDrills = [...warmUpDrills];
-    newWarmUpDrills[newWarmUpDrills.length - 1].distance = distance;
-    setWarmUpDrills(newWarmUpDrills);
+  const selectDistance = (distance: string, forCore: boolean = false) => {
+    if (forCore) {
+      setTempCoreDistance(distance);
+    } else {
+      const newWarmUpDrills = [...tempWarmUpDrills];
+      newWarmUpDrills[newWarmUpDrills.length - 1].distance = distance;
+      setTempWarmUpDrills(newWarmUpDrills);
+    }
     setShowDistancePopover(false);
     setDistanceSearch('');
   };
 
+  const selectDrillForCoolDown = (drill: string, index: number) => {
+    const newCoolDownDrills = [...tempCoolDownDrills];
+    newCoolDownDrills[index].name = drill;
+    setTempCoolDownDrills(newCoolDownDrills);
+    setShowDrillPopover(false);
+    setDrillSearch('');
+  };
+  
+  const selectDistanceForCoolDown = (distance: string, index: number) => {
+    const newCoolDownDrills = [...tempCoolDownDrills];
+    newCoolDownDrills[index].distance = distance;
+    setTempCoolDownDrills(newCoolDownDrills);
+    setShowDistancePopover(false);
+    setDistanceSearch('');
+  };
+  
   const confirmActionWithAlert = (action: () => void, message: string) => {
     setConfirmAction(() => action);
     setAlertMessage(message);
@@ -237,8 +259,7 @@ const WorkoutBuilder: React.FC = () => {
 
   const clearCoreFields = () => {
     setCoreDistance('');
-    setCoreRep1(undefined);
-    setCoreRep2(undefined);
+    setCoreReps([]);
     setCoreRest(undefined);
     setDistanceSearch('');
   };
@@ -271,6 +292,7 @@ const WorkoutBuilder: React.FC = () => {
 
   const saveWarmUp = () => {
     confirmActionWithAlert(() => {
+      setWarmUpDrills(tempWarmUpDrills);
       setWarmUpSaved(true);
       setShowWarmUpModal(false);
     }, 'Are you sure the Warm Up details are correct?');
@@ -278,6 +300,9 @@ const WorkoutBuilder: React.FC = () => {
 
   const saveCore = () => {
     confirmActionWithAlert(() => {
+      setCoreDistance(tempCoreDistance);
+      setCoreReps(tempCoreReps);
+      setCoreRest(tempCoreRest);
       setCoreSaved(true);
       setShowCoreModal(false);
     }, 'Are you sure the Core details are correct?');
@@ -285,17 +310,28 @@ const WorkoutBuilder: React.FC = () => {
 
   const saveCoolDown = () => {
     confirmActionWithAlert(() => {
+      setCoolDownDrills(tempCoolDownDrills);
       setCoolDownSaved(true);
       setShowCoolDownModal(false);
     }, 'Are you sure the Cool Down details are correct?');
   };
 
   const addWarmUpDrill = () => {
-    setWarmUpDrills([...warmUpDrills, { name: '', distance: '' }]);
+    setTempWarmUpDrills([...tempWarmUpDrills, { name: '', distance: '' }]);
+  };
+
+  const addCoreRep = () => {
+    setTempCoreReps([...tempCoreReps, { repTime: undefined }]);
+  };
+
+  const updateCoreRepTime = (time: number | undefined, index: number) => {
+    const newCoreReps = [...tempCoreReps];
+    newCoreReps[index].repTime = time;
+    setTempCoreReps(newCoreReps);
   };
 
   const addCoolDownDrill = () => {
-    setCoolDownDrills([...coolDownDrills, { name: '', distance: '' }]);
+    setTempCoolDownDrills([...tempCoolDownDrills, { name: '', distance: '' }]);
   };
 
   return (
@@ -421,31 +457,36 @@ const WorkoutBuilder: React.FC = () => {
               <button
                 className="custom-add-button"
                 style={{ backgroundColor: warmUpSaved ? 'lightblue' : '', color: warmUpSaved ? 'blue' : '', borderColor: warmUpSaved ? 'blue' : '' }}
-                onClick={() => setShowWarmUpModal(true)}
+                onClick={() => {
+                  setTempWarmUpDrills(warmUpDrills);
+                  setShowWarmUpModal(true);
+                }}
               >
                 {warmUpSaved ? 'Edit' : 'Add'}
               </button>
             </div>
 
             <div className="custom-card">
-              <IonLabel className="custom-card-title">Core</IonLabel>
+              <IonLabel className="custom-card-title">Running Circuit</IonLabel>
               <br />
               {coreDistance && (
                 <IonChip color="primary">Distance: {coreDistance}</IonChip>
               )}
-              {coreRep1 && (
-                <IonChip color="primary">Rep 1: {coreRep1} mins</IonChip>
-              )}
-              {coreRep2 && (
-                <IonChip color="primary">Rep 2: {coreRep2} mins</IonChip>
-              )}
+              {coreReps.map((rep, index) => (
+                <IonChip key={index} color="primary">Rep {index + 1}: {rep.repTime} mins</IonChip>
+              ))}
               {coreRest && (
                 <IonChip color="primary">Rest: {coreRest} mins</IonChip>
               )}
               <button
                 className="custom-add-button"
                 style={{ backgroundColor: coreSaved ? 'lightblue' : '', color: coreSaved ? 'blue' : '', borderColor: coreSaved ? 'blue' : '' }}
-                onClick={() => setShowCoreModal(true)}
+                onClick={() => {
+                  setTempCoreDistance(coreDistance);
+                  setTempCoreReps(coreReps);
+                  setTempCoreRest(coreRest);
+                  setShowCoreModal(true);
+                }}
               >
                 {coreSaved ? 'Edit' : 'Add'}
               </button>
@@ -462,7 +503,10 @@ const WorkoutBuilder: React.FC = () => {
               <button
                 className="custom-add-button"
                 style={{ backgroundColor: coolDownSaved ? 'lightblue' : '', color: coolDownSaved ? 'blue' : '', borderColor: coolDownSaved ? 'blue' : '' }}
-                onClick={() => setShowCoolDownModal(true)}
+                onClick={() => {
+                  setTempCoolDownDrills(coolDownDrills);
+                  setShowCoolDownModal(true);
+                }}
               >
                 {coolDownSaved ? 'Edit' : 'Add'}
               </button>
@@ -486,7 +530,7 @@ const WorkoutBuilder: React.FC = () => {
             </IonToolbar>
           </IonHeader>
           <div className="modal-content">
-            {warmUpDrills.map((drill, index) => (
+            {tempWarmUpDrills.map((drill, index) => (
               <IonCard key={index}>
                 <IonCardContent>
                   <IonItem>
@@ -494,9 +538,9 @@ const WorkoutBuilder: React.FC = () => {
                       value={drill.name}
                       placeholder="Search or add custom drill"
                       onIonChange={(e) => {
-                        const newWarmUpDrills = [...warmUpDrills];
+                        const newWarmUpDrills = [...tempWarmUpDrills];
                         newWarmUpDrills[index].name = e.detail.value!;
-                        setWarmUpDrills(newWarmUpDrills);
+                        setTempWarmUpDrills(newWarmUpDrills);
                       }}
                       onClick={(event) => openDrillPopover(event, index)}
                       onKeyDown={(e) => handleKeyDown(e, addCustomDrill)}
@@ -527,9 +571,9 @@ const WorkoutBuilder: React.FC = () => {
                       value={drill.distance}
                       placeholder="Search or add custom distance"
                       onIonChange={(e) => {
-                        const newWarmUpDrills = [...warmUpDrills];
+                        const newWarmUpDrills = [...tempWarmUpDrills];
                         newWarmUpDrills[index].distance = e.detail.value!;
-                        setWarmUpDrills(newWarmUpDrills);
+                        setTempWarmUpDrills(newWarmUpDrills);
                       }}
                       onClick={(event) => openDistancePopover(event, index)}
                       onKeyDown={(e) => handleKeyDown(e, addCustomDistance)}
@@ -557,7 +601,7 @@ const WorkoutBuilder: React.FC = () => {
                 </IonCardContent>
               </IonCard>
             ))}
-            <IonButton onClick={addWarmUpDrill}>+</IonButton>
+            <IonButton onClick={addWarmUpDrill}>Add Warm Up</IonButton>
             <IonButton expand="full" style={{ marginTop: '20px' }} onClick={saveWarmUp}>
               Save
             </IonButton>
@@ -571,17 +615,17 @@ const WorkoutBuilder: React.FC = () => {
           <IonHeader>
             <IonToolbar>
               <header className="gradient-header">
-                <div className="logo">CORE DETAILS</div>
+                <div className="logo">RUNNING CIRCUIT DETAILS</div>
               </header>
             </IonToolbar>
           </IonHeader>
           <div className="modal-content">
             <IonItem>
               <IonInput
-                value={coreDistance}
+                value={tempCoreDistance}
                 placeholder="Search or add custom distance"
-                onIonChange={(e) => setCoreDistance(e.detail.value!)}
-                onClick={openDistancePopover}
+                onIonChange={(e) => setTempCoreDistance(e.detail.value!)}
+                onClick={(event) => openDistancePopover(event, 0, true)}
                 onKeyDown={(e) => handleKeyDown(e, addCustomDistance)}
                 onBlur={() => handleBlur(addCustomDistance)}
               />
@@ -598,35 +642,30 @@ const WorkoutBuilder: React.FC = () => {
               />
               <IonList>
                 {filteredDistances.map((distance, index) => (
-                  <IonItem key={index} button onClick={() => selectDistance(distance)}>
+                  <IonItem key={index} button onClick={() => selectDistance(distance, true)}>
                     {distance}
                   </IonItem>
                 ))}
               </IonList>
             </IonPopover>
 
-            <IonItem className="custom-ion-item">
-              <IonInput
-                placeholder="Please enter rep 1 time (mins)"
-                type="number"
-                value={coreRep1}
-                onIonChange={(e) => setCoreRep1(Number(e.detail.value!))}
-              ></IonInput>
-            </IonItem>
-            <IonItem className="custom-ion-item">
-              <IonInput
-                placeholder="Please enter rep 2 time (mins)"
-                type="number"
-                value={coreRep2}
-                onIonChange={(e) => setCoreRep2(Number(e.detail.value!))}
-              ></IonInput>
-            </IonItem>
+            {tempCoreReps.map((rep, index) => (
+              <IonItem key={index}>
+                <IonInput
+                  placeholder={`Please enter rep ${index + 1} time (mins)`}
+                  type="number"
+                  value={rep.repTime}
+                  onIonChange={(e) => updateCoreRepTime(Number(e.detail.value!), index)}
+                ></IonInput>
+              </IonItem>
+            ))}
+            <IonButton onClick={addCoreRep}>Add Rep</IonButton>
             <IonItem className="custom-ion-item">
               <IonInput
                 placeholder="Please enter rest time (mins)"
                 type="number"
-                value={coreRest}
-                onIonChange={(e) => setCoreRest(Number(e.detail.value!))}
+                value={tempCoreRest}
+                onIonChange={(e) => setTempCoreRest(Number(e.detail.value!))}
               ></IonInput>
             </IonItem>
             <IonButton expand="full" style={{ marginTop: '20px' }} onClick={saveCore}>
@@ -647,7 +686,7 @@ const WorkoutBuilder: React.FC = () => {
             </IonToolbar>
           </IonHeader>
           <div className="modal-content">
-            {coolDownDrills.map((drill, index) => (
+            {tempCoolDownDrills.map((drill, index) => (
               <IonCard key={index}>
                 <IonCardContent>
                   <IonItem>
@@ -655,9 +694,9 @@ const WorkoutBuilder: React.FC = () => {
                       value={drill.name}
                       placeholder="Search or add custom drill"
                       onIonChange={(e) => {
-                        const newCoolDownDrills = [...coolDownDrills];
+                        const newCoolDownDrills = [...tempCoolDownDrills];
                         newCoolDownDrills[index].name = e.detail.value!;
-                        setCoolDownDrills(newCoolDownDrills);
+                        setTempCoolDownDrills(newCoolDownDrills);
                       }}
                       onClick={(event) => openDrillPopover(event, index)}
                       onKeyDown={(e) => handleKeyDown(e, addCustomDrill)}
@@ -676,7 +715,7 @@ const WorkoutBuilder: React.FC = () => {
                     />
                     <IonList>
                       {filteredDrills.map((drillOption, drillIndex) => (
-                        <IonItem key={drillIndex} button onClick={() => selectDrill(drillOption)}>
+                        <IonItem key={drillIndex} button onClick={() => selectDrillForCoolDown(drillOption, index)}>
                           {drillOption}
                         </IonItem>
                       ))}
@@ -688,9 +727,9 @@ const WorkoutBuilder: React.FC = () => {
                       value={drill.distance}
                       placeholder="Search or add custom distance"
                       onIonChange={(e) => {
-                        const newCoolDownDrills = [...coolDownDrills];
+                        const newCoolDownDrills = [...tempCoolDownDrills];
                         newCoolDownDrills[index].distance = e.detail.value!;
-                        setCoolDownDrills(newCoolDownDrills);
+                        setTempCoolDownDrills(newCoolDownDrills);
                       }}
                       onClick={(event) => openDistancePopover(event, index)}
                       onKeyDown={(e) => handleKeyDown(e, addCustomDistance)}
@@ -709,7 +748,7 @@ const WorkoutBuilder: React.FC = () => {
                     />
                     <IonList>
                       {filteredDistances.map((distanceOption, distanceIndex) => (
-                        <IonItem key={distanceIndex} button onClick={() => selectDistance(distanceOption)}>
+                        <IonItem key={distanceIndex} button onClick={() => selectDistanceForCoolDown(distanceOption, index)}>
                           {distanceOption}
                         </IonItem>
                       ))}
@@ -718,7 +757,7 @@ const WorkoutBuilder: React.FC = () => {
                 </IonCardContent>
               </IonCard>
             ))}
-            <IonButton onClick={addCoolDownDrill}>+</IonButton>
+            <IonButton onClick={addCoolDownDrill}>Add Cool Down</IonButton>
             <IonButton expand="full" style={{ marginTop: '20px' }} onClick={saveCoolDown}>
               Save
             </IonButton>
@@ -727,6 +766,7 @@ const WorkoutBuilder: React.FC = () => {
             </IonButton>
           </div>
         </IonModal>
+
         <IonToast
           isOpen={showToast}
           onDidDismiss={() => setShowToast(false)}

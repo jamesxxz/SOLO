@@ -1,0 +1,70 @@
+.fullscreen-modal {
+    padding: 20px;
+    background-color: #fff;
+    height: 100%;
+  }
+  
+  .modal-content {
+    padding: 20px;
+  }
+  
+  .modal-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .my-custom-button {
+    margin: 10px 0;
+    text-transform: none; /* Normal case */
+  }
+  
+  .cancel-button {
+    margin-top: 20px;
+    color: red;
+    background-color: red;
+    text-transform: none; /* Normal case */
+  }
+  
+  .error-message {
+    color: red;
+    margin-top: 10px;
+    text-align: center;
+  }
+  
+  .add-media-button {
+    text-transform: none; /* Normal case */
+  }
+  
+  .task-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    background-color: #fff;
+  }
+  
+  .task-info {
+    flex: 1;
+  }
+  
+  .complete-button {
+    margin-left: 10px;
+    background-color: lightgray;
+    color: black;
+    border: 1px solid gray;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  
+  .complete-button.complete {
+    background-color: green;
+    color: white;
+    border: 1px solid darkgreen;
+  }
+  

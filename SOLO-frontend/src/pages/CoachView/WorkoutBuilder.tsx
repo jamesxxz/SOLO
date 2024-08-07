@@ -86,12 +86,17 @@ const WorkoutBuilder: React.FC = () => {
   const fetchWorkoutsByType = async (workoutType: string) => {
     try {
       const workouts = await ApiService.getWorkoutsByUserAndType(userId, workoutType);
+      const mappedWorkouts = workouts.map((workout: any) => ({
+        ...workout,
+        title: workout.name, // Map name to title
+      }));
+
       if (workoutType === 'standard') {
-        setStandardWorkouts(workouts);
+        setStandardWorkouts(mappedWorkouts);
       } else if (workoutType === 'dynamic') {
-        setDynamicWorkouts(workouts);
+        setDynamicWorkouts(mappedWorkouts);
       } else if (workoutType === 'competition') {
-        setCompetitionWorkouts(workouts);
+        setCompetitionWorkouts(mappedWorkouts);
       }
     } catch (error) {
       console.error(`Failed to fetch ${workoutType} workouts:`, error);
@@ -154,7 +159,10 @@ const WorkoutBuilder: React.FC = () => {
   };
 
   const handleEditWorkout = (workout: Workout) => {
-    setNewWorkout(workout);
+    setNewWorkout({
+      ...workout,
+      title: workout.name, // Map name to title
+    });
     setWarmUpDrills(workout.warmUpDrills || []);
     setCoreDistance(workout.coreDistance || '');
     setCoreReps(workout.coreReps || []);
@@ -449,11 +457,13 @@ const WorkoutBuilder: React.FC = () => {
             <div className="custom-card">
               <IonLabel className="custom-card-title">Warm Up</IonLabel>
               <br />
-              {warmUpDrills.length > 0 && (
-                warmUpDrills.map((drill, index) => (
-                  <IonChip key={index} color="primary">{drill.name} - {drill.distance}</IonChip>
-                ))
-              )}
+              <div className="custom-card-content">
+                {warmUpDrills.length > 0 && (
+                  warmUpDrills.map((drill, index) => (
+                    <IonChip key={index} color="primary">{drill.name} - {drill.distance}</IonChip>
+                  ))
+                )}
+              </div>
               <button
                 className="custom-add-button"
                 style={{ backgroundColor: warmUpSaved ? 'lightblue' : '', color: warmUpSaved ? 'blue' : '', borderColor: warmUpSaved ? 'blue' : '' }}
@@ -469,15 +479,17 @@ const WorkoutBuilder: React.FC = () => {
             <div className="custom-card">
               <IonLabel className="custom-card-title">Running Circuit</IonLabel>
               <br />
-              {coreDistance && (
-                <IonChip color="primary">Distance: {coreDistance}</IonChip>
-              )}
-              {coreReps.map((rep, index) => (
-                <IonChip key={index} color="primary">Rep {index + 1}: {rep.repTime} mins</IonChip>
-              ))}
-              {coreRest && (
-                <IonChip color="primary">Rest: {coreRest} mins</IonChip>
-              )}
+              <div className="custom-card-content">
+                {coreDistance && (
+                  <IonChip color="primary">Distance: {coreDistance}</IonChip>
+                )}
+                {coreReps.map((rep, index) => (
+                  <IonChip key={index} color="primary">Rep {index + 1}: {rep.repTime} mins</IonChip>
+                ))}
+                {coreRest && (
+                  <IonChip color="primary">Rest: {coreRest} mins</IonChip>
+                )}
+              </div>
               <button
                 className="custom-add-button"
                 style={{ backgroundColor: coreSaved ? 'lightblue' : '', color: coreSaved ? 'blue' : '', borderColor: coreSaved ? 'blue' : '' }}
@@ -495,11 +507,13 @@ const WorkoutBuilder: React.FC = () => {
             <div className="custom-card">
               <IonLabel className="custom-card-title">Cool Down</IonLabel>
               <br />
-              {coolDownDrills.length > 0 && (
-                coolDownDrills.map((drill, index) => (
-                  <IonChip key={index} color="primary">{drill.name} - {drill.distance}</IonChip>
-                ))
-              )}
+              <div className="custom-card-content">
+                {coolDownDrills.length > 0 && (
+                  coolDownDrills.map((drill, index) => (
+                    <IonChip key={index} color="primary">{drill.name} - {drill.distance}</IonChip>
+                  ))
+                )}
+              </div>
               <button
                 className="custom-add-button"
                 style={{ backgroundColor: coolDownSaved ? 'lightblue' : '', color: coolDownSaved ? 'blue' : '', borderColor: coolDownSaved ? 'blue' : '' }}

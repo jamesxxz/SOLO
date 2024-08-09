@@ -292,4 +292,23 @@ static async deleteWorkoutType(id: string) {
       throw error;
     });
 }
+
+static async assignTask(taskData: any) {
+  try {
+      return axios.post(`${BASE_URL}/workout/assign-task`, taskData);
+  } catch (error) {
+      console.error('Failed to assign task:', error);
+      throw error;
+  }
+}
+
+static async getTasksByCoachAndAthlete(coachId: string, athleteId: string) {
+  try {
+      const response = await axios.get(`${BASE_URL}/workout/tasks/${coachId}/${athleteId}`);
+      return response.data;
+  } catch (error) {
+      console.error('Failed to fetch tasks:', error);
+      throw error;
+  }
+}
 }

@@ -44,6 +44,8 @@ interface MediaItem {
 
 interface Workout {
   name: string;
+  intensity: string;
+  time: number;
   workoutType: string;
 }
 
@@ -95,8 +97,20 @@ const CurrentAthleteView: React.FC = () => {
       }
     };
 
+    const fetchTasks = async () => {
+      if (coachId && athleteId) {
+        try {
+          const response = await ApiService.getTasksByCoachAndAthlete(coachId, athleteId);
+          setTasks(response);
+        } catch (error) {
+          console.error('Error fetching tasks:', error);
+        }
+      }
+    };
+
     fetchAthlete();
     fetchMedia();
+    fetchTasks();
   }, [athleteId, coachId]);
 
   useEffect(() => {
@@ -107,7 +121,7 @@ const CurrentAthleteView: React.FC = () => {
 
   const fetchWorkoutsByType = async (workoutType: string) => {
     try {
-      const workouts = await ApiService.getWorkoutsByUserAndType(coachId, workoutType);
+      const workouts = await ApiService.getWorkoutsByUserAndType(coachId!, workoutType);
       setWorkouts(workouts);
     } catch (error) {
       console.error(`Failed to fetch ${workoutType} workouts:`, error);
@@ -212,24 +226,52 @@ const CurrentAthleteView: React.FC = () => {
       setValidationMessage("Workout type, workout, and due date are required.");
       return;
     }
-
-    // Add workout assignment logic here
-    console.log('Assigned workout:', selectedWorkoutType, selectedWorkout, dueDate);
-
-    setTasks([...tasks, {
-      title: selectedWorkout!,
-      intensity: selectedWorkoutType!,
-      time: new Date(dueDate).getTime(), // example for time, it should be actual workout time
+  
+    const selectedWorkoutData = workouts.find(workout => workout.name === selectedWorkout);
+  
+    if (!selectedWorkoutData) {
+      setValidationMessage("Selected workout not found.");
+      return;
+    }
+  
+    const taskData: Task = {
+      title: selectedWorkoutData.name,
+      intensity: selectedWorkoutData.intensity,
+      time: selectedWorkoutData.time, // Use due date's time
       status: 'Incomplete'
-    }]);
 
+    };
+  
+    try {
+      const response = await ApiService.assignTask({
+        coach_id: coachId!,
+        athlete_id: athleteId!,
+        title: taskData.title,
+        intensity: taskData.intensity,
+        due_date: new Date(dueDate).toISOString(), // Convert due date to ISO string
+        status: taskData.status,
+        time: taskData.time,
+        type_id: selectedWorkoutData.workoutType_id
+
+      });
+  
+      if (response && response.message === 'Task assigned successfully!') {
+        setTasks([...tasks, taskData]);
+        console.log('Task assigned:', response.id);
+      } else {
+        console.error('Failed to assign task:', response);
+      }
+    } catch (error) {
+      console.error('Error assigning task:', error);
+    }
+  
     setShowTaskModal(false);
     setSelectedWorkoutType(null);
     setSelectedWorkout(null);
     setDueDate("");
     setValidationMessage("");
   };
-
+  
   const toggleTaskStatus = (index: number) => {
     const updatedTasks = tasks.map((task, i) => {
       if (i === index) {
@@ -274,7 +316,6 @@ const CurrentAthleteView: React.FC = () => {
             <IonCardTitle style={{ fontSize: '24px', fontWeight: 'bold' }}>{currentAthlete.name}</IonCardTitle>
             <IonCardSubtitle style={{ fontSize: '18px' }}>{currentAthlete.email}</IonCardSubtitle>
           </div>
-          {/* Add additional athlete details here */}
         </div>
         <MediaSection
           title="Current Media"
@@ -283,21 +324,19 @@ const CurrentAthleteView: React.FC = () => {
           onDownload={downloadMedia} // Pass the download function
         />
         <div style={{ padding: '10px 20px' }}>
-        <h1>Tasks</h1>
-
-          <IonCardTitle style={{ fontSize: '24px', fontWeight: 'bold' }}>Task</IonCardTitle>
-          {tasks.map((task, index) => (
+          <h1>Tasks</h1>
+          {workouts.map((workout, index) => (
             <div key={index} className="task-item">
               <div className="task-info">
-                <p>Title: {task.title}</p>
-                <p>Intensity Level: {task.intensity}</p>
-                <p>Time: {task.time} mins</p>
+                <p>Title: {workout.name}</p>
+                <p>Intensity Level: {workout.intensity}</p>
+                <p>Time: {workout.time} mins</p>
               </div>
               <button
-                className={`complete-button ${task.status === 'Complete' ? 'complete' : ''}`}
+                className={`complete-button ${tasks.find(task => task.title === workout.name)?.status === 'Complete' ? 'complete' : ''}`}
                 onClick={() => toggleTaskStatus(index)}
               >
-                {task.status}
+                {tasks.find(task => task.title === workout.name)?.status || 'Incomplete'}
               </button>
             </div>
           ))}

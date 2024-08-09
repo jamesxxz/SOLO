@@ -3,20 +3,6 @@ const router = express.Router();
 const pool = require('../server/db'); // Importing the connection pool
 
 // POST route to upload a new workout
-router.post('/upload-workout', async (req, res) => {
-    const { coach_id, athlete_id, type_id } = req.body;
-    try {
-        const sql = `INSERT INTO workout (coach_id, athlete_id, type_id) VALUES (?, ?, ?)`;
-        const values = [coach_id, athlete_id, type_id];
-        const [result] = await pool.query(sql, values);
-        const workoutId = result.insertId;
-
-        res.status(200).json({ message: 'Workout registered successfully!', id: workoutId });
-    } catch (err) {
-        console.error('Error on registration:', err);
-        res.status(500).send('Server error on registration');
-    }
-});
 
 // PUT route to update workout details
 router.put('/update-workout/:id', async (req, res) => {
@@ -38,22 +24,39 @@ router.put('/update-workout/:id', async (req, res) => {
     }
 });
 
-// GET route to retrieve a workout by ID
-router.get('/workout/:id', async (req, res) => {
+// GET route to retrieve all workouts by coach_id and athlete_id
+// POST route to assign a task (workout)
+router.post('/assign-task', async (req, res) => {
+    const { coach_id, athlete_id, type_id, title, intensity, due_date, status, time } = req.body;
     try {
-        const { id } = req.params;
-        const [result] = await pool.query('SELECT * FROM workout WHERE id = ?', [id]);
+        const sql = `INSERT INTO workout (coach_id, athlete_id, type_id, workout_title, intensity, due_date, status, time) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+        const values = [coach_id, athlete_id,type_id, title, intensity, due_date, status, time];
+        const [result] = await pool.query(sql, values);
 
-        if (result.length > 0) {
-            res.status(200).json(result[0]);
-        } else {
-            res.status(404).send('Workout not found');
-        }
-    } catch (error) {
-        console.error('Error retrieving workout data:', error);
-        res.status(500).send('Server error retrieving workout data');
+        res.status(200).json({ message: 'Task assigned successfully!', id: result.insertId });
+    } catch (err) {
+        console.error('Error assigning task:', err);
+        res.status(500).send('Server error assigning task');
     }
 });
+
+// GET route to fetch tasks by coach_id and athlete_id
+router.get('/tasks/:coach_id/:athlete_id', async (req, res) => {
+    try {
+        const { coach_id, athlete_id } = req.params;
+        const [result] = await pool.query('SELECT * FROM workout WHERE coach_id = ? AND athlete_id = ?', [coach_id, athlete_id]);
+
+        if (result.length > 0) {
+            res.status(200).json(result);
+        } else {
+            res.status(404).send('No tasks found for this coach and athlete');
+        }
+    } catch (error) {
+        console.error('Error retrieving tasks:', error);
+        res.status(500).send('Server error retrieving tasks');
+    }
+});
+
 
 // DELETE route to remove a workout
 router.delete('/workout/:id', async (req, res) => {

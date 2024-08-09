@@ -242,12 +242,12 @@ const CurrentAthleteView: React.FC = () => {
         due_date: taskData.due_date, 
         status: taskData.status,
         time: taskData.time,
-        type_id: selectedWorkoutData.workoutType
+        type_id: selectedWorkoutData.workoutType_id
       });
   
       if (response && response.message === 'Task assigned successfully!') {
-        setTasks([...tasks, taskData]);
         console.log('Task assigned:', response.id);
+        window.location.reload(); // This will refresh the entire page
       } else {
         console.error('Failed to assign task:', response);
       }
@@ -261,6 +261,9 @@ const CurrentAthleteView: React.FC = () => {
     setDueDate("");
     setValidationMessage("");
   };
+  
+  
+  
 
   const toggleTaskStatus = (index: number) => {
     const updatedTasks = tasks.map((task, i) => {

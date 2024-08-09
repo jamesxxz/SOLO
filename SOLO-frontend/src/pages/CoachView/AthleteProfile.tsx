@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, ChangeEvent } from 'react';
+import React, { useState, useEffect, ChangeEvent } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import {
   IonPage,
@@ -11,7 +11,6 @@ import {
   IonCardSubtitle,
   IonButton,
   IonModal,
-  IonInput,
   IonItem,
   IonSelect,
   IonSelectOption,
@@ -22,7 +21,6 @@ import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import '../../components/CoachView/ProfileView.css';
 import TabBar from './TabBar';
 import { ApiService } from '../../../services/api.service';
-import { AuthContext } from '../../contexts/AuthContext';
 import MediaSection from './MediaSection';
 import defaultImage from '../../../public/Flying Mario.jpeg'; // Adjust the path if necessary
 
@@ -42,22 +40,15 @@ interface MediaItem {
   signedUrl: string;
 }
 
-interface Workout {
-  name: string;
-  intensity: string;
-  time: number;
-  workoutType: string;
-}
-
 interface Task {
   title: string;
   intensity: string;
   time: number;
+  due_date: string;
   status: 'Incomplete' | 'Complete';
 }
 
 const CurrentAthleteView: React.FC = () => {
-  const history = useHistory();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const athleteId = searchParams.get('athleteId');
@@ -70,7 +61,7 @@ const CurrentAthleteView: React.FC = () => {
   const [showTaskModal, setShowTaskModal] = useState(false);
   const [validationMessage, setValidationMessage] = useState<string>("");
   const [selectedWorkoutType, setSelectedWorkoutType] = useState<string | null>(null);
-  const [workouts, setWorkouts] = useState<Workout[]>([]);
+  const [workouts, setWorkouts] = useState<Task[]>([]);
   const [selectedWorkout, setSelectedWorkout] = useState<string | null>(null);
   const [dueDate, setDueDate] = useState<string>("");
 
@@ -101,7 +92,7 @@ const CurrentAthleteView: React.FC = () => {
       if (coachId && athleteId) {
         try {
           const response = await ApiService.getTasksByCoachAndAthlete(coachId, athleteId);
-          setTasks(response);
+          setTasks(response); // Set the fetched tasks to the state
         } catch (error) {
           console.error('Error fetching tasks:', error);
         }
@@ -238,8 +229,8 @@ const CurrentAthleteView: React.FC = () => {
       title: selectedWorkoutData.name,
       intensity: selectedWorkoutData.intensity,
       time: selectedWorkoutData.time, // Use due date's time
-      status: 'Incomplete'
-
+      status: 'Incomplete',
+      due_date: new Date(dueDate).toISOString() // Convert due date to ISO string
     };
   
     try {
@@ -248,11 +239,10 @@ const CurrentAthleteView: React.FC = () => {
         athlete_id: athleteId!,
         title: taskData.title,
         intensity: taskData.intensity,
-        due_date: new Date(dueDate).toISOString(), // Convert due date to ISO string
+        due_date: taskData.due_date, 
         status: taskData.status,
         time: taskData.time,
-        type_id: selectedWorkoutData.workoutType_id
-
+        type_id: selectedWorkoutData.workoutType
       });
   
       if (response && response.message === 'Task assigned successfully!') {
@@ -271,7 +261,7 @@ const CurrentAthleteView: React.FC = () => {
     setDueDate("");
     setValidationMessage("");
   };
-  
+
   const toggleTaskStatus = (index: number) => {
     const updatedTasks = tasks.map((task, i) => {
       if (i === index) {
@@ -325,18 +315,19 @@ const CurrentAthleteView: React.FC = () => {
         />
         <div style={{ padding: '10px 20px' }}>
           <h1>Tasks</h1>
-          {workouts.map((workout, index) => (
+          {tasks.map((task, index) => (
             <div key={index} className="task-item">
               <div className="task-info">
-                <p>Title: {workout.name}</p>
-                <p>Intensity Level: {workout.intensity}</p>
-                <p>Time: {workout.time} mins</p>
+                <p>Title: {task.workout_title}</p>
+                <p>Intensity Level: {task.intensity}</p>
+                <p>Time: {task.time} mins</p>
+                <p>Due Date: {task.due_date}</p>
               </div>
               <button
-                className={`complete-button ${tasks.find(task => task.title === workout.name)?.status === 'Complete' ? 'complete' : ''}`}
+                className={`complete-button ${task.status === 'Complete' ? 'complete' : ''}`}
                 onClick={() => toggleTaskStatus(index)}
               >
-                {tasks.find(task => task.title === workout.name)?.status || 'Incomplete'}
+                {task.status}
               </button>
             </div>
           ))}

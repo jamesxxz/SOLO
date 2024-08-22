@@ -11,7 +11,7 @@ __Note:__ The rest of the directories are in Swift. They do not have the backend
 * S3 - to store media
   
 ## Cloning the Repo
-1. Go into your desired project folder and clone the repo: ```git clone ```
+1. Go into your desired project folder and clone the repo: ```git clone https://github.com/hannahnh/SOLO.git```
 2. Go into the SOLO project repo ```cd SOLO```
    
 ## Frontend setup

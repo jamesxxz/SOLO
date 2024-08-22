@@ -9,14 +9,18 @@ __Note:__ The rest of the directories are in Swift. They do not have the backend
 * EC2 - to deploy app
 * RDS - MySQL database
 * S3 - to store media
-
+  
+## Cloning the Repo
+1. Go into your desired project folder and clone the repo: ```git clone ```
+2. Go into the SOLO project repo ```cd SOLO```
+   
 ## Frontend setup
 1. Go into frontend folder ```cd SOLO-frontend```
 2. Download dependencies ```npm i``` or ```npm install --legacy-peer-deps```
 
 ## Backend setup
 1. Read __SOLO-backend/services/SERVICES.md__ to set up .env
-2. Go into frontend folder ```cd SOLO-backend```
+2. Go into backend folder in a separate terminal ```cd SOLO-backend```
 3. Download dependencies
    ``` 
     git init

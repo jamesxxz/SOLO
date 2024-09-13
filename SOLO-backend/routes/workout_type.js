@@ -10,9 +10,7 @@ router.post('/upload-workout-type', async (req, res) => {
     time,
     userId,
     warmUpDrills,
-    coreDistance,
-    coreReps,
-    coreRest,
+    coreDrills,
     coolDownDrills,
     workoutType
   } = req.body;
@@ -23,12 +21,14 @@ router.post('/upload-workout-type', async (req, res) => {
     time,
     userId,
     warmUpDrills,
-    coreDistance,
-    coreReps,
-    coreRest,
+    coreDrills,
     coolDownDrills,
     workoutType
   });
+
+  // Extracting coreDistance, coreReps, and coreRest from coreDrills
+  const coreDistance = coreDrills.map(drill => drill.distance).join(', ') || null;
+  const coreReps = coreDrills.map(drill => drill.reps).join(', ') || null;
 
   try {
     const sql = `
@@ -40,11 +40,9 @@ router.post('/upload-workout-type', async (req, res) => {
         warmUpDrills,
         coreDistance,
         coreReps,
-        coreRest,
         coolDownDrills,
         workoutType
-
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     const values = [
@@ -54,8 +52,7 @@ router.post('/upload-workout-type', async (req, res) => {
       userId,
       JSON.stringify(warmUpDrills),   // Convert arrays to JSON strings
       coreDistance,
-      JSON.stringify(coreReps),
-      coreRest,
+      coreReps,
       JSON.stringify(coolDownDrills),
       workoutType
     ];
@@ -72,7 +69,10 @@ router.post('/upload-workout-type', async (req, res) => {
 // PUT route to update workout type details
 router.put('/update-workout-type/:id', async (req, res) => {
   const { id } = req.params;
-  const { title, intensity, time, userId, warmUpDrills, coreDistance, coreReps, coreRest, coolDownDrills } = req.body;
+  const { title, intensity, time, userId, warmUpDrills, coreDrills, coolDownDrills } = req.body;
+
+  const coreDistance = coreDrills.map(drill => drill.distance).join(', ') || null;
+  const coreReps = coreDrills.map(drill => drill.reps).join(', ') || null;
 
   try {
     const sql = `
@@ -84,7 +84,6 @@ router.put('/update-workout-type/:id', async (req, res) => {
         warmUpDrills = ?,
         coreDistance = ?,
         coreReps = ?,
-        coreRest = ?,
         coolDownDrills = ?
       WHERE id = ?
     `;
@@ -96,8 +95,7 @@ router.put('/update-workout-type/:id', async (req, res) => {
       userId,
       JSON.stringify(warmUpDrills),
       coreDistance,
-      JSON.stringify(coreReps),
-      coreRest,
+      coreReps,
       JSON.stringify(coolDownDrills),
       id
     ];

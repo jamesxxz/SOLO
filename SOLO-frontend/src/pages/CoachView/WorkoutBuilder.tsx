@@ -82,7 +82,7 @@ const WorkoutBuilder: React.FC = () => {
       const workouts = await ApiService.getWorkoutsByUserAndType(userId, workoutType);
       const mappedWorkouts = workouts.map((workout: any) => ({
         ...workout,
-        title: workout.name, // Map name to title
+        title: workout.name,
       }));
 
       if (workoutType === 'standard') {
@@ -104,14 +104,15 @@ const WorkoutBuilder: React.FC = () => {
   };
 
   const generateWorkout = async () => {
+    // Set default values if fields are empty
     const workoutWithDetails = {
       ...newWorkout,
       time: calculateTotalTime(),
       warmUpDrills,
-      coreDrills,
+      coreDrills: coreDrills.map(drill => ({ ...drill, distance: drill.distance || '100m' })), // Default to 100m
       coolDownDrills,
-      workoutType: selectedSection!,
-      userId: userId // Ensure userId is included
+      workoutType: selectedSection || 'standard', // Default to standard
+      userId: userId
     };
   
     console.log('Sending values:', workoutWithDetails);
@@ -155,7 +156,7 @@ const WorkoutBuilder: React.FC = () => {
   const handleEditWorkout = (workout: Workout) => {
     setNewWorkout({
       ...workout,
-      title: workout.name, // Map name to title
+      title: workout.title,
     });
     setWarmUpDrills(workout.warmUpDrills || []);
     setCoreDrills(workout.coreDrills || []);
@@ -242,11 +243,11 @@ const WorkoutBuilder: React.FC = () => {
   };
 
   const addWarmUpDrill = () => {
-    setTempWarmUpDrills([...tempWarmUpDrills, { name: '', distance: '' }]);
+    setTempWarmUpDrills([...tempWarmUpDrills, { name: '', distance: '100m' }]); // Default distance
   };
 
   const addCoreDrill = () => {
-    setTempCoreDrills([...tempCoreDrills, { distance: '', reps: [{ repTime: undefined, restTime: undefined }] }]);
+    setTempCoreDrills([...tempCoreDrills, { distance: '100m', reps: [{ repTime: undefined, restTime: undefined }] }]); // Default distance
   };
 
   const addCoreRep = (drillIndex: number) => {
@@ -272,33 +273,30 @@ const WorkoutBuilder: React.FC = () => {
   };
 
   // Warm-Up Section Update
+  const selectWarmUpDrill = (drill: string, index: number) => {
+    const newWarmUpDrills = [...tempWarmUpDrills];
+    newWarmUpDrills[index].name = drill;
+    setTempWarmUpDrills(newWarmUpDrills);
+    setShowDrillPopover(false);
+    setDrillSearch('');
+  };
 
-const selectWarmUpDrill = (drill: string, index: number) => {
-  const newWarmUpDrills = [...tempWarmUpDrills];
-  newWarmUpDrills[index].name = drill;
-  setTempWarmUpDrills(newWarmUpDrills);
-  setShowDrillPopover(false);
-  setDrillSearch('');
-};
+  const selectWarmUpDistance = (distance: string, index: number) => {
+    const newWarmUpDrills = [...tempWarmUpDrills];
+    newWarmUpDrills[index].distance = distance;
+    setTempWarmUpDrills(newWarmUpDrills);
+    setShowDistancePopover(false);
+    setDistanceSearch('');
+  };
 
-const selectWarmUpDistance = (distance: string, index: number) => {
-  const newWarmUpDrills = [...tempWarmUpDrills];
-  newWarmUpDrills[index].distance = distance;
-  setTempWarmUpDrills(newWarmUpDrills);
-  setShowDistancePopover(false);
-  setDistanceSearch('');
-};
-
-// Saving the warm-up drills
-const saveWarmUp = () => {
-  setWarmUpDrills(tempWarmUpDrills);
-  setWarmUpSaved(true);
-  setShowWarmUpModal(false);
-};
-
+  const saveWarmUp = () => {
+    setWarmUpDrills(tempWarmUpDrills);
+    setWarmUpSaved(true);
+    setShowWarmUpModal(false);
+  };
 
   const addCoolDownDrill = () => {
-    setTempCoolDownDrills([...tempCoolDownDrills, { name: '', distance: '' }]);
+    setTempCoolDownDrills([...tempCoolDownDrills, { name: '', distance: '100m' }]); // Default distance
   };
 
   const clearWarmUpFields = () => {
@@ -339,7 +337,6 @@ const saveWarmUp = () => {
     setEditingWorkout(null);
   };
 
-
   const saveCore = () => {
     setCoreDrills(tempCoreDrills);
     setCoreSaved(true);
@@ -350,6 +347,27 @@ const saveWarmUp = () => {
     setCoolDownDrills(tempCoolDownDrills);
     setCoolDownSaved(true);
     setShowCoolDownModal(false);
+  };
+
+  // Remove functions for each section
+  const removeWarmUpDrill = (index: number) => {
+    setTempWarmUpDrills(tempWarmUpDrills.filter((_, i) => i !== index));
+  };
+
+  const removeCoreDrill = (index: number) => {
+    setTempCoreDrills(tempCoreDrills.filter((_, i) => i !== index));
+  };
+
+  const removeCoreRep = (drillIndex: number, repIndex: number) => {
+    const newCoreDrills = [...tempCoreDrills];
+    if (newCoreDrills[drillIndex].reps) {
+      newCoreDrills[drillIndex].reps = newCoreDrills[drillIndex].reps!.filter((_, i) => i !== repIndex);
+    }
+    setTempCoreDrills(newCoreDrills);
+  };
+
+  const removeCoolDownDrill = (index: number) => {
+    setTempCoolDownDrills(tempCoolDownDrills.filter((_, i) => i !== index));
   };
 
   return (
@@ -546,95 +564,96 @@ const saveWarmUp = () => {
         </IonModal>
 
         <IonModal isOpen={showWarmUpModal} onDidDismiss={closeWarmUpModal} className="fullscreen-modal">
-  <IonHeader>
-    <IonToolbar>
-      <header className="gradient-header">
-        <div className="logo">WARM UP DETAILS</div>
-      </header>
-    </IonToolbar>
-  </IonHeader>
-  <div className="modal-content">
-    {tempWarmUpDrills.map((drill, index) => (
-      <IonCard key={index}>
-        <IonCardContent>
-          <IonItem>
-            <IonInput
-              value={drill.name}
-              placeholder="Search or add custom drill"
-              onIonChange={(e) => {
-                const newWarmUpDrills = [...tempWarmUpDrills];
-                newWarmUpDrills[index].name = e.detail.value!;
-                setTempWarmUpDrills(newWarmUpDrills);
-              }}
-              onClick={(event) => openDrillPopover(event, index)}
-              onKeyDown={(e) => handleKeyDown(e, addCustomDrill)}
-              onBlur={() => handleBlur(addCustomDrill)}
-            />
-            <IonButton onClick={addCustomDrill}>Add</IonButton>
-          </IonItem>
-          <IonPopover
-            isOpen={showDrillPopover}
-            onDidDismiss={() => setShowDrillPopover(false)}
-          >
-            <IonSearchbar
-              value={drillSearch}
-              onIonInput={(e) => setDrillSearch(e.detail.value!)}
-              placeholder="Search drills"
-            />
-            <IonList>
-              {filteredDrills.map((drillOption, drillIndex) => (
-                <IonItem key={drillIndex} button onClick={() => selectWarmUpDrill(drillOption, index)}>
-                  {drillOption}
-                </IonItem>
-              ))}
-            </IonList>
-          </IonPopover>
+          <IonHeader>
+            <IonToolbar>
+              <header className="gradient-header">
+                <div className="logo">WARM UP DETAILS</div>
+              </header>
+            </IonToolbar>
+          </IonHeader>
+          <div className="modal-content">
+            {tempWarmUpDrills.map((drill, index) => (
+              <IonCard key={index}>
+                <IonCardContent>
+                  <IonItem>
+                    <IonInput
+                      value={drill.name}
+                      placeholder="Search or add custom drill"
+                      onIonChange={(e) => {
+                        const newWarmUpDrills = [...tempWarmUpDrills];
+                        newWarmUpDrills[index].name = e.detail.value!;
+                        setTempWarmUpDrills(newWarmUpDrills);
+                      }}
+                      onClick={(event) => openDrillPopover(event, index)}
+                      onKeyDown={(e) => handleKeyDown(e, addCustomDrill)}
+                      onBlur={() => handleBlur(addCustomDrill)}
+                    />
+                    <IonButton onClick={addCustomDrill}>Add</IonButton>
+                    <IonButton color="danger" onClick={() => removeWarmUpDrill(index)}>Remove</IonButton> {/* Remove Button */}
+                  </IonItem>
+                  <IonPopover
+                    isOpen={showDrillPopover}
+                    onDidDismiss={() => setShowDrillPopover(false)}
+                  >
+                    <IonSearchbar
+                      value={drillSearch}
+                      onIonInput={(e) => setDrillSearch(e.detail.value!)}
+                      placeholder="Search drills"
+                    />
+                    <IonList>
+                      {filteredDrills.map((drillOption, drillIndex) => (
+                        <IonItem key={drillIndex} button onClick={() => selectWarmUpDrill(drillOption, index)}>
+                          {drillOption}
+                        </IonItem>
+                      ))}
+                    </IonList>
+                  </IonPopover>
 
-          <IonItem>
-            <IonInput
-              value={drill.distance}
-              placeholder="Search or add custom distance"
-              onIonChange={(e) => {
-                const newWarmUpDrills = [...tempWarmUpDrills];
-                newWarmUpDrills[index].distance = e.detail.value!;
-                setTempWarmUpDrills(newWarmUpDrills);
-              }}
-              onClick={(event) => openDistancePopover(event, index)}
-              onKeyDown={(e) => handleKeyDown(e, addCustomDistance)}
-              onBlur={() => handleBlur(addCustomDistance)}
-            />
-            <IonButton onClick={addCustomDistance}>Add</IonButton>
-          </IonItem>
-          <IonPopover
-            isOpen={showDistancePopover}
-            onDidDismiss={() => setShowDistancePopover(false)}
-          >
-            <IonSearchbar
-              value={distanceSearch}
-              onIonInput={(e) => setDistanceSearch(e.detail.value!)}
-              placeholder="Search distances"
-            />
-            <IonList>
-              {filteredDistances.map((distanceOption, distanceIndex) => (
-                <IonItem key={distanceIndex} button onClick={() => selectWarmUpDistance(distanceOption, index)}>
-                  {distanceOption}
-                </IonItem>
-              ))}
-            </IonList>
-          </IonPopover>
-        </IonCardContent>
-      </IonCard>
-    ))}
-    <IonButton onClick={addWarmUpDrill}>Add Warm Up</IonButton>
-    <IonButton expand="full" style={{ marginTop: '20px' }} onClick={saveWarmUp}>
-      Save
-    </IonButton>
-    <IonButton fill="clear" onClick={closeWarmUpModal}>
-      Close
-    </IonButton>
-  </div>
-</IonModal>
-
+                  <IonItem>
+                    <IonInput
+                      value={drill.distance}
+                      placeholder="Search or add custom distance"
+                      onIonChange={(e) => {
+                        const newWarmUpDrills = [...tempWarmUpDrills];
+                        newWarmUpDrills[index].distance = e.detail.value!;
+                        setTempWarmUpDrills(newWarmUpDrills);
+                      }}
+                      onClick={(event) => openDistancePopover(event, index)}
+                      onKeyDown={(e) => handleKeyDown(e, addCustomDistance)}
+                      onBlur={() => handleBlur(addCustomDistance)}
+                    />
+                    <IonButton onClick={addCustomDistance}>Add</IonButton>
+                    <IonButton color="danger" onClick={() => removeWarmUpDrill(index)}>Remove</IonButton> {/* Remove Button */}
+                  </IonItem>
+                  <IonPopover
+                    isOpen={showDistancePopover}
+                    onDidDismiss={() => setShowDistancePopover(false)}
+                  >
+                    <IonSearchbar
+                      value={distanceSearch}
+                      onIonInput={(e) => setDistanceSearch(e.detail.value!)}
+                      placeholder="Search distances"
+                    />
+                    <IonList>
+                      {filteredDistances.map((distanceOption, distanceIndex) => (
+                        <IonItem key={distanceIndex} button onClick={() => selectWarmUpDistance(distanceOption, index)}>
+                          {distanceOption}
+                        </IonItem>
+                      ))}
+                    </IonList>
+                  </IonPopover>
+                </IonCardContent>
+              </IonCard>
+            ))}
+            <IonButton onClick={addWarmUpDrill}>Add Warm Up</IonButton>
+            <IonButton expand="full" style={{ marginTop: '20px' }} onClick={saveWarmUp}>
+              Save
+            </IonButton>
+            <IonButton fill="clear" onClick={closeWarmUpModal}>
+              Close
+            </IonButton>
+          </div>
+        </IonModal>
 
         <IonModal isOpen={showCoreModal} onDidDismiss={closeCoreModal} className="fullscreen-modal">
           <IonHeader>
@@ -662,6 +681,7 @@ const saveWarmUp = () => {
                       onBlur={() => handleBlur(addCustomDistance)}
                     />
                     <IonButton onClick={addCustomDistance}>Add</IonButton>
+                    <IonButton color="danger" onClick={() => removeCoreDrill(drillIndex)}>Remove Drill</IonButton> {/* Remove Drill Button */}
                   </IonItem>
                   <IonPopover
                     isOpen={showDistancePopover}
@@ -690,6 +710,7 @@ const saveWarmUp = () => {
                           value={rep.repTime}
                           onIonChange={(e) => updateCoreRepTime(Number(e.detail.value!), drillIndex, repIndex)}
                         ></IonInput>
+                        <IonButton color="danger" onClick={() => removeCoreRep(drillIndex, repIndex)}>Remove Rep</IonButton> {/* Remove Rep Button */}
                       </IonItem>
                       <IonItem>
                         <IonInput
@@ -741,6 +762,7 @@ const saveWarmUp = () => {
                       onBlur={() => handleBlur(addCustomDrill)}
                     />
                     <IonButton onClick={addCustomDrill}>Add</IonButton>
+                    <IonButton color="danger" onClick={() => removeCoolDownDrill(index)}>Remove</IonButton> {/* Remove Button */}
                   </IonItem>
                   <IonPopover
                     isOpen={showDrillPopover}
@@ -774,6 +796,7 @@ const saveWarmUp = () => {
                       onBlur={() => handleBlur(addCustomDistance)}
                     />
                     <IonButton onClick={addCustomDistance}>Add</IonButton>
+                    <IonButton color="danger" onClick={() => removeCoolDownDrill(index)}>Remove</IonButton> {/* Remove Button */}
                   </IonItem>
                   <IonPopover
                     isOpen={showDistancePopover}
@@ -839,5 +862,3 @@ const saveWarmUp = () => {
 };
 
 export default WorkoutBuilder;
-
-

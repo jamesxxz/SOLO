@@ -370,6 +370,27 @@ const WorkoutBuilder: React.FC = () => {
     setTempCoolDownDrills(tempCoolDownDrills.filter((_, i) => i !== index));
   };
 
+  const handleDeleteWorkout = (workout: Workout) => {
+    setAlertMessage(`Are you sure you want to delete the workout "${workout.title}"?`);
+    setConfirmAction(() => () => deleteWorkout(workout.title!));
+    setShowAlert(true);
+  };
+
+  const deleteWorkout = async (workoutId: string) => {
+    try {
+      await ApiService.deleteWorkoutType(workoutId);
+      setToastMessage('Workout deleted successfully!');
+      setShowToast(true);
+  
+      // Refresh the entire page
+      window.location.reload();
+    } catch (error) {
+      console.error('Failed to delete workout:', error);
+      setToastMessage('Failed to delete workout. Please try again later.');
+      setShowToast(true);
+    }
+  };
+  
   return (
     <IonPage>
       <IonHeader>
@@ -396,7 +417,7 @@ const WorkoutBuilder: React.FC = () => {
                     <p>Intensity Level: {workout.intensity}</p>
                     <p>Time: {workout.time} mins</p>
                   </div>
-                  <button className="edit-button" onClick={() => handleEditWorkout(workout)}>Edit Workout</button>
+                  <button className="remove-button" onClick={() => handleDeleteWorkout(workout)}>Remove Workout</button>
                 </div>
               ))}
               <IonButton onClick={() => {
@@ -423,7 +444,7 @@ const WorkoutBuilder: React.FC = () => {
                     <p>Intensity Level: {workout.intensity}</p>
                     <p>Time: {workout.time} mins</p>
                   </div>
-                  <button className="edit-button" onClick={() => handleEditWorkout(workout)}>Edit Workout</button>
+                  <button className="remove-button" onClick={() => handleDeleteWorkout(workout)}>Remove Workout</button>
                 </div>
               ))}
               <IonButton onClick={() => {
@@ -450,7 +471,7 @@ const WorkoutBuilder: React.FC = () => {
                     <p>Intensity Level: {workout.intensity}</p>
                     <p>Time: {workout.time} mins</p>
                   </div>
-                  <button className="edit-button" onClick={() => handleEditWorkout(workout)}>Edit Workout</button>
+                  <button className="remove-button" onClick={() => handleDeleteWorkout(workout)}>Remove Workout</button>
                 </div>
               ))}
               <IonButton onClick={() => {

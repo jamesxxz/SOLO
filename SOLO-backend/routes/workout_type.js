@@ -144,10 +144,10 @@ router.get('/get_workouts/:userId/:workoutType', async (req, res) => {
 });
 
 // DELETE route to remove a workout type
-router.delete('/delete_workout_type/:id', async (req, res) => {
+router.delete('/delete_workout_type/:title', async (req, res) => {
   try {
-    const { id } = req.params;
-    const [result] = await pool.query('DELETE FROM workout_type WHERE id = ?', [id]);
+    const { title } = req.params;
+    const [result] = await pool.query('DELETE FROM workout_type WHERE name = ?', [title]);
 
     if (result.affectedRows > 0) {
       res.status(200).json({ message: 'Workout Type deleted successfully' });

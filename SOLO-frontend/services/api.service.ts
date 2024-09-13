@@ -284,14 +284,6 @@ static async getUse(id: string) {
     });
 }
 
-// Method to delete a workout type by ID
-static async deleteWorkoutType(id: string) {
-  return axios.delete(`${BASE_URL}/workout_type/delete_workout_type/${id}`)
-    .then(response => response.data)
-    .catch(error => {
-      throw error;
-    });
-}
 
 static async assignTask(taskData: any) {
   try {
@@ -311,4 +303,15 @@ static async getTasksByCoachAndAthlete(coachId: string, athleteId: string) {
       throw error;
   }
 }
+
+// Method to delete a workout type by ID
+static async deleteWorkoutType(title: string) {
+  return axios.delete(`${BASE_URL}/workout-type/delete_workout_type/${title}`)
+    .then(response => response.data)
+    .catch(error => {
+      console.error('Failed to delete workout type:', error);
+      throw error;
+    });
+}
+
 }

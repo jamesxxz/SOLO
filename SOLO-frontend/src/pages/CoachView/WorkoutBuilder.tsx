@@ -726,7 +726,7 @@ const WorkoutBuilder: React.FC = () => {
                     <div key={repIndex}>
                       <IonItem>
                         <IonInput
-                          placeholder={`Please enter rep ${repIndex + 1} time (mins)`}
+                          placeholder={`Rep${repIndex + 1} time (sec)`}
                           type="number"
                           value={rep.repTime}
                           onIonChange={(e) => updateCoreRepTime(Number(e.detail.value!), drillIndex, repIndex)}
@@ -735,7 +735,7 @@ const WorkoutBuilder: React.FC = () => {
                       </IonItem>
                       <IonItem>
                         <IonInput
-                          placeholder={`Please enter rest time after rep ${repIndex + 1} (mins)`}
+                          placeholder={`Rest ${repIndex + 1} time (sec)`}
                           type="number"
                           value={rep.restTime}
                           onIonChange={(e) => updateCoreRestTime(Number(e.detail.value!), drillIndex, repIndex)}

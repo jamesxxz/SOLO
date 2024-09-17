@@ -13,11 +13,7 @@ const TabBar: React.FC = () => {
       <IonTabButton tab="coachprofile" href="/coach-profile-view">
         <IonIcon icon={person} className="tab-icon" />
       </IonTabButton>
-
-      <IonTabButton tab="calendar" href="/coach-calendar-page">
-        <IonIcon icon={calendar} className="tab-icon" />
-      </IonTabButton>
-
+      
     <IonTabButton tab="coachworkout" href="/coach-workout-builder">
         <IonIcon icon={barbell} className="tab-icon" />
       </IonTabButton>

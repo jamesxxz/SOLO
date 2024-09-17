@@ -190,3 +190,17 @@
 .native-input.sc-ion-input-md {
   color: black;
 }
+
+.remove-button {
+  background-color: #284468; /* Red background */
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.remove-button:hover {
+  background-color: #284468; /* Darker red on hover */
+}

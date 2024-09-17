@@ -412,13 +412,15 @@ const WorkoutBuilder: React.FC = () => {
             <div className="ion-padding" slot="content">
               {standardWorkouts.map((workout, index) => (
                 <div key={index} className="workout-item">
-                  <div className="workout-info">
-                    <p>Title: {workout.title}</p>
-                    <p>Intensity Level: {workout.intensity}</p>
-                    <p>Time: {workout.time} mins</p>
-                  </div>
-                  <button className="remove-button" onClick={() => handleDeleteWorkout(workout)}>Remove Workout</button>
+                <div className="workout-info">
+                  <p><strong>Workout Name:</strong> {workout.title}</p>
+                  <p><strong>Intensity:</strong> {workout.intensity}</p>
+                  <p><strong>Duration:</strong> {workout.time} mins</p>
                 </div>
+                <button className="remove-button" onClick={() => handleDeleteWorkout(workout)}>
+                  Remove Workout
+                </button>
+              </div>              
               ))}
               <IonButton onClick={() => {
                 setSelectedSection('standard');
@@ -440,12 +442,14 @@ const WorkoutBuilder: React.FC = () => {
               {dynamicWorkouts.map((workout, index) => (
                 <div key={index} className="workout-item">
                   <div className="workout-info">
-                    <p>Title: {workout.title}</p>
-                    <p>Intensity Level: {workout.intensity}</p>
-                    <p>Time: {workout.time} mins</p>
-                  </div>
-                  <button className="remove-button" onClick={() => handleDeleteWorkout(workout)}>Remove Workout</button>
+                  <p><strong>Workout Name:</strong> {workout.title}</p>
+                  <p><strong>Intensity:</strong> {workout.intensity}</p>
+                  <p><strong>Duration:</strong> {workout.time} mins</p>
                 </div>
+                <button className="remove-button" onClick={() => handleDeleteWorkout(workout)}>
+                  Remove Workout
+                </button>
+              </div>          
               ))}
               <IonButton onClick={() => {
                 setSelectedSection('dynamic');
@@ -467,12 +471,14 @@ const WorkoutBuilder: React.FC = () => {
               {competitionWorkouts.map((workout, index) => (
                 <div key={index} className="workout-item">
                   <div className="workout-info">
-                    <p>Title: {workout.title}</p>
-                    <p>Intensity Level: {workout.intensity}</p>
-                    <p>Time: {workout.time} mins</p>
-                  </div>
-                  <button className="remove-button" onClick={() => handleDeleteWorkout(workout)}>Remove Workout</button>
+                  <p><strong>Workout Name:</strong> {workout.title}</p>
+                  <p><strong>Intensity:</strong> {workout.intensity}</p>
+                  <p><strong>Duration:</strong> {workout.time} mins</p>
                 </div>
+                <button className="remove-button" onClick={() => handleDeleteWorkout(workout)}>
+                  Remove Workout
+                </button>
+              </div>          
               ))}
               <IonButton onClick={() => {
                 setSelectedSection('competition');

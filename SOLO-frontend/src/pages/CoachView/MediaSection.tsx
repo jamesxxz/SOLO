@@ -1,6 +1,6 @@
 import React from 'react';
 import '../../components/AthleteView/AthleteView.css'; // Ensure the CSS is included
-import { IonCard, IonCardContent, IonButton } from '@ionic/react';
+import { IonButton } from '@ionic/react';
 
 interface MediaItem {
   media_id: string;
@@ -14,10 +14,20 @@ interface MediaSectionProps {
   title: string;
   mediaItems: MediaItem[];
   onViewMore: () => void;
-  onDownload: (signedUrl: string) => void;
 }
 
-const MediaSection: React.FC<MediaSectionProps> = ({ title, mediaItems, onViewMore, onDownload }) => {
+const MediaSection: React.FC<MediaSectionProps> = ({ title, mediaItems, onViewMore }) => {
+  // Function to handle file download
+  const handleDownload = (signedUrl: string) => {
+    // Creating an anchor element dynamically
+    const link = document.createElement('a');
+    link.href = signedUrl;
+    link.download = ''; // Optionally, set a filename
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="media-section">
       <h2 className="section-title">{title}</h2>
@@ -31,8 +41,8 @@ const MediaSection: React.FC<MediaSectionProps> = ({ title, mediaItems, onViewMo
                 className="download-button"
                 style={{ background: 'none', border: 'none', color: '#007bff', cursor: 'pointer' }}
                 onClick={() => {
-                  console.log('Download button clicked for URL:', item.signedUrl); // Add this log
-                  onDownload(item.signedUrl);
+                  console.log('Download button clicked for URL:', item.signedUrl); // Debug log
+                  handleDownload(item.signedUrl);
                 }}
               >
                 Download
@@ -41,6 +51,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({ title, mediaItems, onViewMo
           </div>
         ))}
       </div>
+      <IonButton onClick={onViewMore}>View More</IonButton>
     </div>
   );
 };

@@ -13,10 +13,9 @@ interface MediaItem {
 interface MediaSectionProps {
   title: string;
   mediaItems: MediaItem[];
-  onViewMore: () => void;
 }
 
-const MediaSection: React.FC<MediaSectionProps> = ({ title, mediaItems, onViewMore }) => {
+const MediaSection: React.FC<MediaSectionProps> = ({ title, mediaItems }) => {
   // Function to handle file download
   const handleDownload = (signedUrl: string) => {
     // Creating an anchor element dynamically
@@ -51,7 +50,6 @@ const MediaSection: React.FC<MediaSectionProps> = ({ title, mediaItems, onViewMo
           </div>
         ))}
       </div>
-      <IonButton onClick={onViewMore}>View More</IonButton>
     </div>
   );
 };

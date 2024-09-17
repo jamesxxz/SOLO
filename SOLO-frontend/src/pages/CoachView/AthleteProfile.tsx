@@ -25,7 +25,7 @@ interface MediaItem {
 }
 
 interface Task {
-  title: string;
+  name: string;
   intensity: string;
   time: number;
   due_date: string;
@@ -76,6 +76,7 @@ const CurrentAthleteView: React.FC = () => {
       if (coachId && athleteId) {
         try {
           const response = await ApiService.getTasksByCoachAndAthlete(coachId, athleteId);
+          console.log('Fetched Tasks:', response); // Log the tasks to inspect their structure
           setTasks(response);
         } catch (error) {
           console.error('Error fetching tasks:', error);
@@ -88,13 +89,30 @@ const CurrentAthleteView: React.FC = () => {
     fetchTasks();
   }, [athleteId, coachId]);
 
+  // Fetch workouts whenever the workout type is selected
+  useEffect(() => {
+    const fetchWorkouts = async () => {
+      if (!selectedWorkoutType || !coachId) return;
+
+      try {
+        const response = await ApiService.getWorkoutsByUserAndType(coachId, selectedWorkoutType);
+        console.log('Fetched Workouts:', response);
+        setWorkouts(response);
+      } catch (error) {
+        console.error('Error fetching workouts:', error);
+      }
+    };
+
+    fetchWorkouts();
+  }, [selectedWorkoutType, coachId]);
+
   const handleAssignWorkout = async () => {
     if (!selectedWorkoutType || !selectedWorkout || !dueDate) {
       setValidationMessage("Workout type, workout, and due date are required.");
       return;
     }
 
-    const selectedWorkoutData = workouts.find(workout => workout.title === selectedWorkout);
+    const selectedWorkoutData = workouts.find(workout => workout.name === selectedWorkout);
 
     if (!selectedWorkoutData) {
       setValidationMessage("Selected workout not found.");
@@ -102,7 +120,7 @@ const CurrentAthleteView: React.FC = () => {
     }
 
     const taskData: Task = {
-      title: selectedWorkoutData.title,
+      name: selectedWorkoutData.name,
       intensity: selectedWorkoutData.intensity,
       time: selectedWorkoutData.time,
       status: 'Incomplete',
@@ -113,12 +131,12 @@ const CurrentAthleteView: React.FC = () => {
       const response = await ApiService.assignTask({
         coach_id: coachId!,
         athlete_id: athleteId!,
-        title: taskData.title,
+        title: taskData.name,
         intensity: taskData.intensity,
         due_date: taskData.due_date,
         status: taskData.status,
         time: taskData.time,
-        type_id: selectedWorkoutData.workoutType_id
+        type_id: selectedWorkoutData.workoutType_id // Ensure this matches your API data structure
       });
 
       if (response && response.message === 'Task assigned successfully!') {
@@ -269,30 +287,32 @@ const CurrentAthleteView: React.FC = () => {
           </IonAccordion>
 
           <IonAccordion value="tasks">
-            <IonItem slot="header" color="light">
-              <IonLabel>Tasks</IonLabel>
-            </IonItem>
-            <div className="ion-padding" slot="content">
-              <IonList>
-                {tasks.map((task, index) => (
-                  <IonCard key={index}>
-                    <IonCardContent>
-                      <h3>{task.title}</h3>
-                      <p>Intensity: {task.intensity}</p>
-                      <p>Time: {task.time} mins</p>
-                      <p>Due Date: {task.due_date}</p>
-                      <IonButton
-                        color={task.status === 'Complete' ? 'success' : 'primary'}
-                        onClick={() => toggleTaskStatus(index)}
-                      >
-                        {task.status === 'Complete' ? 'Mark Incomplete' : 'Mark Complete'}
-                      </IonButton>
-                    </IonCardContent>
-                  </IonCard>
-                ))}
-              </IonList>
-            </div>
-          </IonAccordion>
+  <IonItem slot="header" color="light">
+    <IonLabel>Tasks</IonLabel>
+  </IonItem>
+  <div className="ion-padding" slot="content">
+    <IonList>
+      {tasks.map((task, index) => (
+        <IonCard key={index}>
+          <IonCardContent>
+            {/* Correctly use workout_title instead of name */}
+            <h2 style={{ color: 'black' }}>{task.workout_title || 'No Title Available'}</h2>
+            <p>Intensity: {task.intensity || 'No Intensity Provided'}</p> {/* Adjust as needed */}
+            <p>Time: {task.time ? `${task.time} mins` : 'No Time Specified'}</p>
+            <p>Due Date: {task.due_date || 'No Due Date'}</p>
+            <IonButton
+              color={task.status === 'Complete' ? 'success' : 'primary'}
+              onClick={() => toggleTaskStatus(index)}
+            >
+              {task.status === 'Complete' ? 'Mark Incomplete' : 'Mark Complete'}
+            </IonButton>
+          </IonCardContent>
+        </IonCard>
+      ))}
+    </IonList>
+  </div>
+</IonAccordion>
+
         </IonAccordionGroup>
 
         {/* Assign Workout Modal */}
@@ -321,8 +341,8 @@ const CurrentAthleteView: React.FC = () => {
                     onIonChange={(e) => setSelectedWorkout(e.detail.value)}
                   >
                     {workouts.map((workout, index) => (
-                      <IonSelectOption key={index} value={workout.title}>
-                        {workout.title}
+                      <IonSelectOption key={index} value={workout.name}>
+                        {workout.name}
                       </IonSelectOption>
                     ))}
                   </IonSelect>

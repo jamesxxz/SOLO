@@ -250,13 +250,13 @@ static async createWorkoutType(workoutTypeData: any) {
 }
 
 static async getWorkoutsByUserAndType(userId: string, workoutType: string) {
-  console.log(workoutType)
   return axios.get(`${BASE_URL}/workout-type/get_workouts/${userId}/${workoutType}`)
     .then(response => response.data)
     .catch(error => {
       throw error;
     });
 }
+
 
 
 // Method to update an existing workout type

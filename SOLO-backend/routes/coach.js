@@ -181,4 +181,20 @@ router.get('/workout', async (req, res) => {
     }
 });
 
+router.post('/media-upload', (req, res) => {
+    upload(req, res, function (err) {
+      if (err instanceof multer.MulterError) {
+        // Handle Multer errors
+        console.error('Multer error:', err);
+        return res.status(400).json({ error: err.message });
+      } else if (err) {
+        // Handle other errors
+        console.error('Error uploading file:', err);
+        return res.status(500).json({ error: 'Failed to upload file.' });
+      }
+      // Proceed if upload is successful
+      res.status(200).json({ message: 'Media uploaded successfully', media_id: req.file.filename, signedUrl: `/uploads/${req.file.filename}` });
+    });
+  });
+
 module.exports = router;

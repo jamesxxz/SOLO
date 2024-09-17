@@ -163,18 +163,19 @@ export class ApiService {
   }
 
   static async uploadMedia(mediaData: FormData) {
-    try {
-      const response = await axios.post(`${BASE_URL}/media/media-upload`, mediaData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      return response.data;
-    } catch (error) {
-      console.error('Failed to upload media:', error);
-      throw error;
-    }
+  try {
+    const response = await axios.post(`${BASE_URL}/media/media-upload`, mediaData, {
+      headers: {
+        'Content-Type': 'multipart/form-data', // Important for handling file uploads
+      },
+    });
+    return response.data; // Ensure this matches the expected response structure
+  } catch (error) {
+    console.error('Failed to upload media:', error);
+    throw error;
   }
+}
+
 
   // start
   static async moveToPast(mediaId: string) {

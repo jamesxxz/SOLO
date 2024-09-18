@@ -444,7 +444,7 @@ const WorkoutBuilder: React.FC = () => {
                   <div className="workout-info">
                   <p><strong>Workout Name:</strong> {workout.title}</p>
                   <p><strong>Intensity:</strong> {workout.intensity}</p>
-                  <p><strong>Duration:</strong> {workout.time} mins</p>
+                  <p><strong>Duration:</strong> {workout.time} seconds</p>
                 </div>
                 <button className="remove-button" onClick={() => handleDeleteWorkout(workout)}>
                   Remove Workout
@@ -473,7 +473,7 @@ const WorkoutBuilder: React.FC = () => {
                   <div className="workout-info">
                   <p><strong>Workout Name:</strong> {workout.title}</p>
                   <p><strong>Intensity:</strong> {workout.intensity}</p>
-                  <p><strong>Duration:</strong> {workout.time} mins</p>
+                  <p><strong>Duration:</strong> {workout.time} seconds</p>
                 </div>
                 <button className="remove-button" onClick={() => handleDeleteWorkout(workout)}>
                   Remove Workout
@@ -540,8 +540,8 @@ const WorkoutBuilder: React.FC = () => {
                     <IonChip color="primary">Distance: {drill.distance}</IonChip>
                     {drill.reps?.map((rep, repIndex) => (
                       <div key={repIndex}>
-                        <IonChip color="primary">Rep {repIndex + 1}: {rep.repTime} mins</IonChip>
-                        <IonChip color="secondary">Rest: {rep.restTime} mins</IonChip>
+                        <IonChip color="primary">Rep {repIndex + 1}: {rep.repTime} seconds</IonChip>
+                        <IonChip color="secondary">Rest: {rep.restTime} seconds</IonChip>
                       </div>
                     ))}
                   </div>

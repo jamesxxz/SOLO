@@ -305,6 +305,16 @@ static async getTasksByCoachAndAthlete(coachId: string, athleteId: string) {
   }
 }
 
+static async getTasksByAthlete(athleteId: string) {
+  try {
+      const response = await axios.get(`${BASE_URL}/workout/athlete-tasks/${athleteId}`);
+      return response.data;
+  } catch (error) {
+      console.error('Failed to fetch tasks:', error);
+      throw error;
+  }
+}
+
 // Method to delete a workout type by ID
 static async deleteWorkoutType(title: string) {
   return axios.delete(`${BASE_URL}/workout-type/delete_workout_type/${title}`)

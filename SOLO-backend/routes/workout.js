@@ -57,6 +57,29 @@ router.get('/tasks/:coach_id/:athlete_id', async (req, res) => {
     }
 });
 
+// GET route to fetch tasks by coach_id and athlete_id
+router.get('/athlete-tasks/:athlete_id', async (req, res) => {
+    try {
+        const { athlete_id } = req.params;
+
+        // Query to retrieve tasks for the athlete and the corresponding coach's name
+        const [result] = await pool.query(`
+            SELECT w.*, c.name AS coach_name
+            FROM workout w
+            JOIN coach c ON w.coach_id = c.coach_id
+            WHERE w.athlete_id = ?
+        `, [athlete_id]);
+
+        if (result.length > 0) {
+            res.status(200).json(result);
+        } else {
+            res.status(404).send('No tasks found for this athlete');
+        }
+    } catch (error) {
+        console.error('Error retrieving tasks:', error);
+        res.status(500).send('Server error retrieving tasks');
+    }
+});
 
 // DELETE route to remove a workout
 router.delete('/workout/:id', async (req, res) => {

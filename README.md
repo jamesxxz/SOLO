@@ -16,12 +16,15 @@ __Note:__ The rest of the directories are in Swift. They do not have the backend
    
 ## Frontend setup
 1. Go into frontend folder ```cd SOLO-frontend```
-2. Download dependencies ```npm cache clean --force
-                            rm -rf node_modules package-lock.json
-                            npm install
-                            npm install --legacy-peer-deps```, if needed
-                           ```npm install --legacy-peer-deps```
-
+2. Download dependencies
+3. ```
+   npm cache clean --force
+      rm -rf node_modules package-lock.json
+      npm install
+      npm install --legacy-peer-deps
+     ```
+    if needed:
+     ```npm install --legacy-peer-deps```
 ## Backend setup
 1. Read __SOLO-backend/services/SERVICES.md__ to set up .env
 2. Go into backend folder in a separate terminal ```cd SOLO-backend```

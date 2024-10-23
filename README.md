@@ -19,7 +19,6 @@ __Note:__ The rest of the directories are in Swift. They do not have the backend
 2. Download dependencies ```npm cache clean --force
                             rm -rf node_modules package-lock.json
                             npm install
-                            if needed 
                             npm install --legacy-peer-deps```, if needed
                            ```npm install --legacy-peer-deps```
 

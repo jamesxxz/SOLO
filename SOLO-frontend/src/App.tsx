@@ -29,6 +29,7 @@ import AddAthlete from './components/GradientHeader/AddAthlete';
 import CurrentAthleteView from './pages/CoachView/AthleteProfile';
 import WorkoutBuilder from './pages/CoachView/WorkoutBuilder';
 import CalendarPage from './pages/CoachView/CalendarPage';
+import PerformanceSummary from './pages/AthleteView/PerformanceSummary';
 import { AuthProvider } from './contexts/AuthContext';
 
 import '@ionic/react/css/core.css';
@@ -132,6 +133,9 @@ const App: React.FC = () => {
             </Route>
             <Route exact path="/athlete-profile">
               <AthleteProfile />
+            </Route>
+            <Route exact path="/athlete-performance-summary">
+              <PerformanceSummary />
             </Route>
             <Route exact path="/current-athlete-view">
               <CurrentAthleteView />

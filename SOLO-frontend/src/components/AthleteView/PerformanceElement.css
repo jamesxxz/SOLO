@@ -1,0 +1,28 @@
+
+ion-card-subtitle {
+    font-size: 25px;
+    font-weight: lighter;
+    margin-right: -10px;
+    margin-top: 5px;
+    text-align: center;
+}
+
+ion-card-content {
+    margin-top: 10px;
+    color: white;
+    align-items: space;
+    justify-content: space-between;
+}
+
+ion-icon {
+    font-size: 20px;
+}
+
+@media (min-width: 600px) {
+    ion-card-content {
+        flex-direction: row; 
+        align-items: center; 
+        justify-content: space-between;
+        margin-top: -1px;
+    }
+}

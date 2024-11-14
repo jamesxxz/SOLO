@@ -1,0 +1,68 @@
+.sidebar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 80vw;
+  height: 100%;
+  background-color: white;
+  color: white;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.3s ease-in-out;
+}
+
+.sidebar.open {
+  transform: translateX(0);
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+  background: linear-gradient(to right, #0e78ac, #150a8c);
+}
+
+.sidebar-header h2 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.close-icon {
+  font-size: 32px;
+  cursor: pointer;
+  color: white;
+}
+
+.sidebar-button {
+  text-align: left;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 20px;
+  border: none;
+  background-color: transparent;
+  color: black;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 16px;
+}
+
+.sidebar-button .ion-icon {
+  margin-right: 10px;
+  font-size: 24px;
+}
+
+.sidebar-button:hover,
+.sidebar-button:active {
+  background-color: #354ccd;
+  color: #150a8c;
+}
+
+.sidebar h1 {
+  color: white;
+}

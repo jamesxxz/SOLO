@@ -1,0 +1,76 @@
+.hero-section {
+  position: relative;
+  height: 33vh;
+  background-color: #ccc;
+}
+
+.hero-background-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+}
+
+.hero-background {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-image: url("/fa89daf849aa84b928fc8ff28a17a12f.png");
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  filter: brightness(70%);
+}
+
+.menu-icon {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 2.5em;
+  color: white;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.hero-content-wrapper {
+  position: absolute;
+  bottom: 0;
+  left: 20px;
+  z-index: 2;
+}
+
+.hero-content {
+  color: white;
+  padding: 0;
+  margin: 0;
+}
+
+.hero-content h1 {
+  margin: 0;
+  font-size: 2.5em;
+  filter: none;
+  font-weight: 1000;
+}
+
+.hero-content p {
+  font-size: 1.2em;
+  filter: none;
+  color: white;
+}
+
+.photo-gallery {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 16px;
+  margin-top: 20px;
+}
+
+.photo-item img {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+}

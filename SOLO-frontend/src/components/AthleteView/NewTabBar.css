@@ -1,0 +1,19 @@
+.custom-tab-bar {
+  --background: white;
+  --color: black;
+  --color-selected: blue;
+  --border-color: transparent;
+  height: 55px;
+  display: flex;
+  align-items: center; /* Centers children vertically */
+  justify-content: space-around; /* Distributes space evenly between items */
+}
+
+.tab-icon {
+  color: white !important; /* Icon color */
+  font-size: 24px;
+
+  /* Outline effect with drop-shadow */
+  filter: drop-shadow(0.5px 0.5px 0.5px black)
+    drop-shadow(-0.5px -0.5px 0.5px black);
+}

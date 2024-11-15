@@ -1,59 +1,60 @@
-import React from 'react';
-import { Redirect, Route } from 'react-router-dom';
-import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
-import { IonReactRouter } from '@ionic/react-router';
-import Home from './pages/Home';
-import AccountQuestion1 from './pages/CreateAccountQuestions/AccountQuestion1';
-import AccountQuestion2 from './pages/CreateAccountQuestions/AccountQuestion2';
-import AccountQuestion3 from './pages/CreateAccountQuestions/AccountQuestion3';
-import AccountQuestion4 from './pages/CreateAccountQuestions/AccountQuestion4';
-import AccountQuestion5 from './pages/CreateAccountQuestions/AccountQuestion5';
-import AccountQuestion6 from './pages/CreateAccountQuestions/AccountQuestion6';
-import Login from './pages/LogIn/Login';
-import AddAthleteView from '../src/pages/CoachView/AddAthleteView';
-import CoachHome from './pages/CoachView/CoachHome';
-import AAQuestion1 from './pages/AthleteAccount/AAQuestion1';
-import CAQuestion1 from './pages/CoachAccount/CAQuestion1';
-import SECoach from './pages/Start Exploring/SECoach';
-import SEAthlete from './pages/Start Exploring/SEAthlete';
-import TabBar from './pages/CoachView/TabBar';
-import TabBar2 from './pages/AthleteView/TabBar2';
-import AthleteViewAccount from './pages/AthleteView/AthleteViewAccount';
-import AthleteViewMedia from './pages/AthleteView/AthleteViewMedia';
-import AthleteCurrentMedia from './pages/AthleteView/AthleteCurrentMedia';
-import AthletePastMedia from './pages/AthleteView/AthletePastMedia';
-import AthleteEditProfile from './pages/AthleteView/AthleteEditProfile';
-import AthleteProfile from './pages/AthleteView/AthleteProfile';
-import CoachProfileView from './pages/CoachView/CoachProfileView';
-import AddAthlete from './components/GradientHeader/AddAthlete';
-import CurrentAthleteView from './pages/CoachView/AthleteProfile';
-import WorkoutBuilder from './pages/CoachView/WorkoutBuilder';
-import CalendarPage from './pages/CoachView/CalendarPage';
-import PerformanceSummary from './pages/AthleteView/PerformanceSummary';
-import { AuthProvider } from './contexts/AuthContext';
+import React from "react";
+import { Redirect, Route } from "react-router-dom";
+import { IonApp, IonRouterOutlet, setupIonicReact } from "@ionic/react";
+import { IonReactRouter } from "@ionic/react-router";
+import Home from "./pages/Home";
+import AccountQuestion1 from "./pages/CreateAccountQuestions/AccountQuestion1";
+import AccountQuestion2 from "./pages/CreateAccountQuestions/AccountQuestion2";
+import AccountQuestion3 from "./pages/CreateAccountQuestions/AccountQuestion3";
+import AccountQuestion4 from "./pages/CreateAccountQuestions/AccountQuestion4";
+import AccountQuestion5 from "./pages/CreateAccountQuestions/AccountQuestion5";
+import AccountQuestion6 from "./pages/CreateAccountQuestions/AccountQuestion6";
+import Login from "./pages/LogIn/Login";
+import AddAthleteView from "../src/pages/CoachView/AddAthleteView";
+import CoachHome from "./pages/CoachView/CoachHome";
+import AAQuestion1 from "./pages/AthleteAccount/AAQuestion1";
+import CAQuestion1 from "./pages/CoachAccount/CAQuestion1";
+import SECoach from "./pages/Start Exploring/SECoach";
+import SEAthlete from "./pages/Start Exploring/SEAthlete";
+import TabBar from "./pages/CoachView/TabBar";
+import TabBar2 from "./pages/AthleteView/TabBar2";
+import AthleteViewAccount from "./pages/AthleteView/AthleteViewAccount";
+import AthleteViewMedia from "./pages/AthleteView/AthleteViewMedia";
+import AthleteCurrentMedia from "./pages/AthleteView/AthleteCurrentMedia";
+import AthletePastMedia from "./pages/AthleteView/AthletePastMedia";
+import AthleteEditProfile from "./pages/AthleteView/AthleteEditProfile";
+import AthleteProfile from "./pages/AthleteView/AthleteProfile";
+import CoachProfileView from "./pages/CoachView/CoachProfileView";
+import AddAthlete from "./components/GradientHeader/AddAthlete";
+import CurrentAthleteView from "./pages/CoachView/AthleteProfile";
+import WorkoutBuilder from "./pages/CoachView/WorkoutBuilder";
+import CalendarPage from "./pages/CoachView/CalendarPage";
+import PerformanceSummary from "./pages/AthleteView/PerformanceSummary";
+import CompetitionResult from "./pages/AthleteView/CompetitionResult";
+import { AuthProvider } from "./contexts/AuthContext";
 
-import '@ionic/react/css/core.css';
-import '@ionic/react/css/normalize.css';
-import '@ionic/react/css/structure.css';
-import '@ionic/react/css/typography.css';
-import '@ionic/react/css/padding.css';
-import '@ionic/react/css/float-elements.css';
-import '@ionic/react/css/text-alignment.css';
-import '@ionic/react/css/text-transformation.css';
-import '@ionic/react/css/flex-utils.css';
-import '@ionic/react/css/display.css';
-import './theme/variables.css';
+import "@ionic/react/css/core.css";
+import "@ionic/react/css/normalize.css";
+import "@ionic/react/css/structure.css";
+import "@ionic/react/css/typography.css";
+import "@ionic/react/css/padding.css";
+import "@ionic/react/css/float-elements.css";
+import "@ionic/react/css/text-alignment.css";
+import "@ionic/react/css/text-transformation.css";
+import "@ionic/react/css/flex-utils.css";
+import "@ionic/react/css/display.css";
+import "./theme/variables.css";
 
 setupIonicReact();
 
 const App: React.FC = () => {
   const handleNextClick = () => {
-    console.log('Next button clicked!');
+    console.log("Next button clicked!");
     // Add any additional logic you need for the next click here
   };
 
   const handleBackClick = () => {
-    console.log('Back button clicked!');
+    console.log("Back button clicked!");
     // Add any additional logic you need for the back click here
   };
 
@@ -72,19 +73,34 @@ const App: React.FC = () => {
               <AccountQuestion1 onNextClick={handleNextClick} />
             </Route>
             <Route exact path="/account-question-2">
-              <AccountQuestion2 onNextClick={handleNextClick} onBackClick={handleBackClick} />
+              <AccountQuestion2
+                onNextClick={handleNextClick}
+                onBackClick={handleBackClick}
+              />
             </Route>
             <Route exact path="/account-question-3">
-              <AccountQuestion3 onNextClick={handleNextClick} onBackClick={handleBackClick}/>
+              <AccountQuestion3
+                onNextClick={handleNextClick}
+                onBackClick={handleBackClick}
+              />
             </Route>
             <Route exact path="/account-question-4">
-              <AccountQuestion4 onNextClick={handleNextClick} onBackClick={handleBackClick}/>
+              <AccountQuestion4
+                onNextClick={handleNextClick}
+                onBackClick={handleBackClick}
+              />
             </Route>
             <Route exact path="/account-question-5">
-              <AccountQuestion5 onNextClick={handleNextClick} onBackClick={handleBackClick}/>
+              <AccountQuestion5
+                onNextClick={handleNextClick}
+                onBackClick={handleBackClick}
+              />
             </Route>
             <Route exact path="/account-question-6">
-              <AccountQuestion6 onNextClick={handleNextClick} onBackClick={handleBackClick}/>
+              <AccountQuestion6
+                onNextClick={handleNextClick}
+                onBackClick={handleBackClick}
+              />
             </Route>
             <Route exact path="/coach-account-question-1">
               <CAQuestion1 />
@@ -129,13 +145,16 @@ const App: React.FC = () => {
               <AthletePastMedia />
             </Route>
             <Route exact path="/athlete-edit-profile">
-              <AthleteEditProfile onNextClick={handleNextClick}/>
+              <AthleteEditProfile onNextClick={handleNextClick} />
             </Route>
             <Route exact path="/athlete-profile">
               <AthleteProfile />
             </Route>
             <Route exact path="/athlete-performance-summary">
               <PerformanceSummary />
+            </Route>
+            <Route exact path="/athlete-competition-result">
+              <CompetitionResult />
             </Route>
             <Route exact path="/current-athlete-view">
               <CurrentAthleteView />

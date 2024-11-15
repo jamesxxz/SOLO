@@ -6,11 +6,11 @@ import {
   IonCardTitle,
   IonIcon,
 } from "@ionic/react";
-import "./PerformanceElement.css";
 import { chevronForwardOutline } from "ionicons/icons";
+import "./PerformanceElement.css";
 
 interface PerformanceElementProps {
-  perfElem: Object[];
+  perfElem: Object;
 }
 
 export default function PerformanceElement({

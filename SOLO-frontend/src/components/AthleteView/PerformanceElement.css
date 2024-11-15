@@ -10,7 +10,7 @@ ion-card-subtitle {
 ion-card-content {
     margin-top: 10px;
     color: white;
-    align-items: space;
+    align-items: center;
     justify-content: space-between;
 }
 
@@ -25,4 +25,8 @@ ion-icon {
         justify-content: space-between;
         margin-top: -1px;
     }
+}
+
+.main-header {
+    font-size: large;
 }

@@ -8,18 +8,14 @@ import {
   IonCardSubtitle,
 } from "@ionic/react";
 import TabBar2 from "./TabBar2";
-import { Key, useState } from "react";
-import PerformanceElement from "../../components/AthleteView/PerformanceElement";
+import CompResElem from "../../components/AthleteView/CompResElem";
+import { useState } from "react";
 
-export default function PerformanceSummary() {
-  const [perfomElems, setPerformElems] = useState<any>([
-    { "Average Speed": "13.5 m/s" },
-    { "Reaction Time": ".18 sec" },
-    { Acceleration: "2.5 m/s²" },
-    { Deceleration: "-2 m/s²" },
-    { "Form Efficiency": "85%" },
-    { Cadence: "180 SPM" },
-    { "Heart Rate": "165 BPM" },
+export default function CompetitionResult() {
+  const [compResElems, setCompResElem] = useState<any>([
+    { "UCI Track Invitational": "Oct 15, 2024" },
+    { "CA State Championships": "Oct 8, 2024" },
+    { "SoCal Regional Meet": "Oct 1, 2024" },
   ]);
 
   return (
@@ -27,7 +23,7 @@ export default function PerformanceSummary() {
       <IonHeader>
         <IonToolbar>
           <header className="gradient-header">
-            <div className="logo">Performance Summaries</div>
+            <div className="logo">Competetion Results</div>
           </header>
         </IonToolbar>
       </IonHeader>
@@ -42,10 +38,10 @@ export default function PerformanceSummary() {
             border: "None",
           }}
         >
-          Overview
+          Recent Track Meets
         </h1>
-        {perfomElems.map((elem: Object, idx: Key) => (
-          <PerformanceElement perfElem={elem} key={idx}></PerformanceElement>
+        {compResElems.map((compResElem: Object) => (
+          <CompResElem compResElem={compResElem}></CompResElem>
         ))}
       </IonContent>
       <TabBar2 />

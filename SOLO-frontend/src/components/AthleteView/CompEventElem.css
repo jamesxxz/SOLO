@@ -1,0 +1,12 @@
+  
+.title {
+    font-size: 25px;
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-wrap: wrap;
+}
+  
+.rankingTitle {
+    margin-top: -5px;
+}

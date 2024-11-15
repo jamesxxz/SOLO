@@ -31,6 +31,7 @@ import WorkoutBuilder from "./pages/CoachView/WorkoutBuilder";
 import CalendarPage from "./pages/CoachView/CalendarPage";
 import PerformanceSummary from "./pages/AthleteView/PerformanceSummary";
 import CompetitionResult from "./pages/AthleteView/CompetitionResult";
+import CompetitionEvent from "./pages/AthleteView/CompetitionEvent";
 import { AuthProvider } from "./contexts/AuthContext";
 
 import "@ionic/react/css/core.css";
@@ -153,8 +154,11 @@ const App: React.FC = () => {
             <Route exact path="/athlete-performance-summary">
               <PerformanceSummary />
             </Route>
-            <Route exact path="/athlete-competition-result">
+            <Route exact path="/athlete-competition-results">
               <CompetitionResult />
+            </Route>
+            <Route exact path="/athlete-competition-events">
+              <CompetitionEvent />
             </Route>
             <Route exact path="/current-athlete-view">
               <CurrentAthleteView />

@@ -10,7 +10,7 @@ import { chevronForwardOutline } from "ionicons/icons";
 import "./PerformanceElement.css";
 
 interface PerformanceElementProps {
-  perfElem: Object;
+  perfElem: any;
 }
 
 export default function PerformanceElement({
@@ -31,8 +31,10 @@ export default function PerformanceElement({
           alignItems: "center",
         }}
       >
-        <IonCardTitle>{Object.keys(perfElem)[0]}</IonCardTitle>
-        <IonCardSubtitle>{Object.values(perfElem)[0]}</IonCardSubtitle>
+        <IonCardTitle>{perfElem.factor}</IonCardTitle>
+        <IonCardSubtitle style={{ alignItems: "start" }}>
+          {perfElem.data}
+        </IonCardSubtitle>
         <IonIcon icon={chevronForwardOutline} />
       </IonCardContent>
     </IonCard>

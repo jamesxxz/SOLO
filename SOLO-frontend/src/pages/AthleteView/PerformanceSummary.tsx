@@ -13,13 +13,13 @@ import PerformanceElement from "../../components/AthleteView/PerformanceElement"
 
 export default function PerformanceSummary() {
   const [perfomElems, setPerformElems] = useState<any>([
-    { "Average Speed": "13.5 m/s" },
-    { "Reaction Time": ".18 sec" },
-    { Acceleration: "2.5 m/s²" },
-    { Deceleration: "-2 m/s²" },
-    { "Form Efficiency": "85%" },
-    { Cadence: "180 SPM" },
-    { "Heart Rate": "165 BPM" },
+    { factor: "Average Speed", data: "13.5 m/s" },
+    { factor: "Reaction Time", data: ".18 sec" },
+    { factor: "Acceleration", data: "2.5 m/s²" },
+    { factor: "Deceleration", data: "-2 m/s²" },
+    { factor: "Form Efficiency", data: "85%" },
+    { factor: "Cadence", data: "180 SPM" },
+    { factor: "Heart Rate", data: "165 BPM" },
   ]);
 
   return (

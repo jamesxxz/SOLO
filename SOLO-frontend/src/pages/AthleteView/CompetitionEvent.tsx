@@ -8,14 +8,14 @@ import {
   IonCardSubtitle,
 } from "@ionic/react";
 import TabBar2 from "./TabBar2";
-import CompResElem from "../../components/AthleteView/CompResElem";
 import { useState } from "react";
+import CompEventElem from "../../components/AthleteView/CompEventElem";
 
-export default function CompetitionResult() {
-  const [compResElems, setCompResElem] = useState<any>([
-    { activity: "UCI Track Invitational", date: "Oct 15, 2024" },
-    { activity: "CA State Championships", date: "Oct 8, 2024" },
-    { activity: "SoCal Regional Meet", date: "Oct 1, 2024" },
+export default function CompetitionEvent() {
+  const [compEventElems, setCompEventElems] = useState<any>([
+    { event: "Women's 200m", result: "Time: 25.2 sec", ranking: "3rd" },
+    { event: "Women's High Jump", result: "Height: 1.70 m", ranking: "2nd" },
+    { event: "Women's 800m", result: "Time: 2:18.0 min", ranking: "5th" },
   ]);
 
   return (
@@ -38,10 +38,10 @@ export default function CompetitionResult() {
             border: "None",
           }}
         >
-          Recent Track Meets
+          Events
         </h1>
-        {compResElems.map((compResElem: Object) => (
-          <CompResElem compResElem={compResElem}></CompResElem>
+        {compEventElems.map((elem: any, idx: any) => (
+          <CompEventElem compEventElem={elem} key={idx}></CompEventElem>
         ))}
       </IonContent>
       <TabBar2 />

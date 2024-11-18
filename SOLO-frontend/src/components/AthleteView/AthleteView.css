@@ -17,179 +17,6 @@ ion-content::part(background) {
   height: 80px;
 }
 
-ion-header {
-  --background: transparent;
-  --ion-color-base: auto;
-}
-
-.logo {
-  font-size: 24px;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 900;
-}
-
-.nav-links {
-  list-style: none;
-  display: flex;
-  margin: 0;
-  padding: 0;
-}
-
-.nav-links li {
-  margin-left: 20px;
-}
-
-.nav-links li a {
-  color: white;
-  text-decoration: none;
-  font-family: 'Poppins', sans-serif;
-  font-size: 16px;
-}
-
-.nav-links li a:hover {
-  text-decoration: underline;
-}
-
-.question-view {
-  width: 350px;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.step-info, .question {
-  font-family: 'Poppins', sans-serif;
-  color: #35469c;
-}
-
-.step-info {
-  margin-top: 40px;
-  font-weight: 600;
-  font-size: 16px;
-  text-transform: uppercase;
-}
-
-.question {
-  font-weight: 900;
-  color: black;
-  font-size: 24px;
-  margin-top: 8px;
-  margin-bottom: 40px;
-}
-
-.answer-input {
-  width: 100%;
-  color: black;
-  height: 40px;
-  margin-top: 8px;
-  padding: 0 10px;
-  border-radius: 10px;
-  border: 1px solid rgba(0, 0, 0, 0.128);
-  font-family: 'Poppins', sans-serif;
-  font-size: 16px;
-  background-color: white;
-}
-
-.navigation-buttons {
-  background-color: white;
-  padding-top: 50px;
-  padding-bottom: 49px;
-  padding-left: 30px;
-  padding-right: 30px;
-  align-self: stretch;
-  display: flex;
-  justify-content: space-between;
-}
-
-.back-button, .next-button {
-  border: none;
-  background: none;
-  color: #35469c;
-  font-family: 'Poppins', sans-serif;
-  font-size: 20px;
-  font-weight: 500;
-  cursor: pointer;
-}
-
-.back-button:hover, .next-button:hover {
-  text-decoration: underline;
-}
-
-.back-button:disabled, .next-button:disabled {
-  color: #ccc;
-  cursor: not-allowed;
-}
-
-.back-button:disabled:hover, .next-button:disabled:hover {
-  text-decoration: none;
-}
-
-/* Specific Header and Media Styles from AthleteViewMedia.css */
-.custom-header {
-  --background: white !important;
-  --ion-background-color: white !important;
-  --border-color: transparent !important;
-}
-
-.custom-toolbar {
-  --background: white !important;
-  --border-color: transparent !important;
-  --ion-border-color: transparent !important;
-  display: flex;
-  justify-content: center;
-  position: relative;
-  min-height: 70px;
-  padding: 20px 0;
-  border-bottom: none !important;
-}
-
-.custom-title {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  text-align: center;
-  font-size: 24px;
-  font-weight: bold;
-  color: black;
-  line-height: 70px;
-}
-
-.custom-back-button {
-  --color: black;
-  font-size: 24px;
-  height: 100%;
-  display: flex;
-  align-items: center;
-}
-
-.media-section {
-  padding: 16px;
-  margin-bottom: 20px;  
-  background-color: white;  
-}
-
-.section-title {
-  font-size: 20px;
-  font-weight: bold;
-  color: black;
-  margin-bottom: 10px;
-}
-
-.media-section ion-list,
-.media-section ion-item {
-    background-color: white; /* Ensures that the background is explicitly set */
-    --ion-item-background: white; /* Forces override of Ionic variable */
-}
-
-.media-section ion-item {
-  --border-color: transparent !important;  
-  --ion-item-border-color: transparent !important;  
-  --inner-border-width: 0 !important;  
-  --item-inner-border-visible: false;  
-}
-
 .media-item {
     border: 1px solid #ccc;
     padding: 8px;
@@ -199,104 +26,6 @@ ion-header {
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     border-radius: 8px;
     background-color: white; /* Reconfirm the background */
-}
-
-.media-image {
-    width: 50px;
-    height: 50px;
-    margin-right: 10px;
-    object-fit: cover;
-    border-radius: 4px;
-}
-
-.media-details {
-  display: flex;
-  align-items: center;
-  justify-content: space-between; /* Ensures items are spaced out */
-  flex-grow: 1; /* Takes up all available space */
-}
-
-ion-label {
-    --color: black !important;
-    font-size: 16px;  
-    font-weight: bold;  
-}
-
-.media-details span {
-    color: black;
-    font-size: 16px;  
-    font-weight: bold;  
-}
-
-.view-more-container {
-  display: flex;
-  justify-content: flex-end;
-  padding: 10px 0;
-}
-
-.delete-button {
-  margin-left: auto; /* Pushes the button to the far right of its container */
-  margin-right: 16px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: red;
-}
-
-.my-custom-modal {
-  padding: 20px;
-  background: white;
-  border-radius: 12px;
-}
-
-.my-custom-button {
-  width: 100%;
-  font-size: 16px;
-  margin-top: 10px;
-  --background: white; /* Button background color */
-  --background-activated: #0056b3; /* Background color when pressed */
-  --border-radius: 8px; /* Rounded corners */
-
-  --border-width: 1px; /* Width of the border */
-  --border-style: solid; /* Style of the border */
-  --border-color: #007bff; /* Blue border color */
-
-  --color: #007bff; /* Text color for the button */
-  --color-activated: white; /* Text color when the button is pressed */
-}
-
-.cancel-button {
-  width: 100%;
-  font-size: 16px;
-  margin-top: 10px;
-  --background: white; /* Button background color */
-  --background-activated: #b32121; /* Background color when pressed, darker red */
-  --border-radius: 8px; /* Rounded corners */
-  
-  --border-width: 1px; /* Width of the border */
-  --border-style: solid; /* Style of the border */
-  --border-color: #ff0000; /* Red border color */
-  
-  --color: #ff0000; /* Text color for the button */
-  --color-activated: white; /* Text color when the button is pressed */
-}
-
-.white-modal {
-  background-color: white; /* Set the background color to white */
-  color: black; /* Ensure text color contrasts with background */
-}
-
-ion-modal {
-  --width: 90%;
-  --height: 30%;
-}
-
-.modal-title {
-  text-align: center;
-  color: black;
-  font-size: 25px;
-  margin-bottom: 10px;
-  margin-top: 0;
 }
 
 .add-media-button {
@@ -343,50 +72,10 @@ ion-modal {
   background-color: #f9f9f9;
 }
 
-.media-item {
-  display: flex;
-  align-items: center;
-  border: 1px solid #ddd;
-  padding: 10px;
-  border-radius: 5px;
-}
-
 .media-image {
   width: 50px;
   height: 50px;
   margin-right: 10px;
-}
-
-.media-video {
-  width: 100px;
-  height: 100px;
-  margin-right: 10px;
-}
-
-.media-details {
-  flex: 1;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.delete-button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 18px;
-  color: red;
-}
-
-.view-more-button {
-  display: block;
-  margin: 20px auto;
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
 }
 
 /* Optional: Custom scrollbar styling */
@@ -408,4 +97,142 @@ ion-modal {
   bottom: 56px; /* Adjust if necessary to fit above the TabBar2 */
   right: 16px;
   z-index: 1000;
+}
+
+.new-gradient-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  color: white;
+  background-image: linear-gradient(to right, 
+    #3499CD 0%, 
+    #3485CD 29%, 
+    #354DCD 59%, 
+    #26256C 100%);
+  height: 80px;
+}
+
+.arrow-left-icon {
+  position: absolute;
+  top: 22px;
+  left: 22px;
+  font-size: 2.3em;
+  color: white;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.upload-media-content-text {
+  color: black;
+  font-size: 24px;
+  width: 279;
+  Height: 36;
+  top: 105;
+  left: 9;
+  margin-top: 20px;
+  font: Poppins;
+}
+
+.file-label {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ddd; /* Add a border to replicate the look */
+  border-radius: 5px;
+  padding: 10px;
+  background-color: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Subtle shadow for effect */
+  max-width: 400px; /* Adjust width as needed */
+  margin: 10px auto; /* Center horizontally */
+}
+
+.file-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 5px; /* Slightly round corners */
+  margin-right: 10px;
+}
+
+.file-name {
+  flex: 1; /* Makes the filename take up remaining space */
+  color: #1a73e8; /* Blue color for filename link */
+  text-decoration: none;
+  font-size: 16px;
+  margin-right: 10px;
+}
+
+.file-name:hover {
+  text-decoration: underline;
+}
+
+.delete-button {
+  width: Hug (24px)px;
+  height: Hug (20px)px;
+  padding: 3px 5px 3px 5px;
+  gap: 10px;
+  opacity: 0px;
+  color:#00000073;
+}
+
+.uploading {
+  margin: 20px;
+  text-align: center;
+  width: Fixed (104px)px;
+  height: Fixed (104px)px;
+  top: 302px;
+  left: 9px;
+  padding: 40px 8px 40px 8px;
+  gap: 8px;
+  border-radius: 2px;
+  border: 1px 0px 0px 0px;
+  opacity: 0px;
+  
+  border: 1px solid #D9D9D9
+}
+
+
+.upload-media-page-button {
+  font-family: Poppins;
+  background: linear-gradient(97.28deg, #3499CD 0%, #3485CD 29.17%, #354DCD 59.38%, #26256C 100%);
+
+
+}
+
+.action-button {
+  --background: linear-gradient(97.28deg, #3499CD 0%, #3485CD 29.17%, #354DCD 59.38%, #26256C 100%);
+  --color: white;
+  width: 233px;
+  height: 54px;
+  top: 603px;
+  left: 126px;
+  gap: 0px;
+  opacity: 0px;
+
+}
+
+.button-group{
+  margin:20px;
+}
+
+.delete-upload-button{
+  margin-left: auto;
+  color: #707070 !important;
+}
+
+.upload-sub-title{
+  width: 279px;
+  height: 36px;
+  top: 105px;
+  left: 9px;
+  gap: 0px;
+  opacity: 0px;
+  font-family: Poppins;
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 36px;
+  text-align: left;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: none;
+  margin-top: 15px;
+  margin-bottom: 10px;
 }

@@ -29,6 +29,9 @@ import AddAthlete from "./components/GradientHeader/AddAthlete";
 import CurrentAthleteView from "./pages/CoachView/AthleteProfile";
 import { AuthProvider } from "./contexts/AuthContext";
 import NewHome from "./pages/NewHome";
+import AthleteUploadMediaPage from "./pages/AthleteView/AthleteUploadMediaPage";
+import AthletePerformanceDiagnostic from "./pages/AthleteView/AthletePerformanceDiagnostic";
+import AthletePerformanceResult from "./pages/AthleteView/AthletePerformanceResult";
 
 import "@ionic/react/css/core.css";
 import "@ionic/react/css/normalize.css";
@@ -152,6 +155,15 @@ const App: React.FC = () => {
             </Route>
             <Route exact path="/">
               <Home />
+            </Route>
+            <Route exact path="/athlete-upload-media-page">
+              <AthleteUploadMediaPage />
+            </Route>
+            <Route exact path="/athlete-performance-diagnostic-page">
+              <AthletePerformanceDiagnostic />
+            </Route>
+            <Route exact path="/athlete-performance-result-page">
+              <AthletePerformanceResult />
             </Route>
           </IonRouterOutlet>
         </IonReactRouter>

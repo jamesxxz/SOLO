@@ -1,0 +1,54 @@
+  .section-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 20px;
+  }
+  
+  .action-button {
+    position: fixed;
+    margin: 20px;
+    background: linear-gradient(to right,#3499CD 0%, #3485CD 29.17%, #354DCD 59.38%, #26256C 100%);
+    color: white;
+    border-radius: 25px;
+    vertical-align: middle; 
+    font-family: Poppins;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 37.5px;
+    text-align: center;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+  }
+
+
+  .media-item {
+    position: relative;
+    border: none; /* Removed border */
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+  }
+  
+  .media-item:hover {
+    transform: scale(1.05); /* Slight zoom-in effect */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow on hover */
+  }
+  
+  .media-image {
+    width: 169px;
+    height: 101px;
+    object-fit: cover;
+    display: block;
+  }
+  
+  .media-item.selected {
+    outline: #FFFFFF; /* Green outline for selection */
+  }
+  
+  .selected-icon {
+    position: absolute;
+    color: #FFFFFF; /* Icon color */
+    font-size: 24px;
+  }
+  

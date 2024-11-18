@@ -1,0 +1,34 @@
+.section-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 20px;
+    text-align: center;
+  }
+  
+  .result-row {
+    margin: 10px 0;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  
+  .result-item {
+    background: linear-gradient(97.28deg, #3499CD 0%, #3485CD 29.17%, #354DCD 59.38%, #26256C 100%);;
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: left;
+  }
+  
+  .result-label {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #ffffffcc; /* Slightly lighter color for label */
+  }
+  
+  .result-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+  }
+  

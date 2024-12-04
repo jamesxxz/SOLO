@@ -1,6 +1,6 @@
 import React from "react";
 import { IonTabBar, IonTabButton, IonIcon } from "@ionic/react";
-import { home, person, calendar, homeOutline, personOutline, calendarOutline } from "ionicons/icons";
+import { home, person, calendar, homeOutline, personOutline, calendarOutline, listOutline } from "ionicons/icons";
 import "../../components/AthleteView/NewTabBar.css"; // Import the CSS file
 
 const NewTabBar: React.FC = () => {
@@ -9,6 +9,11 @@ const NewTabBar: React.FC = () => {
       <IonTabButton tab="athleteprofile" href="/athlete-view-account">
         {/*change the home to homeOutline*/}
         <IonIcon icon={homeOutline} className="tab-icon" />
+      </IonTabButton>
+
+      <IonTabButton tab="" href="/athlete-profile">
+        {/*butteted list button*/}
+        <IonIcon icon={listOutline} className="tab-icon" />
       </IonTabButton>
 
       <IonTabButton tab="athleteeditprofile" href="/athlete-profile">

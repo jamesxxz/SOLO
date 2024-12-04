@@ -19,6 +19,10 @@ const AthletePerformanceResult: React.FC = () => {
     { label: 'Form Efficiency', value: '84%', personalBest: '86%' },
     { label: 'Cadence', value: '190 SPM', personalBest: '191 SPM' },
     { label: 'Knee Lift Height', value: '11 in', personalBest: '11 in' },
+    { label: 'Test', value: 'Test only', personalBest:'Test only'},
+    { label: 'Test', value: 'Test only', personalBest:'Test only'},
+    { label: 'Test', value: 'Test only', personalBest:'Test only'},
+    { label: 'Test', value: 'Test only', personalBest:'Test only'}
   ];
 
   return (
@@ -39,14 +43,18 @@ const AthletePerformanceResult: React.FC = () => {
         <IonGrid>
           {diagnosticData.map((item, index) => (
             <IonRow key={index} className="result-row">
-              <IonCol size="6" className="result-item">
-                <div className="result-label">{item.label}</div>
-                <div className="result-value">{item.value}</div>
-              </IonCol>
-              <IonCol size="6" className="result-item">
-                <div className="result-label">Personal Best</div>
-                <div className="result-value">{item.personalBest}</div>
-              </IonCol>
+              <IonCol size="12" className="result-item">
+              <div className="result-combined-label">
+              <span className="result-label">{item.label}</span>
+            <span className="spacer"></span>
+              <span className="result-label">Personal Best</span>
+              </div>
+              <div className="result-combined-value">
+              <span className="result-value">{item.value}</span>
+            <span className="spacer"></span>
+            <span className="result-value">{item.personalBest}</span>
+             </div>
+          </IonCol>
             </IonRow>
           ))}
         </IonGrid>

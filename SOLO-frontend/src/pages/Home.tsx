@@ -25,7 +25,7 @@ const Home: React.FC = () => {
             <button
               className="custom-button login-button"
               onClick={() => {
-                history.push("/login");
+                history.push("/athlete-performance-result-page");
               }}
             >
               Login

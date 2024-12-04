@@ -32,6 +32,7 @@ import NewHome from "./pages/NewHome";
 import AthleteUploadMediaPage from "./pages/AthleteView/AthleteUploadMediaPage";
 import AthletePerformanceDiagnostic from "./pages/AthleteView/AthletePerformanceDiagnostic";
 import AthletePerformanceResult from "./pages/AthleteView/AthletePerformanceResult";
+import AthleteCameraPage from "./pages/AthleteView/AthleteUploadMediaCamera"
 
 import "@ionic/react/css/core.css";
 import "@ionic/react/css/normalize.css";
@@ -164,6 +165,9 @@ const App: React.FC = () => {
             </Route>
             <Route exact path="/athlete-performance-result-page">
               <AthletePerformanceResult />
+            </Route>
+            <Route exact path="/athlete-upload-media-camera">
+              <AthleteCameraPage />
             </Route>
           </IonRouterOutlet>
         </IonReactRouter>

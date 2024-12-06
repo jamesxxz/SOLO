@@ -29,6 +29,7 @@ import AddAthlete from "./components/GradientHeader/AddAthlete";
 import CurrentAthleteView from "./pages/CoachView/AthleteProfile";
 import { AuthProvider } from "./contexts/AuthContext";
 import NewHome from "./pages/NewHome";
+import MediaGallery from "./pages/AthleteView/MediaGallery";
 
 import "@ionic/react/css/core.css";
 import "@ionic/react/css/normalize.css";
@@ -41,7 +42,6 @@ import "@ionic/react/css/text-transformation.css";
 import "@ionic/react/css/flex-utils.css";
 import "@ionic/react/css/display.css";
 import "./theme/variables.css";
-
 setupIonicReact();
 
 const App: React.FC = () => {
@@ -152,6 +152,9 @@ const App: React.FC = () => {
             </Route>
             <Route exact path="/">
               <Home />
+            </Route>
+            <Route exact path="/media-gallery">
+              <MediaGallery />
             </Route>
           </IonRouterOutlet>
         </IonReactRouter>

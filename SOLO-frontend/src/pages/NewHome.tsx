@@ -7,10 +7,11 @@ import {
   IonIcon,
   IonToolbar,
 } from "@ionic/react";
-import { menu } from "ionicons/icons";
+import { menu, chevronForwardOutline } from "ionicons/icons";
 import { useHistory } from "react-router-dom";
 import NewTabBar from "./AthleteView/NewTabBar";
 import Sidebar from "./AthleteView/Sidebar";
+import { Link } from "react-router-dom";
 
 import "../components/NewHome.css";
 
@@ -78,19 +79,32 @@ const NewHome: React.FC = () => {
             />
           </div>
         </div>
-        <p>View all</p>
+        <div className="view-all-container">
+          <Link to="/media-gallery" className="view-all">
+            View all
+          </Link>{" "}
+        </div>{" "}
         <div className="main-content">
           <IonButton
+            className="gradient-button"
             expand="block"
             onClick={() => history.push("/another-page")}
           >
-            Upload Media
+            <div className="button-content">
+              <p>Upload Media</p>
+              <IonIcon icon={chevronForwardOutline} className="right-icon" />
+            </div>
           </IonButton>
+
           <IonButton
+            className="gradient-button"
             expand="block"
             onClick={() => history.push("/another-page")}
           >
-            Performance Diagnostic
+            <div className="button-content">
+              <p>Performance Diagnostic</p>
+              <IonIcon icon={chevronForwardOutline} className="right-icon" />
+            </div>
           </IonButton>
         </div>
       </IonContent>

@@ -30,6 +30,7 @@ import CurrentAthleteView from "./pages/CoachView/AthleteProfile";
 import { AuthProvider } from "./contexts/AuthContext";
 import NewHome from "./pages/NewHome";
 import MediaGallery from "./pages/AthleteView/MediaGallery";
+import AthletePerformancePage from './pages/AthleteView/AthletePerformancePage';
 
 import "@ionic/react/css/core.css";
 import "@ionic/react/css/normalize.css";
@@ -42,6 +43,12 @@ import "@ionic/react/css/text-transformation.css";
 import "@ionic/react/css/flex-utils.css";
 import "@ionic/react/css/display.css";
 import "./theme/variables.css";
+import AverageSpeedPage from './pages/AthleteView/AverageSpeedPage';
+import ReactionTimePage from './pages/AthleteView/ReactionTimePage';
+import AccelerationPage from './pages/AthleteView/AccelerationPage';
+import DecelerationPage from './pages/AthleteView/DecelerationPage';
+import FormEfficiencyPage from './pages/AthleteView/FormEfficiencyPage';
+import CadencePage from './pages/AthleteView/CadencePage';
 setupIonicReact();
 
 const App: React.FC = () => {
@@ -149,6 +156,27 @@ const App: React.FC = () => {
             </Route>
             <Route exact path="/current-athlete-view">
               <CurrentAthleteView />
+            </Route>
+            <Route exact path="/athlete-performance-summary">
+              <AthletePerformancePage />
+            </Route>
+            <Route exact path="/average-speed">
+              <AverageSpeedPage />
+            </Route>
+            <Route exact path="/reaction-time">
+              <ReactionTimePage />
+            </Route>
+            <Route exact path="/acceleration">
+              <AccelerationPage />
+            </Route>
+            <Route exact path="/deceleration">
+              <DecelerationPage />
+            </Route>
+            <Route exact path="/form-efficiency">
+              <FormEfficiencyPage />
+            </Route>
+            <Route exact path="/cadence">
+              <CadencePage />
             </Route>
             <Route exact path="/">
               <Home />

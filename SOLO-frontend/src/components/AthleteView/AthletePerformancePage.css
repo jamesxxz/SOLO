@@ -1,0 +1,123 @@
+.performance-header {
+    font-size: 1.5rem;
+    color: #fff;
+    background: linear-gradient(135deg, #3499cd, #26256C); /* Ensure gradient is applied */
+    padding: 1rem;
+    margin: 0; /* Remove default margins */
+    display: flex;
+    align-items: center; /* Vertically align items */
+    position: relative; /* Allow absolute positioning for children */
+    width: 100%; /* Ensure it spans the full width */
+    box-sizing: border-box; /* Include padding in width calculation */
+}
+
+.back-button {
+    position: absolute;
+    left: 1rem; /* Position the button on the left side */
+    display: flex;
+    align-items: center;
+    font-size: 1.5rem; /* Adjust size for visibility */
+    color: white; /* Ensure it matches the header */
+    cursor: pointer; /* Indicate it’s clickable */
+}
+
+.header-title {
+    margin: 0 auto; /* Center the title */
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.overview-header {
+    font-size: 1.2rem; /* Slightly smaller font */
+    text-align: left; /* Align text to the left */
+    color: black; /* Black text */
+    margin: 1rem 0 0rem 1rem; /* Margin to position on the left, but not fully aligned */
+    font-weight: bold; /* Bold text */
+  }
+
+  
+.performance-container {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+  }
+
+
+.arrow-icon {
+    font-size: 1.5rem; /* Adjust size for visibility */
+    color: white; /* Match the header style */
+    justify-self: flex-end; /* Push arrow to the far right */
+    text-align: right; /* Ensure it's aligned to the right */
+    transition: color 0.2s ease; /* Smooth color transition */
+}
+
+  
+.performance-card {
+    display: grid; /* Use a structured grid layout */
+    grid-template-columns: 2fr 1fr 0.5fr; /* Explicit widths: title, value, arrow */
+    align-items: center; /* Vertically center all items */
+    background: linear-gradient(135deg, #3499cd, #26256C);
+    color: white;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    font-size: 1rem;
+    column-gap: 1rem; /* Add space between columns */
+    width: 100%; /* Ensure consistent width */
+    box-sizing: border-box; /* Include padding in width calculation */
+    cursor: pointer; /* Change cursor to pointer */
+    transition: background-color 0.2s ease, box-shadow 0.2s ease; /* Smooth transition */
+}
+
+.performance-card:hover {
+    background: linear-gradient(135deg, #4fa9e2, #3a3b8c); /* Slightly lighter gradient */
+    box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.15); /* Enhanced shadow */
+}
+
+.performance-card:active {
+    background: linear-gradient(135deg, #2b78c0, #1f1f5a); /* Slightly darker on click */
+    transform: scale(0.98); /* Slightly shrink on click */
+}
+
+.performance-card:hover .arrow-icon {
+    color: #f0f0f0; /* Slightly lighter arrow color on hover */
+}
+
+.performance-title {
+    font-weight: bold; /* Make the title bold */
+    font-size: 1rem; /* Title font size */
+    text-align: left; /* Align to the left */
+    white-space: nowrap; /* Prevent wrapping */
+    overflow: hidden; /* Prevent overflow */
+    text-overflow: ellipsis; /* Add ellipsis for long text */
+}
+  
+.performance-value {
+    font-size: 1rem; /* Value font size */
+    font-weight: 300; /* Make font thinner */
+    text-align: left; /* Align to the left */
+    color: white; /* Ensure readability */
+    white-space: nowrap; /* Prevent wrapping */
+    overflow: hidden; /* Handle overflow text */
+    text-overflow: ellipsis; /* Add ellipsis for overflow */
+    margin-left: -10rem; /* Add spacing between title and value */
+}
+
+
+/* Ensure the grid remains stable on all screen sizes */
+@media (max-width: 768px) {
+    .performance-card {
+        grid-template-columns: 2fr 1fr auto; /* Adjust grid columns for smaller screens */
+        column-gap: 0.5rem; /* Reduce gap */
+    }
+
+    .performance-title,
+    .performance-value {
+        font-size: 0.9rem; /* Reduce font size slightly for smaller screens */
+    }
+
+    .arrow-icon {
+        font-size: 1.2rem; /* Reduce arrow size for smaller screens */
+    }
+}

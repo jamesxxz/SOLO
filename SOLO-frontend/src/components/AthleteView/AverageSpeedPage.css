@@ -1,0 +1,42 @@
+/* AverageSpeedPage.css */
+.average-speed-chart {
+    background-color: white; /* Ensure the chart area is white */
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+  }
+  
+  /* General styles for content */
+  ion-content {
+    background: #f8f9fa !important; /* Light gray for background */
+  }
+  
+  
+.performance-header {
+    font-size: 1.5rem;
+    color: #fff;
+    background: linear-gradient(135deg, #3499cd, #26256C); /* Ensure gradient is applied */
+    padding: 1rem;
+    margin: 0; /* Remove default margins */
+    display: flex;
+    align-items: center; /* Vertically align items */
+    position: relative; /* Allow absolute positioning for children */
+    width: 100%; /* Ensure it spans the full width */
+    box-sizing: border-box; /* Include padding in width calculation */
+}
+
+.back-button {
+    position: absolute;
+    left: 1rem; /* Position the button on the left side */
+    display: flex;
+    align-items: center;
+    font-size: 1.5rem; /* Adjust size for visibility */
+    color: white; /* Ensure it matches the header */
+    cursor: pointer; /* Indicate it’s clickable */
+}
+
+.header-title {
+    margin: 0 auto; /* Center the title */
+    font-size: 1.5rem;
+    font-weight: bold;
+}
